@@ -1,0 +1,31 @@
+_____________________________
+Command for databases
+_____________________________
+View all databases          -> show dbs
+creates/switches database   -> use dbname
+view current database       -> db
+delete current database     -> db.dropDatabase()
+
+_____________________________
+Command for collections
+_____________________________
+view all collections        -> show collections
+create a collection         -> db.createCollection('<collectionName>')
+delete a collection         -> db.<collectionName>.drop()
+
+_____________________________
+Command for rows
+_____________________________
+show all rows               -> db.<collectionName>.find()
+show all rows (prettier)    -> db.<collectionName>.find().pretty()
+do specific queries         -> db.<collectionName>.find({<json search filter>})
+show first row matching     -> db.<collectionName>.findOne({<json search filter>})
+limit the number of rows    -> db.<collectionName>.find().limit(<no of entries to show>)
+count number of rows        -> db.<collectionName>.find().count()
+sort the rows 
+        -> db.<collectionName>.find().sort({key : 1}) // ascending
+        -> db.<collectionName>.find().sort({key :-1}) // descending
+insert one row              -> db.<collectionName>.insert({<json>}) //json object
+insert multiple rows        -> db.<collectionName>.insertMany([{<json>}, {<json>}, ... , {<json>}]) //array of json objects
+update a row                -> db.<collectionName>.update({<json search filter>}, {<new json>})
+update a row (with upsert)  -> db.<collectionName>.update({<json search filter>}, {<new json>}, {upsert : true})

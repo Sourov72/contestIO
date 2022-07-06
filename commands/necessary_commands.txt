@@ -17,6 +17,8 @@ to create backend ->
 3.npm install -g nodemon
 4.Set-ExecutionPolicy RemoteSigned(in terminal as administrator)
 
+to run -> npm run start
+
 
 to connect database ->
 
