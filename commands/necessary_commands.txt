@@ -20,6 +20,8 @@ to create backend ->
 6.npm install nanoid
 7.npm install path
 
+to run -> npm run start
+
 
 to connect database ->
 
