@@ -2,20 +2,5 @@ backend/package.json
 backend/node_modules
 backend/package-lock.json
 frontend/contest_io/node_modules
-frontend/contest_io/package.json
-frontend/contest_io/package-lock.json
 
-frontend/contest_io/README.md
-frontend/contest_io/public/favicon.ico
-frontend/contest_io/public/logo192.png
-frontend/contest_io/public/logo512.png
-frontend/contest_io/public/manifest.json
-frontend/contest_io/public/robots.txt
-frontend/contest_io/src/App.css
-frontend/contest_io/src/App.test.js
-frontend/contest_io/src/index.css
-frontend/contest_io/src/index.js
-frontend/contest_io/src/reportWebVitals.js
-frontend/contest_io/src/setupTests.js
-frontend/contest_io/src/logo.svg
-frontend/contest_io/.gitignore
+
