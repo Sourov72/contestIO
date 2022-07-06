@@ -1,0 +1,23 @@
+to create react/frontend->
+
+1. npx create-react-app app_name
+2. npm install bootstrap
+3. npm install react-router-dom@6
+4. npm install react-datepicker
+5. npm install axios
+
+
+
+
+
+
+
+
+
+
+to create backend ->
+
+1.npm init -y
+2.npm install express cors mongoose dotenv
+3.npm install -g nodemon
+4.Set-ExecutionPolicy RemoteSigned(in terminal as administrator)
