@@ -1,10 +1,12 @@
 to create react/frontend->
 
-1. npx create-react-app contest_io
-2. cd contest_io
-3. npm install react-router-dom@6
-4. npm install react-datepicker (place basis e mayb, apatoto install na dileo cholbe)
-5. npm install axios
+
+1. cd frontend
+2. npx create-react-app contest_io
+3. cd contest_io
+4. npm install react-router-dom@6
+5. npm install react-datepicker (place basis e mayb, apatoto install na dileo cholbe)
+6. npm install axios
 
 
 
