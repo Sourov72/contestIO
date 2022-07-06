@@ -1,9 +1,9 @@
 to create react/frontend->
 
-1. npx create-react-app app_name
-2. npm install bootstrap
+1. npx create-react-app contest_io
+2. cd contest_io
 3. npm install react-router-dom@6
-4. npm install react-datepicker
+4. npm install react-datepicker (place basis e mayb, apatoto install na dileo cholbe)
 5. npm install axios
 
 
