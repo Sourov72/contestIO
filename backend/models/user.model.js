@@ -40,6 +40,10 @@ const userSchema = new Schema(
       facebookhandle: String,
       instagramhandle: String,
     },
+
+    img :{
+      type : String,
+    }
   },
   {
     timestamps: true,

@@ -16,6 +16,9 @@ to create backend ->
 2.npm install express cors mongoose dotenv
 3.npm install -g nodemon
 4.Set-ExecutionPolicy RemoteSigned(in terminal as administrator)
+5.npm install multer
+6.npm install nanoid
+7.npm install path
 
 
 to connect database ->
