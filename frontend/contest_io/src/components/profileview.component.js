@@ -18,7 +18,7 @@ export const Profileview = (props) => {
 
   useEffect(() => {
     // here id is send simpliflically not as a object
-    axios.get("http://localhost:5000/user/" + id).then((res) => {
+    axios.get("http://localhost:5000/api/user/" + id).then((res) => {
       setuser({
         username: res.data.user.username,
         email: res.data.user.email,

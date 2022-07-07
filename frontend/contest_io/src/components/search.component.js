@@ -60,8 +60,9 @@ export const Search = () => {
         const user = {
             username: searchField
         }
+        console.log(user)
         axios
-            .post("http://localhost:5000/user/users", user)
+            .post("http://localhost:5000/api/user/users", user)
             .then((res) => {
                 console.log(res)
                 setallUsers(res.data);

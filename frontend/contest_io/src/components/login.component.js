@@ -21,7 +21,7 @@ export const Login = (props) => {
   const login = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:5000/user/login", user)
+      .post("http://localhost:5000/api/user/login", user)
       .then((res) => {
         alert(res.data.message);
         if(res.data.message == "Login Successfull"){

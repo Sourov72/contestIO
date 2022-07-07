@@ -42,7 +42,7 @@ export const Signup = () => {
     if (username && email && bio && password === rePassword) {
       alert("Signup form posted");
       axios
-        .post("http://localhost:5000/user/add", user)
+        .post("http://localhost:5000/api/user/add", user)
         .then((res) => console.log(res));
     } else {
       alert("Invalid input");
