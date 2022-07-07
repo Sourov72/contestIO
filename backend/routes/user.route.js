@@ -58,4 +58,6 @@ router.post("/login", Users.getUser);
 
 router.get("/:id", Users.profilecheck);
 
+router.post("/users", Users.getSpecificUsers);
+
 module.exports = router;

@@ -17,31 +17,33 @@ export const Search = () => {
     const [searchShow, setSearchShow] = useState(false);
     const [allUsers, setallUsers] = useState("");
 
-    useEffect(() => {
-        axios.get("http://localhost:5000/user/").then((res) => {
-            // console.log("hello there boro", res.data)
-            // alert("noooo")
-            setallUsers(res.data);
-        });
-    }, []);
+    // useEffect(() => {
+    //     axios.get("http://localhost:5000/user/").then((res) => {
+    //         // console.log("hello there boro", res.data)
+    //         // alert("noooo")
+    //         setallUsers(res.data);
+    //     });
+    // }, []);
 
     const handleChange = (e) => {
         setsearchField(e.target.value);
+
         if (e.target.value === "") {
             setSearchShow(false);
         } else {
             setSearchShow(true);
+
         }
     };
 
-    const searchResultsList = Array.from(allUsers);
-    const filteredPersons = searchResultsList.filter((person) => {
-        // console.log(person.username);
-        return (
-            person.username.toLowerCase().includes(searchField.toLowerCase()) ||
-            person.email.toLowerCase().includes(searchField.toLowerCase())
-        );
-    });
+    const filteredPersons = Array.from(allUsers);
+    // const filteredPersons = searchResultsList.filter((person) => {
+    //     // console.log(person.username);
+    //     return (
+    //         person.username.toLowerCase().includes(searchField.toLowerCase()) ||
+    //         person.email.toLowerCase().includes(searchField.toLowerCase())
+    //     );
+    // });
 
 
     var stylingObject = {
@@ -54,8 +56,22 @@ export const Search = () => {
         }
     }
 
+    function getallUser(){
+        const user = {
+            username: searchField
+        }
+        axios
+            .post("http://localhost:5000/user/users", user)
+            .then((res) => {
+                console.log(res)
+                setallUsers(res.data);
+            });
+    }
+
     function searchList() {
+
         if (searchShow) {
+            getallUser();
             return filteredPersons.map((currentPerson) => {
                 return (
                     //   <SearchList key={currentPerson.email} person={currentPerson} />

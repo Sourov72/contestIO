@@ -32,6 +32,29 @@ const getUser = (req, res) => {
   });
 };
 
+const getSpecificUsers = (req, res) => {
+  var word = req.body.username 
+  console.log("hello", word);
+  User.find({
+    $or: [
+      {
+        username: {
+          $regex: word,
+          $options: "i",
+        },
+      },
+      {
+        email: {
+          $regex: word,
+          $options: "i",
+        },
+      },
+    ],
+  })
+  .then((users) => res.json(users))
+    .catch((err) => res.status(400).json("Error :" + err));
+};
+
 const profilecheck = (req, res) => {
   console.log(req.params.id);
   // res.send("Hello Login!");
@@ -81,6 +104,7 @@ module.exports = {
   getAllUser,
   getUser,
   profilecheck,
+  getSpecificUsers,
 };
 
 // exports.createProduct = (req, res) => {

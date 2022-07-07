@@ -70,7 +70,7 @@ export const Profileview = (props) => {
           </label>
           {/* <img src={require(`../images/${user.img}`)} className="img-thumbnail" alt="..."></img> */}
 
-          <img src={require("../images/" + file_name)} />
+          {/* <img src={require("../images/" + file_name)} /> */}
         </div>
 
         {/* <button type="submit" className="btn btn-primary mb-3" onClick={signup}>
