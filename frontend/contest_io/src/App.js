@@ -3,9 +3,12 @@ import Navbar from "./components/navbar.component";
 import { Signup } from "./components/signup.component";
 import { Login } from "./components/login.component";
 import { Profileview } from "./components/profileview.component";
-import {Search} from "./components/search.component"
-import { useState} from "react";
+import { Search } from "./components/search.component";
+import { ContestHome } from "./components/contests/ContestHome.js";
+import { useState } from "react";
 
+// hooks
+import { useContestContext } from "./hooks/useContestContext";
 
 function App() {
   const onLogin = (user) => {
@@ -18,8 +21,8 @@ function App() {
     console.log("hello this is logged in person userid: ", { userID });
   };
 
-  
   const [userID, setuserID] = useState("");
+
 
   return (
     <>
@@ -35,9 +38,7 @@ function App() {
                 element={<Profileview id={userID} />}
               />
               <Route path="/login" element={<Login onLogin={onLogin} />} />
-              {/* <Route path="/edit/:id" element={<EditExercise />} />
-              <Route path="/create" element={<CreateExercise />} />
-              <Route path="/user" element={<CreateUser />} /> */}
+              <Route path="/contests" element={<ContestHome />} />
             </Routes>
           </div>
         </Router>

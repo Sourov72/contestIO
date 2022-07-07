@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const userRouter = require("./routes/user.route");
+const contestRouter = require("./routes/contest.route")
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -19,6 +20,7 @@ app.use((req, res, next)=> {
 
 // routes
 app.use("/api/user", userRouter);
+app.use("/api/contests", contestRouter);
 
 // connect to db
 mongoose.connect(process.env.ATLAS_URI)
