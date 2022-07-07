@@ -30,6 +30,8 @@ export const Profileview = (props) => {
     });
   }, []);
 
+  const file_name = user.img
+
   return (
     <div className="signup container">
       <h1 className="container text-center">Profile</h1>
@@ -66,7 +68,9 @@ export const Profileview = (props) => {
           <label htmlFor="formFileSm" className="form-label">
             Small file input example
           </label>
-          <img src={require(`../images/${user.img}`)} className="img-thumbnail" alt="..."></img>
+          {/* <img src={require(`../images/${user.img}`)} className="img-thumbnail" alt="..."></img> */}
+
+          <img src={require("../images/" + file_name)} />
         </div>
 
         {/* <button type="submit" className="btn btn-primary mb-3" onClick={signup}>

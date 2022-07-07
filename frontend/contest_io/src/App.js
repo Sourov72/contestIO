@@ -3,24 +3,22 @@ import Navbar from "./components/navbar.component";
 import { Signup } from "./components/signup.component";
 import { Login } from "./components/login.component";
 import { Profileview } from "./components/profileview.component";
-import { useState } from "react";
-// import ExerciseList from "./components/exercise-list.component"
-// import EditExercise from "./components/edit-exercise.component"
-// import CreateExercise from "./components/create-exercise.component"
-// import CreateUser from "./components/create-user.component"
+import {Search} from "./components/search.component"
+import { useState} from "react";
 
-// import Home from "./components/home"
 
 function App() {
   const onLogin = (user) => {
     console.log("I am on Login", user);
-    setuserID({
-      userID: user._id,
-    });
+    // setuserID({
+    //   userID: user._id,
+    // });
+    setuserID(user._id);
 
     console.log("hello this is logged in person userid: ", { userID });
   };
 
+  
   const [userID, setuserID] = useState("");
 
   return (
@@ -31,6 +29,7 @@ function App() {
             <Navbar />
             <Routes>
               <Route path="/signup" element={<Signup />} />
+              <Route path="/search" element={<Search />} />
               <Route
                 path="/profileview"
                 element={<Profileview id={userID} />}

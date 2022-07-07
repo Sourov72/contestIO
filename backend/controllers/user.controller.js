@@ -10,6 +10,7 @@ const getAllUser = (req, res) => {
   User.find()
     .then((users) => res.json(users))
     .catch((err) => res.status(400).json("Error :" + err));
+  console.log("heree in all users class");
 };
 
 const getUser = (req, res) => {
@@ -34,7 +35,6 @@ const getUser = (req, res) => {
 const profilecheck = (req, res) => {
   console.log(req.params.id);
   // res.send("Hello Login!");
-
 
   User.findOne({ _id: req.params.id }, function (err, user) {
     if (user) {
