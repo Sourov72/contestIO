@@ -31,7 +31,7 @@
 // module.exports = router;
 
 const express = require("express");
-const path = require("path");
+// const path = require("path");
 const multer = require("multer");
 const Users = require("../controllers/user.controller");
 const router = express.Router();

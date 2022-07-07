@@ -25,8 +25,8 @@ function App() {
     <>
       {
         <Router>
+          <Navbar />
           <div className="container">
-            <Navbar />
             <Routes>
               <Route path="/signup" element={<Signup />} />
               <Route path="/search" element={<Search />} />

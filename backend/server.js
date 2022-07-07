@@ -1,31 +1,34 @@
-const express = require("express");
-const cors = require("cors");
-
-const mongoose = require("mongoose");
-
 require("dotenv").config();
 
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
 const userRouter = require("./routes/user.route");
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+// middlewares
 app.use(cors());
 app.use(express.json());
+app.use((req, res, next)=> {
+  // this is used for logging
+  console.log(req.path, req.method)
+  next()
+})
 
-const uri = process.env.ATLAS_URI;
-mongoose.connect(uri);
+// routes
+app.use("/api/user", userRouter);
 
-const connection = mongoose.connection;
-
-connection.once("open", () => {
-  console.log("MongoDB database connection established sucessfully");
-});
-
-
-app.use("/user", userRouter);
-
-
-app.listen(port, () => {
-  console.log("server is running on port:", port);
-});
+// connect to db
+mongoose.connect(process.env.ATLAS_URI)
+    .then(() => {
+        // listen for requests if connection succeeds
+        console.log("MongoDB database connection established sucessfully");
+        app.listen(port, () => {
+            console.log(`Server is listening on port ${port}!`)
+        })
+    })
+    .catch((error) => {
+        console.log("Couldn't connect to the db\n", error)
+    })
