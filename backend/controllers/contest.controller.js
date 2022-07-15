@@ -15,7 +15,7 @@ const getContest = async (req, res) => {
         return res.status(404).json({error : 'No such contest'})
     }
 
-    const contest = await ContestModel.findById(id)
+    const contest = await ContestModel.find(id)
     
     if (!contest) {
         return res.status(404).json({error : 'No such contest'})
@@ -23,13 +23,55 @@ const getContest = async (req, res) => {
     res.status(200).json(contest)
 }
 
+// get queried list of contests
+const queryContests = async (req, res) => {
+
+    var query = {}
+    var limit = 20
+    for (var key in req.query) {
+        if(req.query[key] == '') {
+            continue
+        }
+        const arr = req.query[key].split(",")
+        switch (arr[0]) {
+            case "eq":
+                query[key] = {$eq: arr[1]}
+                break;
+            case "lt":
+                query[key] = {$lt: arr[1]}
+                break;
+            case "lte":
+                query[key] = {$lte: arr[1]}
+                break;
+            case "gt":
+                query[key] = {$gt: arr[1]}
+                break;
+            case "gte":
+                query[key] = {$gte: arr[1]}
+                break;
+            case "regex":
+                query[key] = {$regex: arr[1]}
+                break;
+            case "limit":
+                limit = parseInt(arr[1])
+                break;
+        
+            default:
+                break;
+        }
+    }
+    const contests = await ContestModel.find(query).limit(limit)
+    
+    res.status(200).json(contests)
+}
+
 // create new contest
 const createContest = async (req, res) => {
     // get the values from the request's body
-    const {contestID, hostID, title, type, objective} = req.body
+    const {contestID, hostID, title, type, objective, description, voteWeight, juryVoteWeight, voterAnonymity, creationTime, startTime, registrationEndTime, endTime} = req.body
     try {
         // try to create a new document
-        const contest = await ContestModel.create({contestID, hostID, title, type, objective})
+        const contest = await ContestModel.create({contestID, hostID, title, type, objective, description, voteWeight, juryVoteWeight, voterAnonymity, creationTime, startTime, registrationEndTime, endTime})
         res.status(200).json(contest)
     } catch (error) {
         // if failed, return error
@@ -73,6 +115,7 @@ const updateContest = async (req, res) => {
 module.exports = {
     getContest,
     getContests,
+    queryContests,
     createContest,
     deleteContest,
     updateContest

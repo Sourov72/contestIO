@@ -38,7 +38,7 @@ function App() {
                 element={<Profileview id={userID} />}
               />
               <Route path="/login" element={<Login onLogin={onLogin} />} />
-              <Route path="/contests" element={<ContestHome />} />
+              <Route path="/contests" element={<ContestHome id={userID} />} />
             </Routes>
           </div>
         </Router>
