@@ -2,5 +2,7 @@ backend/package.json
 backend/node_modules
 backend/package-lock.json
 frontend/contest_io/node_modules
+frontend/contest_io/package-lock.json
+frontend/contest_io/package.json
 
 
