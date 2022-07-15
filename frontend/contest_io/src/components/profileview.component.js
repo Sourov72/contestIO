@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import logo from "./logo192.png"
+// import logo from "./logo192.png"
 export const Profileview = (props) => {
-  let id = "62c5d26ea158b2eb00da68d0";
+  let id = "12";
 
   const [user, setuser] = useState({
     username: "",
@@ -14,11 +14,16 @@ export const Profileview = (props) => {
     img: "",
   });
 
-;
-
   useEffect(() => {
     // here id is send simpliflically not as a object
+    console.log("id bef: ", id);
+
+    id = localStorage.getItem("id");
+
+    console.log("id afte: ", id);
+
     axios.get("http://localhost:5000/api/user/" + id).then((res) => {
+      console.log(res.data.user.socialhandles.facebookhandle);
       setuser({
         username: res.data.user.username,
         email: res.data.user.email,
@@ -30,7 +35,15 @@ export const Profileview = (props) => {
     });
   }, []);
 
-  const file_name = user.img
+  let source = "../images/" + user.img;
+  console.log("hello vro", source);
+
+  var stylingObject = {
+    image: {
+      height: "200px",
+      width: "200px",
+    },
+  };
 
   return (
     <div className="signup container">
@@ -56,13 +69,19 @@ export const Profileview = (props) => {
 
         <div className="mb-3">
           <label className="form-label">facebook handle</label>
-          <div className="form-control form-control-sm">{user.facebookhandle} {user.img}</div>
+          <div className="form-control form-control-sm">
+            {user.facebookhandle} {user.img}
+          </div>
         </div>
 
         <div className="mb-3">
           <label className="form-label">instagram handle</label>
-          <div className="form-control form-control-sm">{user.instagramhandle}</div>
+          <div className="form-control form-control-sm">
+            {user.instagramhandle}
+          </div>
         </div>
+
+        {/* <img src={require("../images/" + user.img)} /> */}
 
         <div className="mb-3">
           <label htmlFor="formFileSm" className="form-label">
@@ -70,7 +89,13 @@ export const Profileview = (props) => {
           </label>
           {/* <img src={require(`../images/${user.img}`)} className="img-thumbnail" alt="..."></img> */}
 
-          {/* <img src={require("../images/" + file_name)} /> */}
+          {/* <img src={source} alt="no image"/> */}
+          <img
+            src={source}
+            class="rounded img-thumbnail"
+            style={stylingObject.image}
+            alt="..."
+          ></img>
         </div>
 
         {/* <button type="submit" className="btn btn-primary mb-3" onClick={signup}>

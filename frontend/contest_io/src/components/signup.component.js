@@ -44,6 +44,7 @@ export const Signup = () => {
       axios
         .post("http://localhost:5000/api/user/add", user)
         .then((res) => console.log(res));
+        window.location = "/";
     } else {
       alert("Invalid input");
     }
@@ -152,11 +153,12 @@ export const Signup = () => {
 
         <div className="mb-3">
           <label htmlFor="formFileSm" className="form-label">
-            Small file input example
+            Profile Pic Upload
           </label>
           <input
             className="form-control form-control-sm"
             type="file"
+            
             onChange={fileHandle}
           />
         </div>

@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 
 export const Login = (props) => {
-
-  
   const [user, setuser] = useState({
     email: "",
     password: "",
@@ -20,17 +18,21 @@ export const Login = (props) => {
 
   const login = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:5000/api/user/login", user)
-      .then((res) => {
-        alert(res.data.message);
-        if(res.data.message == "Login Successfull"){
-          {props.onLogin(res.data.user)}
-        }
-        else{
-          alert(res.data.message);
-        }
-      });
+    axios.post("http://localhost:5000/api/user/login", user).then((res) => {
+      alert(res.data.message);
+      if (res.data.message === "Login Successfull") {
+        // props.onLogin(res.data.user);
+
+        localStorage.setItem('id',res.data.user._id);
+        console.log("hello this is logged in person userid: ", localStorage.getItem('id'));
+
+        window.location = "/";
+
+        
+      } else {
+        alert(res.data.message, "in else cond");
+      }
+    });
   };
 
   return (
