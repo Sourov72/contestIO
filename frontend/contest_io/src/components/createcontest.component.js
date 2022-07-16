@@ -3,6 +3,11 @@ import axios from "axios";
 
 export const CreateContest = () => {
   var today, mm, dd, yyyy;
+  let id = "12";
+
+  // const [userid, setid] = useState({
+  //   id : "",
+  // });
 
   const [comp, setcomp] = useState({
     generalcom: true,
@@ -76,30 +81,34 @@ export const CreateContest = () => {
     });
   };
 
-  const [id, setid] = useState('');
+  
 
   useEffect(() => {
-    const items = localStorage.getItem("id");
-    console.log("I got the id:", items)
-    if (items) {
-      setid(items);
+
+    console.log("id bef: ", id);
+    id = localStorage.getItem("id");
+    console.log("I got the id:", id); 
       // console.log('id set to: ', {id})
-      console.log('id set to: ', id)
-    }
+      // console.log('id set to: ', id)
+      setcontest({
+        ...contest,
+        hostID: localStorage.getItem("id"),
+      });
+    
   }, []);
 
   const createNewContest = (e) => {
+
+    id = localStorage.getItem("id");
+    console.log("id: ", id);
     e.preventDefault();
 
-    setcontest({
-      ...contest,
-      hostID: {id},
-    });
-    alert("id dekho", id);
+    
+   
     console.log("hostid ", contest.hostID);
-    alert("id set hoise", contest.hostID);
+  
 
-    alert("Signup form posted");
+    alert("Contest Creation form posted");
     axios
       .post("http://localhost:5000/api/contests/create", contest)
       .then((res) => console.log(res));
