@@ -4,7 +4,7 @@ import { Signup } from "./components/signup.component";
 import { Login } from "./components/login.component";
 import { Profileview } from "./components/profileview.component";
 import { Search } from "./components/search.component";
-import { ContestHome } from "./components/contests/ContestHome.js";
+import { Contest } from "./components/contests/Contest";
 import { useState } from "react";
 
 // hooks
@@ -38,7 +38,7 @@ function App() {
                 element={<Profileview id={userID} />}
               />
               <Route path="/login" element={<Login onLogin={onLogin} />} />
-              <Route path="/contests" element={<ContestHome id={userID} />} />
+              <Route path="/contests/*" element={<Contest id={userID} />} />
             </Routes>
           </div>
         </Router>

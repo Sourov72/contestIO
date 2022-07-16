@@ -28,6 +28,7 @@ const queryContests = async (req, res) => {
 
     var query = {}
     var limit = 20
+    var skip = 0
     for (var key in req.query) {
         if(req.query[key] == '') {
             continue
@@ -55,14 +56,21 @@ const queryContests = async (req, res) => {
             case "limit":
                 limit = parseInt(arr[1])
                 break;
+            case "skip":
+                skip = parseInt(arr[1])
+                break;
         
             default:
                 break;
         }
     }
-    const contests = await ContestModel.find(query).limit(limit)
-    
-    res.status(200).json(contests)
+    // console.log(query)
+    const contests = await ContestModel.find(query).limit(limit).skip(skip)
+    const cnt = await ContestModel.count(query)
+    res.status(200).json({
+        contests : contests,
+        count : cnt
+    })
 }
 
 // create new contest
