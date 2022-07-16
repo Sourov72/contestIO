@@ -49,7 +49,7 @@ function App() {
               <Route path="/signup" element={<Signup />} />
               <Route path="/search" element={<Search />} />
               <Route
-                path="/profileview"
+                path="/profile"
                 element={<Profileview id={localStorage.getItem("id")} />}
               />
               <Route path="/login" element={<Login onLogin={onLogin} />} />

@@ -57,7 +57,7 @@ export const Navbar = (props) => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link to="/" className="nav-link active">
+              <Link to="/" className="nav-link active fw-bold">
                 Home
                 {/* hello
                 {props.id}
@@ -65,20 +65,32 @@ export const Navbar = (props) => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/contests" className="nav-link">
+              <Link to="/contests" className="nav-link fw-bold">
                 Contests
               </Link>
             </li>
+            <li className="nav-item">
+                <Link to='/about' className="nav-link fw-bold">
+                  About
+                </Link>
+              </li>
+              
 
             {(() => {
             if (props.id !== "") {
               return (
                 <>
                   <li className="nav-item">
-              <Link to="/profile" className="nav-link">
-                Profile
-              </Link>
-            </li>
+                    <Link to="/profile" className="nav-link fw-bold">
+                      Profile
+                    </Link>              
+                  </li>
+              
+                  <li className="nav-item">
+                    <Link to='/createcontest' className="nav-link fw-bold">
+                      Create
+                    </Link>
+                  </li>
                 </>
               );
             } 

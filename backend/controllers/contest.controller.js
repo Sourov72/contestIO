@@ -76,14 +76,15 @@ const queryContests = async (req, res) => {
 // create new contest
 const createContest = async (req, res) => {
     // get the values from the request's body
-    const {contestID, hostID, title, type, objective, description, voteWeight, juryVoteWeight, voterAnonymity, creationTime, startTime, registrationEndTime, endTime} = req.body
+    const {hostID, title, type, objective, description, voteWeight, juryVoteWeight, voterAnonymity, startTime, registrationEndTime, endTime} = req.body
     try {
         // try to create a new document
-        const contest = await ContestModel.create({contestID, hostID, title, type, objective, description, voteWeight, juryVoteWeight, voterAnonymity, creationTime, startTime, registrationEndTime, endTime})
+        const contest = await ContestModel.create({ hostID, title, type, objective, description, voteWeight, juryVoteWeight, voterAnonymity, startTime, registrationEndTime, endTime})
+        console.log('thik moto hoise', contest)
         res.status(200).json(contest)
     } catch (error) {
         // if failed, return error
-        console.log(error.message)
+        console.log('create contest pera', error.message)
         res.status(400).json({error : error.message})
     }
 }

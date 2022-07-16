@@ -2,12 +2,8 @@ const mongoose = require('mongoose')
 
 const contestSchema = new mongoose.Schema(
     {
-        contestID : {
-            type : Number,
-            required : true
-        },
         hostID : {
-            type : Number,
+            type : String,
             required : true
         },
         title : {
@@ -36,10 +32,6 @@ const contestSchema = new mongoose.Schema(
         },
         voterAnonymity : {
             type : Number,
-            required : true
-        },
-        creationTime : {
-            type : Date,
             required : true
         },
         startTime : {

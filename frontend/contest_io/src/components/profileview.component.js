@@ -20,7 +20,7 @@ export const Profileview = (props) => {
 
     id = localStorage.getItem("id");
 
-    console.log("id afte: ", id);
+    console.log("id after: ", id);
 
     axios.get("http://localhost:5000/api/user/" + id).then((res) => {
       console.log(res.data.user.socialhandles.facebookhandle);
@@ -30,7 +30,7 @@ export const Profileview = (props) => {
         bio: res.data.user.bio,
         facebookhandle: res.data.user.socialhandles.facebookhandle,
         instagramhandle: res.data.user.socialhandles.instagramhandle,
-        img: res.data.user.img,
+        img: decodeURIComponent(res.data.user.img),
       });
     });
   }, []);
@@ -40,13 +40,11 @@ export const Profileview = (props) => {
 
   var stylingObject = {
     image: {
-    width: 150,
-    height: 150,
-    borderColor: 'purple',
-    borderWidth: 2,
-    borderRadius: 75
-      
-      
+      width: 150,
+      height: 150,
+      borderColor: "purple",
+      borderWidth: 2,
+      borderRadius: 75,
     },
   };
 
@@ -55,8 +53,6 @@ export const Profileview = (props) => {
       <h1 className="container text-center">Profile</h1>
       <form className="row">
         <div className="col-9">
-
-
           <div className="mb-3">
             <label htmlFor="InputName" className="form-label">
               Name
@@ -78,7 +74,7 @@ export const Profileview = (props) => {
           <div className="mb-3">
             <label className="form-label">facebook handle</label>
             <div className="form-control form-control-sm">
-              {user.facebookhandle} {user.img}
+              {user.facebookhandle}
             </div>
           </div>
 
@@ -90,15 +86,9 @@ export const Profileview = (props) => {
           </div>
         </div>
         <div className="col-3">
-
-
-
           {/* <img src={require("../images/" + user.img)} /> */}
 
           <div className="mb-3">
-            <label htmlFor="formFileSm" className="form-label">
-              Profile Picture
-            </label>
             {/* <img src={require(`../images/${user.img}`)} className="img-thumbnail" alt="..."></img> */}
 
             {/* <img src={source} alt="no image"/> */}
@@ -108,9 +98,11 @@ export const Profileview = (props) => {
               style={stylingObject.image}
               alt="..."
             ></img>
+            <div htmlFor="formFileSm" className="form-label">
+              Profile Picture
+            </div>
           </div>
         </div>
-
 
         {/* <button type="submit" className="btn btn-primary mb-3" onClick={signup}>
           Signup

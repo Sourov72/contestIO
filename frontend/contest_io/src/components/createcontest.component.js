@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
 
 export const CreateContest = () => {
   var today, mm, dd, yyyy;
@@ -11,31 +12,37 @@ export const CreateContest = () => {
   });
 
   const [contest, setcontest] = useState({
-    contestname: "",
-    contestabout: "",
-    conteststarttime: "",
-    contestendtime: "",
-    contesttype: "Private",
-    contestobjective: "Photo Contest",
-    contestparticipant: '',
-    contestvoter: '',
-    contestjury: '',
+    hostID: "",
+    title: "",
+    type: "Private",
+    objective: "Photo Contest",
+    description: "",
+    voteWeight: 2,
+    juryVoteWeight: 5,
+    voterAnonymity: 1,
+    startTime: "",
+    registrationEndTime: new Date("2022-02-01").toJSON(),
+    endTime: "",
   });
 
-  useEffect(() => {
-    // here id is send simpliflically not as a object
-    today = new Date();
-    dd = today.getDate();
-    mm = today.getMonth() + 1;
-    yyyy = today.getFullYear();
-    if (dd < 10) {
-      dd = "0" + dd;
-    }
-    if (mm < 10) {
-      mm = "0" + mm;
-    }
-    today = String(yyyy + "-" + mm + "-" + dd);
-  }, []);
+  const [lists, setlists] = useState({
+    contestparticipant: "",
+    contestvoter: "",
+    contestjury: "",
+  });
+
+  // here id is send simpliflically not as a object
+  today = new Date();
+  dd = today.getDate();
+  mm = today.getMonth() + 1;
+  yyyy = today.getFullYear();
+  if (dd < 10) {
+    dd = "0" + dd;
+  }
+  if (mm < 10) {
+    mm = "0" + mm;
+  }
+  today = String(yyyy + "-" + mm + "-" + dd);
 
   function general() {
     console.log("hello there general");
@@ -51,7 +58,7 @@ export const CreateContest = () => {
   }
 
   function contesttype() {
-    console.log("hello there contest type", contest.contesttype);
+    console.log("hello there contest type", contest.type);
     setcomp({ contesttypecom: true });
   }
 
@@ -69,46 +76,76 @@ export const CreateContest = () => {
     });
   };
 
+  const [id, setid] = useState('');
+
+  useEffect(() => {
+    const items = localStorage.getItem("id");
+    console.log("I got the id:", items)
+    if (items) {
+      setid(items);
+      // console.log('id set to: ', {id})
+      console.log('id set to: ', id)
+    }
+  }, []);
+
+  const createNewContest = (e) => {
+    e.preventDefault();
+
+    setcontest({
+      ...contest,
+      hostID: {id},
+    });
+    alert("id dekho", id);
+    console.log("hostid ", contest.hostID);
+    alert("id set hoise", contest.hostID);
+
+    alert("Signup form posted");
+    axios
+      .post("http://localhost:5000/api/contests/create", contest)
+      .then((res) => console.log(res));
+    // window.location = "/";
+  };
+
   const participantfileHandle = (e) => {
     const upload_file = e.target.files[0];
     console.log("uploaded participant file", upload_file);
 
-    setcontest({
-      ...contest,
+    setlists({
+      ...lists,
       contestparticipant: upload_file.name,
     });
 
-    console.log("setted file", contest.contestparticipant);
+    console.log("setted file", lists.contestparticipant);
   };
 
   const voterfileHandle = (e) => {
     const upload_file = e.target.files[0];
     console.log("uploaded voterfile file", upload_file);
 
-    setcontest({
-      ...contest,
+    setlists({
+      ...lists,
       contestvoter: upload_file.name,
     });
 
-    console.log("setted file", contest.contestvoter);
+    console.log("setted file", lists.contestvoter);
   };
 
   const juryfileHandle = (e) => {
     const upload_file = e.target.files[0];
     console.log("uploaded jury file", upload_file);
 
-    setcontest({
-      ...contest,
+    setlists({
+      ...lists,
       contestjury: upload_file.name,
     });
 
-    console.log("setted file", contest.contestjury);
+    console.log("setted file", lists.contestjury);
   };
 
   return (
     <>
       <div className="container">
-        <div className="row gx-3 gy-2">
+        <div className="row gx-3 gy-2 mt-2">
           <div className="col-2 btn-group-vertical " role="group">
             {/* <button onClick={() => {
         console.log("hello")
@@ -124,8 +161,6 @@ export const CreateContest = () => {
       }}>
       Click me!
     </button> */}
-
-
 
             <button
               type="submit"
@@ -160,7 +195,7 @@ export const CreateContest = () => {
             </button>
           </div>
 
-          <div className="mx-5 col-9">
+          <div className="col-9">
             <form>
               {(() => {
                 if (comp.generalcom === true) {
@@ -172,23 +207,26 @@ export const CreateContest = () => {
                         </label>
                         <input
                           type="text"
-                          name="contestname"
+                          name="title"
                           onChange={handleChange}
-                          value={contest.contestname}
+                          value={contest.title}
                           className="form-control"
-                          id="contestname"
+                          id="title"
                         />
 
-                        <label htmlFor="inputEmail4" className="form-label my-3">
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label my-3"
+                        >
                           About Contest
                         </label>
                         <input
                           type="text"
-                          name="contestabout"
+                          name="description"
                           onChange={handleChange}
-                          value={contest.contestabout}
+                          value={contest.description}
                           className="form-control"
-                          id="contestabout"
+                          id="description"
                         />
                       </div>
                     </>
@@ -199,30 +237,36 @@ export const CreateContest = () => {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label my-3">
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label my-3"
+                        >
                           Contest Start time
                         </label>
                         <input
                           type="date"
                           min={today}
-                          name="conteststarttime"
+                          name="startTime"
                           onChange={handleChange}
-                          value={contest.conteststarttime}
+                          value={contest.startTime}
                           className="form-control"
-                          id="conteststarttime"
+                          id="startTime"
                         />
 
-                        <label htmlFor="inputEmail4" className="form-label my-3">
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label my-3"
+                        >
                           Contest End time
                         </label>
                         <input
                           type="date"
                           min={today}
-                          name="contestendtime"
+                          name="endTime"
                           onChange={handleChange}
-                          value={contest.contestendtime}
+                          value={contest.endTime}
                           className="form-control"
-                          id="contestendtime"
+                          id="endTime"
                         />
                       </div>
                     </>
@@ -230,7 +274,6 @@ export const CreateContest = () => {
                 }
 
                 if (comp.contesttypecom === true) {
-
                   return (
                     <>
                       <div className="mb-3">
@@ -239,65 +282,82 @@ export const CreateContest = () => {
                         </label>
                         <select
                           className="form-select"
-                          name="contesttype"
+                          name="type"
                           onChange={handleChange}
-                          value={contest.contesttype}
-                          id="contesttype"
+                          value={contest.type}
+                          id="type"
                         >
                           <option>Private</option>
                           <option>Public</option>
                           <option>Open</option>
                         </select>
 
-                        <div >
-                          <label htmlFor="formFileSm1" className="form-label my-3">
+                        <div>
+                          <label
+                            htmlFor="formFileSm1"
+                            className="form-label my-3"
+                          >
                             Jury File Upload
                           </label>
                           <input
                             className="form-select"
                             type="file"
                             onChange={juryfileHandle}
-                          // ref={partifile}
-                          // id="partifile"
-                          // name="partifile"
+                            // ref={partifile}
+                            // id="partifile"
+                            // name="partifile"
                           />
                         </div>
 
-                        <div style={{ display: contest.contesttype === "Private" || contest.contesttype === "Public" ? 'block' : 'none' }}>
-                          <label htmlFor="formFileSm1" className="form-label my-3">
+                        <div
+                          style={{
+                            display:
+                              contest.type === "Private" ||
+                              contest.type === "Public"
+                                ? "block"
+                                : "none",
+                          }}
+                        >
+                          <label
+                            htmlFor="formFileSm1"
+                            className="form-label my-3"
+                          >
                             Participant File Upload
                           </label>
                           <input
                             className="form-select"
                             type="file"
                             onChange={participantfileHandle}
-                          // ref={partifile}
-                          // id="partifile"
-                          // name="partifile"
+                            // ref={partifile}
+                            // id="partifile"
+                            // name="partifile"
                           />
                         </div>
 
-
-
-                        <div style={{ display: contest.contesttype === "Private" ? 'block' : 'none' }}>
-                          <label htmlFor="formFileSm1" className="form-label my-3">
+                        <div
+                          style={{
+                            display:
+                              contest.type === "Private" ? "block" : "none",
+                          }}
+                        >
+                          <label
+                            htmlFor="formFileSm1"
+                            className="form-label my-3"
+                          >
                             Voter File Upload
                           </label>
                           <input
                             className="form-select"
                             type="file"
                             onChange={voterfileHandle}
-                          // ref={partifile}
-                          // id="partifile"
-                          // name="partifile"
+                            // ref={partifile}
+                            // id="partifile"
+                            // name="partifile"
                           />
                         </div>
                       </div>
                     </>
                   );
-
-
-
                 }
 
                 if (comp.contestmediacom === true) {
@@ -309,16 +369,20 @@ export const CreateContest = () => {
                         </label>
                         <select
                           className="form-select"
-                          name="contestobjective"
+                          name="objective"
                           onChange={handleChange}
-                          value={contest.contestobjective}
-                          id="contestobjective"
+                          value={contest.objective}
+                          id="objective"
                         >
                           <option>Photo Contest</option>
                           <option>Video Contest</option>
                         </select>
                       </div>
-                      <button type="submit" className="btn btn-primary">
+                      <button
+                        type="submit"
+                        onClick={createNewContest}
+                        className="btn btn-primary"
+                      >
                         Create Contest
                       </button>
                     </>
