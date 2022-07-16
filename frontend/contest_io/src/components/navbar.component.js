@@ -111,8 +111,8 @@ export const Navbar = (props) => {
                 Login
               </button>
             </Link>
-            <Link className="d-flex" to='/signup'>
-              <button className="btn btn-warning px-4 mx-2">
+            <Link className="d-flex justify-content-end" to='/signup'>
+              <button className="btn btn-warning px-4 py-3 mx-2">
                 Signup
               </button>
             </Link> */}

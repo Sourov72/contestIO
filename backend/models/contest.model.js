@@ -21,6 +21,38 @@ const contestSchema = new mongoose.Schema(
         objective : {
             type : String,
             required : true
+        },
+        description : {
+            type : String,
+            required : true
+        },
+        voteWeight : {
+            type : Number,
+            required : true
+        },
+        juryVoteWeight : {
+            type : Number,
+            required : true
+        },
+        voterAnonymity : {
+            type : Number,
+            required : true
+        },
+        creationTime : {
+            type : Date,
+            required : true
+        },
+        startTime : {
+            type : Date,
+            required : true
+        },
+        registrationEndTime : {
+            type : Date,
+            required : true
+        },
+        endTime : {
+            type : Date,
+            required : true
         }
     },
     {

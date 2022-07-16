@@ -2,6 +2,7 @@ const express = require('express')
 const {
     getContest,
     getContests,
+    queryContests,
     createContest,
     deleteContest,
     updateContest
@@ -14,16 +15,19 @@ const router = express.Router()
 // GET all contests
 router.get('/', getContests)
 
+// GET a queried list of contests
+router.get('/query', queryContests);
+
 // GET a single contest
-router.get('/:id', getContest)
+router.get('/contest/:id', getContest)
 
 // POST a new contest
-router.post('/', createContest)
+router.post('/create', createContest)
 
 // DELETE a new contest
-router.delete('/:id', deleteContest)
+router.delete('/delete/:id', deleteContest)
 
 // UPDATE a new contest
-router.patch('/:id', updateContest)
+router.patch('/update/:id', updateContest)
 
 module.exports = router

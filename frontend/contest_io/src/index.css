@@ -12,11 +12,59 @@ body {
   padding: 10px 20px;
 }
 
-/* .contestBox {
+.nav-link {
+  font-size: 24px;
+  padding: 0 30px !important;
+}
+
+.btn {
+  text-decoration: none !important;
+}
+
+.navbar-brand {
+  color: #9C27B0 !important;
+}
+
+.active {
+  color: #9C27B0 !important;
+}
+
+.contest-box {
   background: rgba(83, 44, 202, 0.04);
-  min-width: 100%;
-  min-height: 100%;
-} */
+  border-radius: 20px;
+  min-width: 30%;
+  min-height: 30%;
+  margin: 10px 0px;
+}
+
+.csearch-box {
+  background: rgba(83, 44, 202, 0.04);
+  border-radius: 20px;
+  margin: 10px 0px;
+}
+
+.search-div {
+  position: relative;
+
+}
+
+.search-bar {
+  border-color: #9C27B0;
+  border-width: 4px;
+}
+
+.search-bar:focus {
+  border-color: #beb504;
+  box-shadow: none;
+}
+
+.search-table {
+  background-color: rgb(239, 236, 249);
+  z-index: 100;
+  position: absolute;
+  width: 95%;
+  border-radius: 10px;
+}
 
 .check {
   background-color: red !important;
@@ -24,5 +72,5 @@ body {
 }
 
 .Link {
-  text-decoration: none;
+  text-decoration: none !important;
 }

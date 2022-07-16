@@ -5,13 +5,12 @@ import { Login } from "./components/login.component";
 import { Logout } from "./components/logout.component";
 import { Profileview } from "./components/profileview.component";
 import { Search } from "./components/search.component";
-import { ContestHome } from "./components/contests/ContestHome.js";
 import { CreateContest } from "./components/createcontest.component";
-
-import { useEffect, useState } from "react";
+import { Contest } from "./components/contests/Contest";
+import { useState } from "react";
 
 // hooks
-import { useContestContext } from "./hooks/useContestContext";
+// import { useContestContext } from "./hooks/useContestContext";
 
 function App() {
   let id;
@@ -55,7 +54,7 @@ function App() {
               />
               <Route path="/login" element={<Login onLogin={onLogin} />} />
               <Route path="/logout" element={<Logout/>} />
-              <Route path="/contests" element={<ContestHome />} />
+              <Route path="/contests/*" element={<Contest id={userID} />} />
               <Route path="/createcontest" element={<CreateContest />} />
             </Routes>
           </div>
