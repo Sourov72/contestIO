@@ -44,7 +44,7 @@ export const Signup = () => {
       axios
         .post("http://localhost:5000/api/user/add", user)
         .then((res) => console.log(res));
-        window.location = "/";
+      window.location = "/";
     } else {
       alert("Invalid input");
     }
@@ -54,19 +54,21 @@ export const Signup = () => {
     <div className="signup container">
       {console.log("user here", user)}
       <h1 className="container text-center">SignUP</h1>
-      <form>
+      <form className="needs-validation" noValidate>
         <div className="mb-3">
           <div className="mb-3">
-            <label htmlFor="InputName" className="form-label">
+            <label htmlFor="Inputname" className="form-label">
               Name
             </label>
             <input
               type="text"
               name="username"
+              
               onChange={handleChange}
               value={user.username}
               className="form-control"
-              id="InputName"
+              id="Inputname"
+              required
             />
           </div>
           <label htmlFor="exampleInputEmail1" className="form-label">
@@ -80,6 +82,7 @@ export const Signup = () => {
             className="form-control"
             id="exampleInputEmail1"
             aria-describedby="emailHelp"
+            required
           />
         </div>
         <div className="mb-3">
@@ -93,6 +96,7 @@ export const Signup = () => {
             value={user.password}
             className="form-control"
             id="exampleInputPassword1"
+            required
           />
         </div>
         <div className="mb-3">
@@ -106,12 +110,13 @@ export const Signup = () => {
             value={user.rePassword}
             className="form-control"
             id="reexampleInputPassword1"
+            required
           />
         </div>
 
         <div className="mb-3">
           <label htmlFor="exampleInputPassword1" className="form-label">
-            bio
+            Bio.
           </label>
           <input
             type="text"
@@ -120,7 +125,9 @@ export const Signup = () => {
             value={user.bio}
             className="form-control"
             id="bio"
+            required
           />
+          <div className="invalid-feedback">Please provide a bio.</div>
         </div>
 
         <div className="mb-3">
@@ -158,7 +165,6 @@ export const Signup = () => {
           <input
             className="form-control form-control-sm"
             type="file"
-            
             onChange={fileHandle}
           />
         </div>

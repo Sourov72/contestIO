@@ -33,7 +33,7 @@ const getUser = (req, res) => {
 };
 
 const getSpecificUsers = (req, res) => {
-  var word = req.body.username 
+  var word = req.body.username;
   console.log("hello", word);
   User.find({
     $or: [
@@ -51,7 +51,7 @@ const getSpecificUsers = (req, res) => {
       },
     ],
   })
-  .then((users) => res.json(users))
+    .then((users) => res.json(users))
     .catch((err) => res.status(400).json("Error :" + err));
 };
 
@@ -79,22 +79,29 @@ const createUser = (req, res) => {
 
   console.log("img", img);
 
-  const newUser = new User({
-    username,
-    password,
-    email,
-    bio,
-    socialhandles: {
-      facebookhandle,
-      instagramhandle,
-    },
-    img,
-  });
+  User.findOne({ email: email }, function (err, result) {
+    if (result) {
+      res.json("User already registered");
+    } else {
+      const newUser = new User({
+        username,
+        password,
+        email,
+        bio,
+        socialhandles: {
+          facebookhandle,
+          instagramhandle,
+        },
+        img,
+      });
+      console.log("in new user addtion")
 
-  newUser
-    .save()
-    .then(() => res.json("User added!"))
-    .catch((err) => res.status(400).json("Error" + err));
+      newUser
+        .save()
+        .then(() => res.json("User added!"))
+        .catch((err) => res.status(400).json("Error hello broth " + err));
+    }
+  });
 };
 
 // module.exports = {createUser}

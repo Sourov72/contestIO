@@ -313,7 +313,6 @@ export const CreateContest = () => {
                       >
                         <option>Photo Contest</option>
                         <option>Video Contest</option>
-                        {/* <option>Open</option> */}
                       </select>
                     </div>
                     <button type="submit" className="btn btn-primary">
