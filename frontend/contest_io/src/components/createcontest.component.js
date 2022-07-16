@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export const CreateContest = () => {
   var today, mm, dd, yyyy;
-
-  const fileInput = useRef(null)
 
   const [comp, setcomp] = useState({
     generalcom: true,
@@ -53,7 +51,7 @@ export const CreateContest = () => {
   }
 
   function contesttype() {
-    console.log("hello there contest type");
+    console.log("hello there contest type", contest.contesttype);
     setcomp({ contesttypecom: true });
   }
 
@@ -85,7 +83,7 @@ export const CreateContest = () => {
 
   const voterfileHandle = (e) => {
     const upload_file = e.target.files[0];
-    console.log("uploaded participant file", upload_file);
+    console.log("uploaded voterfile file", upload_file);
 
     setcontest({
       ...contest,
@@ -97,7 +95,7 @@ export const CreateContest = () => {
 
   const juryfileHandle = (e) => {
     const upload_file = e.target.files[0];
-    console.log("uploaded participant file", upload_file);
+    console.log("uploaded jury file", upload_file);
 
     setcontest({
       ...contest,
@@ -229,24 +227,40 @@ export const CreateContest = () => {
               }
 
               if (comp.contesttypecom === true) {
-                if (contest.contesttype === "Private") {
-                  return (
-                    <>
-                      <div className="row mb-3">
-                        <label htmlFor="inputEmail4" className="form-label">
-                          Set Contest Type
+
+                return (
+                  <>
+                    <div className="row mb-3">
+                      <label htmlFor="inputEmail4" className="form-label">
+                        Set Contest Type
+                      </label>
+                      <select
+                        className="form-select"
+                        name="contesttype"
+                        onChange={handleChange}
+                        value={contest.contesttype}
+                        id="contesttype"
+                      >
+                        <option>Private</option>
+                        <option>Public</option>
+                        <option>Open</option>
+                      </select>
+
+                      <div >
+                        <label htmlFor="formFileSm1" className="form-label my-3">
+                          Jury File Upload
                         </label>
-                        <select
+                        <input
                           className="form-select"
-                          name="contesttype"
-                          onChange={handleChange}
-                          value={contest.contesttype}
-                          id="contesttype"
-                        >
-                          <option>Private</option>
-                          <option>Public</option>
-                          <option>Open</option>
-                        </select>
+                          type="file"
+                          onChange={juryfileHandle}
+                        // ref={partifile}
+                        // id="partifile"
+                        // name="partifile"
+                        />
+                      </div>
+
+                      <div style={{ display: contest.contesttype === "Private" || contest.contesttype === "Public" ? 'block' : 'none' }}>
                         <label htmlFor="formFileSm1" className="form-label my-3">
                           Participant File Upload
                         </label>
@@ -254,104 +268,33 @@ export const CreateContest = () => {
                           className="form-select"
                           type="file"
                           onChange={participantfileHandle}
+                        // ref={partifile}
+                        // id="partifile"
+                        // name="partifile"
                         />
+                      </div>
 
-                        <label htmlFor="formFileSm2" className="form-label my-3">
+
+
+                      <div style={{ display: contest.contesttype === "Private" ? 'block' : 'none' }}>
+                        <label htmlFor="formFileSm1" className="form-label my-3">
                           Voter File Upload
                         </label>
                         <input
                           className="form-select"
                           type="file"
                           onChange={voterfileHandle}
-                        />
-
-                        <label htmlFor="formFileSm3" className="form-label my-3">
-                          Jury File Upload
-                        </label>
-                        <input
-                          className="form-select"
-                          type="file"
-                          onChange={juryfileHandle}
+                        // ref={partifile}
+                        // id="partifile"
+                        // name="partifile"
                         />
                       </div>
-                    </>
-                  );
-                }
+                    </div>
+                  </>
+                );
 
-                if (contest.contesttype === "Public") {
-                  return (
-                    <>
-                      <div className="row mb-3">
-                        <label htmlFor="inputEmail4" className="form-label">
-                          Set Contest Type
-                        </label>
-                        <select
-                          className="form-select"
-                          name="contesttype"
-                          onChange={handleChange}
-                          value={contest.contesttype}
-                          id="contesttype"
-                        >
-                          <option>Private</option>
-                          <option>Public</option>
-                          <option>Open</option>
-                        </select>
-                        <label htmlFor="formFileSm4" className="form-label my-3">
-                          Participant File Upload
-                        </label>
-                        <input
-                          className="form-select"
-                          type="file"
-                          onChange={participantfileHandle}
-                        />
 
-                        <label htmlFor="formFileSm5" className="form-label my-3">
-                          Jury File Upload
-                        </label>
-                        <input
-                          className="form-select"
-                          type="file"
-                        //   value={contest.contestjury}
-                          onChange={juryfileHandle}
-                        />
-                      </div>
-                    </>
-                  );
-                }
 
-                if (contest.contesttype === "Open") {
-                  return (
-                    <>
-                      <div className="row mb-3">
-                        <label htmlFor="inputEmail4" className="form-label">
-                          Set Contest Type
-                        </label>
-                        <select
-                          className="form-select"
-                          name="contesttype"
-                          onChange={handleChange}
-                          value={contest.contesttype}
-                          id="contesttype"
-                        >
-                          <option>Private</option>
-                          <option>Public</option>
-                          <option>Open</option>
-                        </select>
-                        <label htmlFor="formFileSm6" className="form-label my-3">
-                          Jury File Upload
-                        </label>
-                        <input
-                          className="form-select"
-                          type="file"
-                          
-                          
-                          onChange={juryfileHandle}
-                        //   inputref={contest.contestjury}
-                        />
-                      </div>
-                    </>
-                  );
-                }
               }
 
               if (comp.contestmediacom === true) {
