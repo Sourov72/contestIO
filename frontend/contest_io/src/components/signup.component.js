@@ -46,7 +46,7 @@ export const Signup = () => {
         .then((res) => console.log(res));
       window.location = "/";
     } else {
-      alert("Invalid input");
+      alert("Make sure you have provided proper username, email, password and bio");
     }
   };
 
