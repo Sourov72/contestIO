@@ -42,8 +42,6 @@ export const Navbar = (props) => {
             className="d-inline-block align-text-top"
           />
           Contest.io
-       
-          
         </Link>
         <button
           className="navbar-toggler"
@@ -72,11 +70,22 @@ export const Navbar = (props) => {
               </Link>
             </li>
 
-            <li className="nav-item">
-              <Link to="/profileview" className="nav-link">
+            {(() => {
+            if (props.id !== "") {
+              return (
+                <>
+                  <li className="nav-item">
+              <Link to="/profile" className="nav-link">
                 Profile
               </Link>
             </li>
+                </>
+              );
+            } 
+          })()}
+
+                
+
           </ul>
 
           {(() => {
@@ -96,6 +105,7 @@ export const Navbar = (props) => {
             } else {
               return (
                 <>
+
                   <Link className="d-flex" to="/logout">
                     <button className="btn btn-success px-4">Logout</button>
                   </Link>
