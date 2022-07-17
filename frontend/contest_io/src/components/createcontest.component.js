@@ -150,41 +150,42 @@ export const CreateContest = () => {
 
   return (
     <>
-    {console.log(lists)}
       <div className="container">
         <div className="row gx-3 gy-2 mt-2">
-          <div className="col-2 btn-group-vertical " role="group">
+          <div className="col-2">
+            <div className="btn-group-vertical"  role="group">
             <button
-              type="submit"
-              className="btn btn-primary my-2"
+              type="radio"
+              className="btn btn-outline-primary my-2"
               onClick={general}
             >
               General
             </button>
 
             <button
-              type="submit"
-              className="btn btn-primary my-2"
+              type="radio"
+              className="btn btn-outline-primary my-2"
               onClick={timeschedule}
             >
               Time schedule
             </button>
 
             <button
-              type="submit"
-              className="btn btn-primary my-2"
+              type="radio"
+              className="btn btn-outline-primary my-2"
               onClick={contesttype}
             >
               Contest type
             </button>
 
             <button
-              type="submit"
-              className="btn btn-primary my-2"
+              type="radio"
+              className="btn btn-outline-primary my-2"
               onClick={contestmedia}
             >
               Contest Media
             </button>
+            </div>
           </div>
 
           <div className="col-9">
