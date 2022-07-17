@@ -63,6 +63,9 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
           className="form-control me-2 text-center search-bar"
           type="search"
           placeholder={searchPlaceHolder}
+          onBlur={(e) => {
+            e.target.value = ""; setSearchShow(false);
+          }}
           onChange={handleChange}
         />
 

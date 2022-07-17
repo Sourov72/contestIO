@@ -6,8 +6,26 @@ export const ContestHome = ({ id }) => {
   // contest stuff
   const [ongoingContests, setOngoing] = useState([]);
   const [upcomingContests, setUpcoming] = useState([]);
-  const [myContests, setMy] = useState([]);
+  const [myContests, setMyContests] = useState([]);
   const [pastContests, setPast] = useState([]);
+
+  const ongoingQuery = obj2qstr({
+    startTime: arr2str(["lte", new Date().toJSON()]),
+    endTime: arr2str(["gt", new Date().toJSON()]),
+    limit: arr2str(["limit", 3]),
+  })
+  const upcomingQuery = obj2qstr({
+    registrationEndTime: arr2str(["gt", new Date().toJSON()]),
+    limit: arr2str(["limit", 3]),
+  })
+  const myContestsQuery = obj2qstr({
+    hostID: arr2str(["eq", id]),
+    limit: arr2str(["limit", 2]),
+  })
+  const pastQuery = obj2qstr({
+    endTime: arr2str(["lt", new Date().toJSON()]),
+    limit: arr2str(["limit", 3]),
+  })
 
   // fires when the function is called
   useEffect(() => {
@@ -19,51 +37,39 @@ export const ContestHome = ({ id }) => {
         func(json.contests);
       }
     };
-    const today = new Date();
-    fetchContests(
-      obj2qstr({
-        startTime: arr2str(["lte", today.toJSON()]),
-        endTime: arr2str(["gt", today.toJSON()]),
-        limit: arr2str(["limit", 3]),
-      }),
-      setOngoing
-    );
-    fetchContests(
-      obj2qstr({
-        startTime: arr2str(["gt", today.toJSON()]),
-        limit: arr2str(["limit", 3]),
-      }),
-      setUpcoming
-    );
-    fetchContests(
-      obj2qstr({
-        hostID: arr2str(["eq", id]),
-        limit: arr2str(["limit", 2]),
-      }),
-      setMy
-    );
-    fetchContests(
-      obj2qstr({
-        endTime: arr2str(["lt", today.toJSON()]),
-        limit: arr2str(["limit", 3]),
-      }),
-      setPast
-    );
-  }, []);
-
+    fetchContests(ongoingQuery, setOngoing);
+    fetchContests(upcomingQuery, setUpcoming);
+    fetchContests(myContestsQuery,setMyContests);
+    fetchContests(pastQuery, setPast);
+  }, [ongoingQuery, upcomingQuery, myContestsQuery, pastQuery]);
 
   return (
     <div className="row">
       <div className="col-4 ">
-        <ContestBox contests={ongoingContests} boxTitle="Ongoing Contests" />
+        <ContestBox
+          contests={ongoingContests}
+          boxTitle="Ongoing Contests"
+          q={ongoingQuery}
+          col={12}
+        />
       </div>
       <div className="col-4 ">
-        <ContestBox contests={upcomingContests} boxTitle="Upcoming Contests" />
+        <ContestBox
+          contests={upcomingContests}
+          boxTitle="Upcoming Contests"
+          q={upcomingQuery}
+          col={12}
+        />
       </div>
       <div className="col-4">
-        <ContestBox contests={myContests} boxTitle="My Contests" />
-        <ContestBox contests={pastContests} boxTitle="Past Contests" />
+        <ContestBox contests={myContests} boxTitle="My Contests" col={12} q={myContestsQuery} />
+        <ContestBox contests={pastContests} boxTitle="Past Contests" col={12} q={pastQuery} />
       </div>
+      {/* <div className="col-12">
+        <Link className="d-flex justify-content-center" to="/contests/search">
+          <button className="btn btn-danger px-4">View More Results</button>
+        </Link>
+      </div> */}
     </div>
   );
 };
