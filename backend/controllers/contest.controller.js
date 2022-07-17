@@ -51,7 +51,7 @@ const queryContests = async (req, res) => {
                 query[key] = {$gte: arr[1]}
                 break;
             case "regex":
-                query[key] = {$regex: arr[1]}
+                query[key] = {$regex: arr[1], $options: 'i'}
                 break;
             case "limit":
                 limit = parseInt(arr[1])

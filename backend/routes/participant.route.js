@@ -4,6 +4,7 @@ const {
     getParticipants,
     queryParticipants,
     createParticipant,
+    createParticipantsAll,
     deleteParticipant,
     updateParticipant
 } = require('../controllers/participant.controller')
@@ -22,6 +23,9 @@ router.get('/participant/:id', getParticipant)
 
 // POST a new participant
 router.post('/create', createParticipant)
+
+// POST a new participant
+router.post('/createAll', createParticipantsAll)
 
 // DELETE a new participant
 router.delete('/delete/:id', deleteParticipant)

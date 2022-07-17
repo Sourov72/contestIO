@@ -5,7 +5,6 @@ import { objarr2str } from "../helperFunctions";
 
 export const ContestSearch = () => {
   const location = useLocation()
-  const query = location.state.query
   const [skip, setskip] = useState(0);
   var limit = 6;
   const [search, setSearch] = useState({
@@ -34,8 +33,9 @@ export const ContestSearch = () => {
   };
 
   useEffect(() => {
+    const query = location.state.query
     fetchContests(query, setResult);
-  }, [query]);
+  }, [location]);
 
   const handleChange = async (e) => {
     var { name, value } = e.target;

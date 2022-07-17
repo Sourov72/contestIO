@@ -10,10 +10,6 @@
 body {
   margin: 0;
 }
-/* 
-span {
-  display:inline-block;
-} */
 
 .navbar {
   background: #ffffff;
@@ -25,9 +21,6 @@ span {
   padding: 0 30px !important;
 }
 
-.btn {
-  text-decoration: none !important;
-}
 
 .navbar-brand {
   color: #9C27B0 !important;
@@ -92,6 +85,4 @@ span {
   border: 5px solid #000000 ;
 }
 
-.Link {
-  text-decoration: none !important;
-}
+

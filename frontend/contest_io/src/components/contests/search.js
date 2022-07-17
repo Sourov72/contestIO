@@ -15,7 +15,10 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
       var obj = {};
       obj[queryOn] = arr2str(["regex", e.target.value]);
       obj["limit"] = arr2str(["limit", 3]);
-      const response = await fetch(apiURI + obj2qstr(obj));
+      // console.log('query: ', obj)
+      const q = obj2qstr(obj)
+      // console.log('cq: ', q)
+      const response = await fetch(apiURI + q);
       const json = await response.json();
 
       if (response.ok) {
@@ -64,7 +67,7 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
           type="search"
           placeholder={searchPlaceHolder}
           onBlur={(e) => {
-            e.target.value = ""; setSearchShow(false);
+            e.target.value = "";
           }}
           onChange={handleChange}
         />

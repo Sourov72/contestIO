@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { participantTypeToValue } from "../components/helperFunctions";
 
 export const CreateContest = () => {
   var today, mm, dd, yyyy;
@@ -27,9 +28,9 @@ export const CreateContest = () => {
   });
 
   const [lists, setlists] = useState({
-    contestparticipant: "",
-    contestvoter: "",
-    contestjury: "",
+    contestant:[],
+    voter:[],
+    jury:[],
   });
 
   // here id is send simpliflically not as a object
@@ -70,30 +71,21 @@ export const CreateContest = () => {
 
   const handleChange = (e) => {
     var { name, value } = e.target;
-
-
     if (name === "voterAnonymity") {
-
       if (e.target.checked) {
-        value = 1
+        value = 1;
+      } else {
+        value = 0;
       }
-      else {
-        value = 0
-      }
-
     }
     console.log(name, value);
-
     setcontest({
       ...contest,
       [name]: value,
     });
   };
 
-
-
   useEffect(() => {
-
     console.log("id bef: ", id);
     id = localStorage.getItem("id");
     console.log("I got the id:", id);
@@ -101,83 +93,67 @@ export const CreateContest = () => {
       ...contest,
       hostID: localStorage.getItem("id"),
     });
-
   }, []);
 
   const createNewContest = (e) => {
-
     id = localStorage.getItem("id");
     console.log("id: ", id);
     e.preventDefault();
 
-
-
     console.log("hostid ", contest.hostID);
 
-
-    alert("Contest Creation form posted");
     axios
       .post("http://localhost:5000/api/contests/create", contest)
-      .then((res) => console.log(res));
+      .then((res) => {
+        console.log("contest created successfully!", res);
+        const host = {
+          userID: localStorage.getItem("id"),
+          contestID: res.data._id,
+          type: participantTypeToValue("host", "voter", "follower"),
+        };
+        axios
+          .post("http://localhost:5000/api/participants/create", host)
+          .then((res) => console.log("host creation", res));
+        const allLists = {
+          ...lists,
+          contestID: res.data._id
+        }
+          axios
+          .post("http://localhost:5000/api/participants/createAll", allLists)
+          .then((res) => console.log("members creation", res));
+      });
+    alert("Contest Creation success");
+
     // window.location = "/";
   };
 
-  const participantfileHandle = (e) => {
+  const fileHandle = (e) => {
     const upload_file = e.target.files[0];
-    console.log("uploaded participant file", upload_file);
+    var name = e.target.name;
+    console.log('name: ', name)
+    const reader = new FileReader();
+    
+    reader.onloadend = (e) => {
+      const text = reader.result;
+      const emails = text.split(/\r?\n/);
+      // console.log('emails are: ',emails);
+      // console.log('name is: ',name);
 
-    setlists({
-      ...lists,
-      contestparticipant: upload_file.name,
-    });
-
-    console.log("setted file", lists.contestparticipant);
-  };
-
-  const voterfileHandle = (e) => {
-    const upload_file = e.target.files[0];
-    console.log("uploaded voterfile file", upload_file);
-
-    setlists({
-      ...lists,
-      contestvoter: upload_file.name,
-    });
-
-    console.log("setted file", lists.contestvoter);
-  };
-
-  const juryfileHandle = (e) => {
-    const upload_file = e.target.files[0];
-    console.log("uploaded jury file", upload_file);
-
-    setlists({
-      ...lists,
-      contestjury: upload_file.name,
-    });
-
-    console.log("setted file", lists.contestjury);
+      setlists({
+        ...lists,
+        [name]: emails
+      });
+      // console.log("the list: ", lists);
+    };
+    reader.readAsText(upload_file);
   };
 
   return (
     <>
+    {console.log(lists)}
       <div className="container">
         <div className="row gx-3 gy-2 mt-2">
           <div className="col-2 btn-group-vertical " role="group">
-            {/* <button onClick={() => {
-        console.log("hello")
-        return (
-            <>
-              <div className="col-sm-9">
-                <button type="submit" className="btn btn-primary">
-                  in general gui
-                </button>
-              </div>
-            </>
-          );
-      }}>
-      Click me!
-    </button> */}
-
             <button
               type="submit"
               className="btn btn-primary my-2"
@@ -275,7 +251,10 @@ export const CreateContest = () => {
                           id="juryVoteWeight"
                         />
                         <div className="my-3">
-                          <label className="form-check-label " htmlFor="voterAnonymity">
+                          <label
+                            className="form-check-label "
+                            htmlFor="voterAnonymity"
+                          >
                             Anonymous
                           </label>
 
@@ -286,10 +265,7 @@ export const CreateContest = () => {
                             onChange={handleChange}
                             id="voterAnonymity"
                           />
-
                         </div>
-
-
                       </div>
                     </>
                   );
@@ -314,7 +290,6 @@ export const CreateContest = () => {
                           className="form-control"
                           id="startTime"
                         />
-
 
                         <label
                           htmlFor="inputEmail4"
@@ -381,10 +356,9 @@ export const CreateContest = () => {
                           <input
                             className="form-select"
                             type="file"
-                            onChange={juryfileHandle}
-                          // ref={partifile}
-                          // id="partifile"
-                          // name="partifile"
+                            name="jury"
+                            onChange={fileHandle}
+                            id="jury"
                           />
                         </div>
 
@@ -392,7 +366,7 @@ export const CreateContest = () => {
                           style={{
                             display:
                               contest.type === "Private" ||
-                                contest.type === "Public"
+                              contest.type === "Public"
                                 ? "block"
                                 : "none",
                           }}
@@ -406,10 +380,9 @@ export const CreateContest = () => {
                           <input
                             className="form-select"
                             type="file"
-                            onChange={participantfileHandle}
-                          // ref={partifile}
-                          // id="partifile"
-                          // name="partifile"
+                            name="contestant"
+                            onChange={fileHandle}
+                            id='contestant'
                           />
                         </div>
 
@@ -428,10 +401,9 @@ export const CreateContest = () => {
                           <input
                             className="form-select"
                             type="file"
-                            onChange={voterfileHandle}
-                          // ref={partifile}
-                          // id="partifile"
-                          // name="partifile"
+                            name="voter"
+                            onChange={fileHandle}
+                            id="voter"
                           />
                         </div>
                       </div>

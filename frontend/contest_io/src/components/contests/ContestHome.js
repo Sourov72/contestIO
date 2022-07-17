@@ -12,11 +12,11 @@ export const ContestHome = ({ id }) => {
   const ongoingQuery = obj2qstr({
     startTime: arr2str(["lte", new Date().toJSON()]),
     endTime: arr2str(["gt", new Date().toJSON()]),
-    limit: arr2str(["limit", 3]),
+    limit: arr2str(["limit", 4]),
   })
   const upcomingQuery = obj2qstr({
     registrationEndTime: arr2str(["gt", new Date().toJSON()]),
-    limit: arr2str(["limit", 3]),
+    limit: arr2str(["limit", 4]),
   })
   const myContestsQuery = obj2qstr({
     hostID: arr2str(["eq", id]),
@@ -24,7 +24,7 @@ export const ContestHome = ({ id }) => {
   })
   const pastQuery = obj2qstr({
     endTime: arr2str(["lt", new Date().toJSON()]),
-    limit: arr2str(["limit", 3]),
+    limit: arr2str(["limit", 2]),
   })
 
   // fires when the function is called
@@ -41,11 +41,11 @@ export const ContestHome = ({ id }) => {
     fetchContests(upcomingQuery, setUpcoming);
     fetchContests(myContestsQuery,setMyContests);
     fetchContests(pastQuery, setPast);
-  }, [ongoingQuery, upcomingQuery, myContestsQuery, pastQuery]);
+  }, []);
 
   return (
     <div className="row">
-      <div className="col-4 ">
+      <div className="col-4">
         <ContestBox
           contests={ongoingContests}
           boxTitle="Ongoing Contests"
@@ -53,7 +53,7 @@ export const ContestHome = ({ id }) => {
           col={12}
         />
       </div>
-      <div className="col-4 ">
+      <div className="col-4">
         <ContestBox
           contests={upcomingContests}
           boxTitle="Upcoming Contests"
