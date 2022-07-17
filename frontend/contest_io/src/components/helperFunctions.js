@@ -20,3 +20,34 @@ export function arr2str(arr) {
     return arr.toString()
 }
 
+const ptype = {
+  'HOST' : 1<<1,
+  'CONTESTANT' : 1 << 2,
+  'VOTER' : 1 << 3,
+  'JURY' : 1 << 4,
+  'FOLLOWER' : 1 << 5,
+  'BLOCKED' : 1 << 6
+}
+
+const aptype = ['HOST', 'CONTESTANT', 'VOTER', 'JURY', 'FOLLOWER', 'BLOCKED ']
+
+// input : a list of str which are types you want this user to be
+// output : the value which should be stored in the db
+export function participantTypeToValue() {
+  let retval = 0
+  for(let i = 0; i < arguments.length; i++) {
+    retval ^= ptype[arguments[i].toUpperCase()];
+  }
+  return retval
+}
+
+// input : the type value of participant from db
+// output : a list of str which are types of this user
+export function participantValueToType(value) {
+  let retval = []
+  for (let i = 0; i < 6; i++) {
+    (value & 1<<(i+1)) && retval.push(aptype[i])
+  }
+  return retval
+}
+

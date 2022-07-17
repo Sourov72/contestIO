@@ -7,7 +7,6 @@ const {
     deleteContest,
     updateContest
 } = require('../controllers/contest.controller')
-const { update } = require('../models/contest.model')
 
 
 const router = express.Router()
