@@ -6,7 +6,7 @@ import { objarr2str } from "../helperFunctions";
 export const ContestSearch = () => {
   const location = useLocation()
   const [skip, setskip] = useState(0);
-  var limit = 6;
+  var limit = 8;
   const [search, setSearch] = useState({
     type: ["eq", ""],
     objective: ["eq", ""],

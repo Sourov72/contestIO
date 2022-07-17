@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {
+  obj2str,
+  participantValueToType,
+} from "../helperFunctions";
 
 // const SearchList = (props) => {
 //   <tr>
@@ -10,35 +14,24 @@ import axios from "axios";
 // };
 
 export const ContestParticipantSearch = (props) => {
-  var type;
 
-  const [searchField, setsearchField] = useState("");
   const [searchShow, setSearchShow] = useState(false);
-  const [allUsers, setallUsers] = useState("");
+  const [allUsers, setallUsers] = useState([]);
 
-  type = props.type;
+  const type = props.type;
+  const contestID = props.contestID;
 
   useEffect(() => {
-    console.log(" in use effectprops type", props.type);
-    getallUser("");
-  }, [type]);
+    getallUser('');
+  }, [type, contestID]);
 
   const handleChange = async (e) => {
-    console.log("inhand", e.target.value); // but not here
+    console.log("searchfield:", e.target.value); // but not here
 
-    setsearchField(e.target.value);
-    getallUser(e.target.value);
-
-    console.log("value in search", searchField);
-
-    if (e.target.value === "") {
-      setSearchShow(false);
-    } else {
-      setSearchShow(true);
-    }
+    await getallUser(e.target.value);
   };
 
-  const filteredPersons = Array.from(allUsers);
+  // const filteredPersons = Array.from(allUsers);
   // const filteredPersons = searchResultsList.filter((person) => {
   //     // console.log(person.username);
   //     return (
@@ -47,74 +40,74 @@ export const ContestParticipantSearch = (props) => {
   //     );
   // });
 
-  var stylingObject = {
-    scrollbar: {
-      position: "relative",
-      height: "200px",
-      overflow: "auto",
-      color: "red",
-      display: "block",
-    },
-  };
-
-  function getallUser(value) {
-    const user = {
-      username: value,
-    };
-    console.log(user);
-    console.log("serchfild", searchField);
-    if (props.type === "voterlist") {
-      axios.post("http://localhost:5000/api/user/users", user).then((res) => {
-        console.log(res);
-        setallUsers(res.data);
-      });
-    } else {
-      setallUsers("");
+  async function getallUser(name) {
+    // console.log("searchField:", searchField);
+    var lte = 0;
+    var gt = 0;
+    if (type === "voterlist") {
+      lte = 15;
+      gt = 2;
     }
+    if (type === "participantlist") {
+      lte = 44;
+      gt = 32;
+    }
+    if (type == "jurylist") {
+      lte = 20;
+      gt = 16;
+    }
+
+    var q = [
+      {type: ["lte", lte],},
+      {type: ["gt", gt],},
+      {contestID: ["eq", contestID],},
+    ]
+    if (name) {
+      q.push({username: ['regex', name]})
+    }
+    const query = obj2str(q);
+    console.log('query', query)
+
+    axios 
+      .get(`http://localhost:5000/api/participants/query?${query}`)
+      .then((res) => {
+        console.log('response:', res);
+        setallUsers(res.data.participants);
+      });
   }
 
   function searchList() {
     // if (searchShow) {
 
-    return filteredPersons.map((currentPerson) => {
+    return allUsers.length > 0 ? allUsers.map((currentPerson) => {
       return (
         //   <SearchList key={currentPerson.email} person={currentPerson} />
         <tr key={currentPerson.email}>
           <td>{currentPerson.email}</td>
           <td>{currentPerson.username}</td>
+          <td>{participantValueToType(currentPerson.type)}</td>
         </tr>
       );
-    });
-    // }
+    }) : (
+      <tr>
+        <td className="text-center fw-light fst-italic text-muted">
+          No Users to show
+        </td>
+      </tr>
+    );
   }
 
   return (
-    // <div>
-    //   {/* {console.log("in consoleasjf", allUsers)} */}
-    //   <div className="">
-    //     <input
-    //       className="pa3 bb br3 grow b--none bg-lightest-blue ma3"
-    //       type="search"
-    //       placeholder="Search People"
-    //       onChange={handleChange}
-    //     />
-    //   </div>
-    //   <div className="container">
-    //     <table className="table table-striped table-hover mb-0">
-    //       <tbody>
-    //         {searchList()}
-    //       </tbody>
-    //     </table>
-    //   </div>
-    // </div>
-
     <div className="container row mt-4 mb-3 px-0">
       <div className="col-3"></div>
-      <div className="col-6 search-div">
+      <div className="col-9 search-div">
         <input
           className="form-control me-2 text-center search-bar"
           type="search"
           placeholder="Search People"
+          onBlur={(e) => {
+            e.target.value = ""; handleChange(e)
+          }}
           onChange={handleChange}
         />
 
@@ -123,7 +116,6 @@ export const ContestParticipantSearch = (props) => {
           {/* <tbody>{searchShow && <tr>{moreButton()}</tr> }</tbody> */}
         </table>
       </div>
-      <div className="col-3"></div>
     </div>
   );
 };

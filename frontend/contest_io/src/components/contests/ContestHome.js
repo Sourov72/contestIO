@@ -49,7 +49,7 @@ export const ContestHome = ({ id }) => {
         <ContestBox
           contests={ongoingContests}
           boxTitle="Ongoing Contests"
-          q={ongoingQuery}
+          q={ongoingQuery.split('limit')[0]}
           col={12}
         />
       </div>
@@ -57,13 +57,13 @@ export const ContestHome = ({ id }) => {
         <ContestBox
           contests={upcomingContests}
           boxTitle="Upcoming Contests"
-          q={upcomingQuery}
+          q={upcomingQuery.split('limit')[0]}
           col={12}
         />
       </div>
       <div className="col-4">
-        <ContestBox contests={myContests} boxTitle="My Contests" col={12} q={myContestsQuery} />
-        <ContestBox contests={pastContests} boxTitle="Past Contests" col={12} q={pastQuery} />
+        <ContestBox contests={myContests} boxTitle="My Contests" col={12} q={myContestsQuery.split('limit')[0]} />
+        <ContestBox contests={pastContests} boxTitle="Past Contests" col={12} q={pastQuery.split('limit')[0]} />
       </div>
       {/* <div className="col-12">
         <Link className="d-flex justify-content-center" to="/contests/search">

@@ -16,20 +16,30 @@ export function objarr2str(obj) {
     return keyValuePairs.join('&');
   }
 
+export function obj2str(obj) {
+    const keyValuePairs = [];
+    for (let i = 0; i < obj.length; i += 1) {
+      if (Object.values(obj[i])[0] != 0 || Object.values(obj[i])[0] != '') {
+        keyValuePairs.push(`${encodeURIComponent(Object.keys(obj[i])[0])}=${encodeURIComponent(arr2str(Object.values(obj[i])[0]))}`);
+      }
+    }
+    return keyValuePairs.join('&');
+  }
+
 export function arr2str(arr) {
     return arr.toString()
 }
 
 const ptype = {
-  'HOST' : 1<<1,
-  'CONTESTANT' : 1 << 2,
+  'BLOCKED' : 1 << 1,
+  'FOLLOWER' : 1 << 2,
   'VOTER' : 1 << 3,
   'JURY' : 1 << 4,
-  'FOLLOWER' : 1 << 5,
-  'BLOCKED' : 1 << 6
+  'CONTESTANT' : 1 << 5,
+  'HOST' : 1<<6,
 }
 
-const aptype = ['HOST', 'CONTESTANT', 'VOTER', 'JURY', 'FOLLOWER', 'BLOCKED ']
+const aptype = ['BLOCKED', 'FOLLOWER', 'VOTER', 'JURY', 'CONTESTANT', 'HOST']
 
 // input : a list of str which are types you want this user to be
 // output : the value which should be stored in the db

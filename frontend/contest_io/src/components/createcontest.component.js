@@ -21,7 +21,7 @@ export const CreateContest = () => {
     description: "",
     voteWeight: 2,
     juryVoteWeight: 5,
-    voterAnonymity: 1,
+    voterAnonymity: 0,
     startTime: "",
     registrationEndTime: new Date("2022-02-01").toJSON(),
     endTime: "",
