@@ -17,13 +17,9 @@ export const Search = () => {
     const [searchShow, setSearchShow] = useState(false);
     const [allUsers, setallUsers] = useState("");
 
-    // useEffect(() => {
-    //     axios.get("http://localhost:5000/user/").then((res) => {
-    //         // console.log("hello there boro", res.data)
-    //         // alert("noooo")
-    //         setallUsers(res.data);
-    //     });
-    // }, []);
+    useEffect(() => {
+        getallUser();
+    }, []);
 
     const handleChange = (e) => {
         setsearchField(e.target.value);
@@ -34,6 +30,7 @@ export const Search = () => {
             setSearchShow(true);
 
         }
+        getallUser();
     };
 
     const filteredPersons = Array.from(allUsers);
@@ -71,8 +68,8 @@ export const Search = () => {
 
     function searchList() {
 
-        if (searchShow) {
-            getallUser();
+        // if (searchShow) {
+            
             return filteredPersons.map((currentPerson) => {
                 return (
                     //   <SearchList key={currentPerson.email} person={currentPerson} />
@@ -82,13 +79,16 @@ export const Search = () => {
                     </tr>
                 );
             });
-        }
+        // }
     }
 
     return (
         <div>
+
+
+            helo terjkfjkdsajflkds
             {console.log("in consoleasjf", allUsers)}
-            <div className="pa2">
+            <div className="">
                 <input
                     className="pa3 bb br3 grow b--none bg-lightest-blue ma3"
                     type="search"

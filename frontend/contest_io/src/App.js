@@ -7,6 +7,7 @@ import { Profileview } from "./components/profileview.component";
 import { Search } from "./components/search.component";
 import { CreateContest } from "./components/createcontest.component";
 import { Contest } from "./components/contests/Contest";
+import { ContestShow } from "./components/contests/contestshow";
 import { useState } from "react";
 
 // hooks
@@ -56,6 +57,7 @@ function App() {
               <Route path="/logout" element={<Logout/>} />
               <Route path="/contests/*" element={<Contest id={localStorage.getItem("id")} />} />
               <Route path="/createcontest" element={<CreateContest />} />
+              <Route path="/contestshow" element={<ContestShow />} />
             </Routes>
           </div>
         </Router>

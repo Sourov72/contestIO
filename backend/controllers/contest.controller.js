@@ -11,15 +11,18 @@ const getContests = async (req, res) => {
 // get single contest
 const getContest = async (req, res) => {
     const {id} = req.params 
+    console.log("id ", id);
     if(!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({error : 'No such contest'})
     }
 
-    const contest = await ContestModel.find(id)
+    const contest = await ContestModel.find({ _id: id })
+    // console.log("contest info",contest)
     
     if (!contest) {
         return res.status(404).json({error : 'No such contest'})
     }
+    
     res.status(200).json(contest)
 }
 

@@ -225,7 +225,7 @@ export const CreateContest = () => {
                     <>
                       <div className="mb-3">
                         <label htmlFor="inputEmail4" className="form-label">
-                          Set Contest Name
+                          Set Contest Title
                         </label>
                         <input
                           type="text"
