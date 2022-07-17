@@ -80,11 +80,9 @@ const createContest = async (req, res) => {
     try {
         // try to create a new document
         const contest = await ContestModel.create({ hostID, title, type, objective, description, voteWeight, juryVoteWeight, voterAnonymity, startTime, registrationEndTime, endTime})
-        console.log('thik moto hoise', contest)
         res.status(200).json(contest)
     } catch (error) {
         // if failed, return error
-        console.log('create contest pera', error.message)
         res.status(400).json({error : error.message})
     }
 }

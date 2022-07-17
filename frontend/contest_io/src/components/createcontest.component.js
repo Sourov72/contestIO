@@ -1,13 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 export const CreateContest = () => {
   var today, mm, dd, yyyy;
   let id = "12";
-
-  // const [userid, setid] = useState({
-  //   id : "",
-  // });
 
   const [comp, setcomp] = useState({
     generalcom: true,
@@ -101,8 +97,6 @@ export const CreateContest = () => {
     console.log("id bef: ", id);
     id = localStorage.getItem("id");
     console.log("I got the id:", id);
-    // console.log('id set to: ', {id})
-    // console.log('id set to: ', id)
     setcontest({
       ...contest,
       hostID: localStorage.getItem("id"),
