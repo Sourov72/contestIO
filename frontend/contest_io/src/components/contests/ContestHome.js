@@ -22,6 +22,7 @@ export const ContestHome = ({ id }) => {
     const today = new Date();
     fetchContests(
       obj2qstr({
+        startTime: arr2str(["lte", today.toJSON()]),
         endTime: arr2str(["gt", today.toJSON()]),
         limit: arr2str(["limit", 3]),
       }),

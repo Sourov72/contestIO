@@ -73,28 +73,41 @@ export const CreateContest = () => {
   }
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    var { name, value } = e.target;
+
+
+    if (name === "voterAnonymity") {
+
+      if (e.target.checked) {
+        value = 1
+      }
+      else {
+        value = 0
+      }
+
+    }
     console.log(name, value);
+
     setcontest({
       ...contest,
       [name]: value,
     });
   };
 
-  
+
 
   useEffect(() => {
 
     console.log("id bef: ", id);
     id = localStorage.getItem("id");
-    console.log("I got the id:", id); 
-      // console.log('id set to: ', {id})
-      // console.log('id set to: ', id)
-      setcontest({
-        ...contest,
-        hostID: localStorage.getItem("id"),
-      });
-    
+    console.log("I got the id:", id);
+    // console.log('id set to: ', {id})
+    // console.log('id set to: ', id)
+    setcontest({
+      ...contest,
+      hostID: localStorage.getItem("id"),
+    });
+
   }, []);
 
   const createNewContest = (e) => {
@@ -103,10 +116,10 @@ export const CreateContest = () => {
     console.log("id: ", id);
     e.preventDefault();
 
-    
-   
+
+
     console.log("hostid ", contest.hostID);
-  
+
 
     alert("Contest Creation form posted");
     axios
@@ -237,6 +250,52 @@ export const CreateContest = () => {
                           className="form-control"
                           id="description"
                         />
+
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label my-3"
+                        >
+                          Vote weight
+                        </label>
+                        <input
+                          type="number"
+                          name="voteWeight"
+                          onChange={handleChange}
+                          value={contest.voteWeight}
+                          className="form-control"
+                          id="voteWeight"
+                        />
+
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label my-3"
+                        >
+                          Jury Vote Weight
+                        </label>
+                        <input
+                          type="number"
+                          name="juryVoteWeight"
+                          onChange={handleChange}
+                          value={contest.juryVoteWeight}
+                          className="form-control"
+                          id="juryVoteWeight"
+                        />
+                        <div className="my-3">
+                          <label className="form-check-label " htmlFor="voterAnonymity">
+                            Anonymous
+                          </label>
+
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="voterAnonymity"
+                            onChange={handleChange}
+                            id="voterAnonymity"
+                          />
+
+                        </div>
+
+
                       </div>
                     </>
                   );
@@ -250,7 +309,7 @@ export const CreateContest = () => {
                           htmlFor="inputEmail4"
                           className="form-label my-3"
                         >
-                          Contest Start time
+                          Registration Start time
                         </label>
                         <input
                           type="date"
@@ -260,6 +319,23 @@ export const CreateContest = () => {
                           value={contest.startTime}
                           className="form-control"
                           id="startTime"
+                        />
+
+
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label my-3"
+                        >
+                          Registration End time
+                        </label>
+                        <input
+                          type="date"
+                          min={today}
+                          name="registrationEndTime"
+                          onChange={handleChange}
+                          value={contest.registrationEndTime}
+                          className="form-control"
+                          id="registrationEndTime"
                         />
 
                         <label
@@ -312,9 +388,9 @@ export const CreateContest = () => {
                             className="form-select"
                             type="file"
                             onChange={juryfileHandle}
-                            // ref={partifile}
-                            // id="partifile"
-                            // name="partifile"
+                          // ref={partifile}
+                          // id="partifile"
+                          // name="partifile"
                           />
                         </div>
 
@@ -322,7 +398,7 @@ export const CreateContest = () => {
                           style={{
                             display:
                               contest.type === "Private" ||
-                              contest.type === "Public"
+                                contest.type === "Public"
                                 ? "block"
                                 : "none",
                           }}
@@ -337,9 +413,9 @@ export const CreateContest = () => {
                             className="form-select"
                             type="file"
                             onChange={participantfileHandle}
-                            // ref={partifile}
-                            // id="partifile"
-                            // name="partifile"
+                          // ref={partifile}
+                          // id="partifile"
+                          // name="partifile"
                           />
                         </div>
 
@@ -359,9 +435,9 @@ export const CreateContest = () => {
                             className="form-select"
                             type="file"
                             onChange={voterfileHandle}
-                            // ref={partifile}
-                            // id="partifile"
-                            // name="partifile"
+                          // ref={partifile}
+                          // id="partifile"
+                          // name="partifile"
                           />
                         </div>
                       </div>

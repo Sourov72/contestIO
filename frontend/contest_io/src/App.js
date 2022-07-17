@@ -54,7 +54,7 @@ function App() {
               />
               <Route path="/login" element={<Login onLogin={onLogin} />} />
               <Route path="/logout" element={<Logout/>} />
-              <Route path="/contests/*" element={<Contest id={userID} />} />
+              <Route path="/contests/*" element={<Contest id={localStorage.getItem("id")} />} />
               <Route path="/createcontest" element={<CreateContest />} />
             </Routes>
           </div>

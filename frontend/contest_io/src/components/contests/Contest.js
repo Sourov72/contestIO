@@ -12,7 +12,7 @@ export const Contest = ({id}) => {
             apiURI={`/api/contests/query?`}
             searchPlaceHolder="Search for Contests..."
             queryOn="title"
-            keyval="contestID"
+            keyval="_id"
           />
           <Routes>
             <Route path="" element={<ContestHome id={id} />} />
