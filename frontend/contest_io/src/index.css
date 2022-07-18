@@ -74,3 +74,38 @@ body {
 .Link {
   text-decoration: none !important;
 }
+
+#backgroundimage1 {
+  background:url("images/background1.jpg");
+  width: 100vw;
+  height: 100vh; 
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  position: relative;
+}
+#backgroundimage2 {
+  background:url("images/background2.jpg");
+  width: 100vw;
+  height: 100vh; 
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  position: relative;
+}
+.span-block {
+  display: block;
+  margin-bottom: 15px;
+} 
+.containercenter {
+  height: 200px;
+  position: relative;
+}
+
+.centerbutton {
+  margin: 0;
+  position: absolute;
+  margin-top: 30px;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}

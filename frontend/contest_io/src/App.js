@@ -9,7 +9,8 @@ import { CreateContest } from "./components/createcontest.component";
 import { Contest } from "./components/contests/Contest";
 import { ContestShow } from "./components/contests/contestshow";
 import { useState } from "react";
-
+import {Home} from "./components/Home";
+import {About} from "./components/About";
 // hooks
 // import { useContestContext } from "./hooks/useContestContext";
 
@@ -47,6 +48,8 @@ function App() {
           <Navbar id={localStorage.getItem("id")} />
           <div className="container">
             <Routes>
+              <Route path="/" element={<Home/>} />
+              <Route path="/about" element={<About/>} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/search" element={<Search />} />
               <Route
