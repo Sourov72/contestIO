@@ -152,7 +152,7 @@ export const CreateContest = () => {
     <>
       <div className="container">
         <div className="row gx-3 gy-2 mt-2">
-          <div className="col-2">
+          <div className="col-2 my-5">
             <div className="btn-group-vertical"  role="group">
             <button
               type="radio"
@@ -188,7 +188,8 @@ export const CreateContest = () => {
             </div>
           </div>
 
-          <div className="col-9">
+          <div className="col-7">
+          <h1 className=" text-center my-2">Create a New Contest</h1>
             <form>
               {(() => {
                 if (comp.generalcom === true) {
@@ -253,7 +254,7 @@ export const CreateContest = () => {
                         />
                         <div className="my-3">
                           <label
-                            className="form-check-label "
+                            className="form-check-label me-2"
                             htmlFor="voterAnonymity"
                           >
                             Anonymous
@@ -355,7 +356,7 @@ export const CreateContest = () => {
                             Jury File Upload
                           </label>
                           <input
-                            className="form-select"
+                            className="form-control"
                             type="file"
                             name="jury"
                             onChange={fileHandle}
@@ -379,7 +380,7 @@ export const CreateContest = () => {
                             Participant File Upload
                           </label>
                           <input
-                            className="form-select"
+                            className="form-control"
                             type="file"
                             name="contestant"
                             onChange={fileHandle}
@@ -400,7 +401,7 @@ export const CreateContest = () => {
                             Voter File Upload
                           </label>
                           <input
-                            className="form-select"
+                            className="form-control"
                             type="file"
                             name="voter"
                             onChange={fileHandle}

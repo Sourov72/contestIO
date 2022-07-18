@@ -33,7 +33,7 @@ export const ContestSearch = () => {
   };
 
   useEffect(() => {
-    const query = location.state.query
+    const query = location.state.query + objarr2str({limit: ['limit', limit]})
     fetchContests(query, setResult);
   }, [location]);
 

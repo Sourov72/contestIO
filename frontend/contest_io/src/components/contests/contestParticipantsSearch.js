@@ -99,7 +99,7 @@ export const ContestParticipantSearch = (props) => {
 
   return (
     <div className="container row mt-4 mb-3 px-0">
-      <div className="col-3"></div>
+      <div className="col-1"></div>
       <div className="col-9 search-div">
         <input
           className="form-control me-2 text-center search-bar"

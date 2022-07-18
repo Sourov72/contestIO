@@ -153,62 +153,64 @@ export const ContestShow = () => {
     <>
       <div className="container">
         <div className="row gx-3 gy-2 mt-2">
-          <div className="col-2 btn-group-vertical " role="group">
-            <button
-              type="submit"
-              className="btn btn-primary my-2"
-              onClick={general}
-            >
-              General
-            </button>
+          <div className="col-2">
+            <div className="btn-group-vertical " role="group">
+              <button
+                type="submit"
+                className="btn btn-primary my-2"
+                onClick={general}
+              >
+                General
+              </button>
 
-            <button
-              type="submit"
-              className="btn btn-primary my-2"
-              onClick={timeschedule}
-            >
-              Time schedule
-            </button>
+              <button
+                type="submit"
+                className="btn btn-primary my-2"
+                onClick={timeschedule}
+              >
+                Time schedule
+              </button>
 
-            <button
-              type="submit"
-              className="btn btn-primary my-2"
-              onClick={contesttype}
-            >
-              Contest type
-            </button>
+              <button
+                type="submit"
+                className="btn btn-primary my-2"
+                onClick={contesttype}
+              >
+                Contest type
+              </button>
 
-            <button
-              type="submit"
-              className="btn btn-primary my-2"
-              onClick={contestmedia}
-            >
-              Contest Media
-            </button>
+              <button
+                type="submit"
+                className="btn btn-primary my-2"
+                onClick={contestmedia}
+              >
+                Contest Media
+              </button>
 
-            <button
-              type="submit"
-              className="btn btn-primary my-2"
-              onClick={contestvoter}
-            >
-              Voter List
-            </button>
+              <button
+                type="submit"
+                className="btn btn-primary my-2"
+                onClick={contestvoter}
+              >
+                Voter List
+              </button>
 
-            <button
-              type="submit"
-              className="btn btn-primary my-2"
-              onClick={contestparticipant}
-            >
-              Participant List
-            </button>
+              <button
+                type="submit"
+                className="btn btn-primary my-2"
+                onClick={contestparticipant}
+              >
+                Participant List
+              </button>
 
-            <button
-              type="submit"
-              className="btn btn-primary my-2"
-              onClick={contestjury}
-            >
-              Jury List
-            </button>
+              <button
+                type="submit"
+                className="btn btn-primary my-2"
+                onClick={contestjury}
+              >
+                Jury List
+              </button>
+            </div>
           </div>
 
           <div className="col-9">

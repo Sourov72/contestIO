@@ -50,57 +50,51 @@ export const Profileview = (props) => {
 
   return (
     <div className="signup container">
-      <h1 className="container text-center">Profile</h1>
+      <h1 className="text-center my-3">Profile</h1>
       <form className="row">
-        <div className="col-9">
+        <div className="col-2"></div>
+        <div className="col-5">
           <div className="mb-3">
-            <label htmlFor="InputName" className="form-label">
+            <label htmlFor="InputName" className="form-label fw-bold">
               Name
             </label>
             <div className="form-control form-control-sm">{user.username}</div>
           </div>
 
           <div className="mb-3">
-            <label htmlFor="InputName" className="form-label">
+            <label htmlFor="InputName" className="form-label fw-bold">
               Email
             </label>
             <div className="form-control form-control-sm">{user.email}</div>
           </div>
           <div className="mb-3">
-            <label className="form-label">bio</label>
+            <label className="form-label fw-bold">Bio</label>
             <div className="form-control form-control-sm">{user.bio}</div>
           </div>
 
           <div className="mb-3">
-            <label className="form-label">facebook handle</label>
+            <label className="form-label fw-bold">Facebook</label>
             <div className="form-control form-control-sm">
               {user.facebookhandle}
             </div>
           </div>
 
           <div className="mb-3">
-            <label className="form-label">instagram handle</label>
+            <label className="form-label fw-bold">Instagram</label>
             <div className="form-control form-control-sm">
               {user.instagramhandle}
             </div>
           </div>
         </div>
-        <div className="col-3">
-          {/* <img src={require("../images/" + user.img)} /> */}
-
-          <div className="mb-3">
-            {/* <img src={require(`../images/${user.img}`)} className="img-thumbnail" alt="..."></img> */}
-
-            {/* <img src={source} alt="no image"/> */}
+        <div className="col-2">
+          <div className="text-center text-wrap my-2">
             <img
               src={source}
               className=" img-thumbnail"
               style={stylingObject.image}
-              alt="..."
+              alt={user.username}
             ></img>
-            <div htmlFor="formFileSm" className="form-label">
-              Profile Picture
-            </div>
+            <p>{user.username}</p>
           </div>
         </div>
 

@@ -10,7 +10,7 @@ export const ContestHome = ({ id }) => {
   const [pastContests, setPast] = useState([]);
 
   const ongoingQuery = obj2qstr({
-    startTime: arr2str(["lte", new Date().toJSON()]),
+    registrationEndTime: arr2str(["lte", new Date().toJSON()]),
     endTime: arr2str(["gt", new Date().toJSON()]),
     limit: arr2str(["limit", 4]),
   })

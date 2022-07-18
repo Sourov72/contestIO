@@ -77,7 +77,7 @@ export const ContestCard = ({ contest, col }) => {
       <Link to="/contestshow" state={{contestID : contest._id}}>
         <div className="card h-100 contest-card">
           <div className="card-body">
-            <h4 className="card-title fw-bold">{contest.title}</h4>
+            <h5 className="card-title fw-bold">{contest.title}</h5>
             <p className="card-text">
               {contest.objective} <br />
               {formatDate(contest.registrationEndTime)} -{" "}
