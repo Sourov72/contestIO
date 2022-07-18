@@ -7,9 +7,10 @@ export const Home = (props) => {
           <br></br>
           <br></br>
           <br></br>
-          <span class="span-block" >Join our Comunity</span>
-          <span class="span-block" >and</span>
-          <span class="span-block" >Host/Particpate for FREE!!</span>
+          <br></br>
+          <span class="span-block" ><h1>Join our Comunity</h1></span>
+          <span class="span-block" ><h1>and</h1></span>
+          <span class="span-block" ><h1>Host/Particpate for FREE!!</h1></span>
           </h1>
           <div class="containercenter" >
           <div class="centerbutton">

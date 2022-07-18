@@ -116,7 +116,7 @@ a:hover {
 }
 .span-block {
   display: block;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 } 
 .containercenter {
   height: 200px;
@@ -126,7 +126,7 @@ a:hover {
 .centerbutton {
   margin: 0;
   position: absolute;
-  margin-top: 30px;
+  margin-top: 40px;
   top: 50%;
   left: 50%;
   -ms-transform: translate(-50%, -50%);

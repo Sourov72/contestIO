@@ -10,11 +10,17 @@ export const About = (props) => {
                 <li><h6>Public Contest</h6></li>
                 <li><h6>Open Contest</h6></li>
             </ul>
+            <br></br>
+            <br></br>
             <li><h4>Particpate in a contestant</h4></li>
             <ul>
-                <h7>you can particiate provided that you</h7>
+                <h5>you can particiate provided that you have access</h5>
             </ul>
+            <br></br>
+            <br></br>
             <li><h4>Vote in a contest</h4></li>
+            <br></br>
+            <ul><h5>you can vote if you have the access and can also works as a jury if you are assigned by the host</h5></ul>
             </ul>
         </ul>
 
