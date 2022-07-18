@@ -74,10 +74,7 @@ export const Login = (props) => {
         <button type="submit" className="btn btn-primary" onClick={login}>
           Login
         </button>
-        <div>Or</div>
-        <button type="submit" className="btn btn-primary">
-          Register
-        </button>
+       
       </form>
     </div>
   );

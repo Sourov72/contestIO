@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  obj2str,
-  participantValueToType,
-} from "../helperFunctions";
+import { obj2str, participantValueToType } from "../helperFunctions";
 
 // const SearchList = (props) => {
 //   <tr>
@@ -14,7 +11,6 @@ import {
 // };
 
 export const ContestParticipantSearch = (props) => {
-
   const [searchShow, setSearchShow] = useState(false);
   const [allUsers, setallUsers] = useState([]);
 
@@ -22,7 +18,7 @@ export const ContestParticipantSearch = (props) => {
   const contestID = props.contestID;
 
   useEffect(() => {
-    getallUser('');
+    getallUser("");
   }, [type, contestID]);
 
   const handleChange = async (e) => {
@@ -58,20 +54,20 @@ export const ContestParticipantSearch = (props) => {
     }
 
     var q = [
-      {type: ["lte", lte],},
-      {type: ["gt", gt],},
-      {contestID: ["eq", contestID],},
-    ]
+      { type: ["lte", lte] },
+      { type: ["gt", gt] },
+      { contestID: ["eq", contestID] },
+    ];
     if (name) {
-      q.push({username: ['regex', name]})
+      q.push({ username: ["regex", name] });
     }
     const query = obj2str(q);
-    console.log('query', query)
+    console.log("query", query);
 
-    axios 
+    axios
       .get(`http://localhost:5000/api/participants/query?${query}`)
       .then((res) => {
-        console.log('response:', res);
+        console.log("response:", res);
         setallUsers(res.data.participants);
       });
   }
@@ -79,16 +75,27 @@ export const ContestParticipantSearch = (props) => {
   function searchList() {
     // if (searchShow) {
 
-    return allUsers.length > 0 ? allUsers.map((currentPerson) => {
-      return (
-        //   <SearchList key={currentPerson.email} person={currentPerson} />
-        <tr key={currentPerson.email}>
-          <td>{currentPerson.email}</td>
-          <td>{currentPerson.username}</td>
+    return allUsers.length > 0 ? (
+      <>
+        {" "}
+        <tr key="1">
+          <td>Email</td>
+          <td>User Name</td>
           {/* <td>{participantValueToType(currentPerson.type)}</td> */}
         </tr>
-      );
-    }) : (
+        {allUsers.map((currentPerson) => {
+          return (
+            //   <SearchList key={currentPerson.email} person={currentPerson} />
+
+            <tr key={currentPerson.email}>
+              <td>{currentPerson.email}</td>
+              <td>{currentPerson.username}</td>
+              {/* <td>{participantValueToType(currentPerson.type)}</td> */}
+            </tr>
+          );
+        })}{" "}
+      </>
+    ) : (
       <tr>
         <td className="text-center fw-light fst-italic text-muted">
           No Users to show
@@ -106,7 +113,8 @@ export const ContestParticipantSearch = (props) => {
           type="search"
           placeholder="Search People"
           onBlur={(e) => {
-            e.target.value = ""; handleChange(e)
+            e.target.value = "";
+            handleChange(e);
           }}
           onChange={handleChange}
         />
