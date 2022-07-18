@@ -24,7 +24,7 @@ export const ContestHome = ({ id }) => {
   })
   const pastQuery = obj2qstr({
     endTime: arr2str(["lt", new Date().toJSON()]),
-    limit: arr2str(["limit", 2]),
+    limit: arr2str(["limit", (id ? 2 : 4)]),
   })
 
   // fires when the function is called
@@ -62,7 +62,7 @@ export const ContestHome = ({ id }) => {
         />
       </div>
       <div className="col-4">
-        <ContestBox contests={myContests} boxTitle="My Contests" col={12} q={myContestsQuery.split('limit')[0]} />
+        {id && <ContestBox contests={myContests} boxTitle="My Contests" col={12} q={myContestsQuery.split('limit')[0]} />}
         <ContestBox contests={pastContests} boxTitle="Past Contests" col={12} q={pastQuery.split('limit')[0]} />
       </div>
       {/* <div className="col-12">

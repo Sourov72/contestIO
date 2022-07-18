@@ -12,7 +12,7 @@ export const About = (props) => {
             </ul>
             <li><h4>Particpate in a contestant</h4></li>
             <ul>
-                <h7>you can particiate provided that you</h7>
+                <h6>you can particiate provided that you</h6>
             </ul>
             <li><h4>Vote in a contest</h4></li>
             </ul>

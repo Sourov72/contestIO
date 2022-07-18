@@ -23,14 +23,14 @@ export const CreateContest = () => {
     juryVoteWeight: 5,
     voterAnonymity: 0,
     startTime: "",
-    registrationEndTime: new Date("2022-02-01").toJSON(),
+    registrationEndTime: '',
     endTime: "",
   });
 
   const [lists, setlists] = useState({
-    contestant:[],
-    voter:[],
-    jury:[],
+    contestant: [],
+    voter: [],
+    jury: [],
   });
 
   // here id is send simpliflically not as a object
@@ -116,9 +116,9 @@ export const CreateContest = () => {
           .then((res) => console.log("host creation", res));
         const allLists = {
           ...lists,
-          contestID: res.data._id
-        }
-          axios
+          contestID: res.data._id,
+        };
+        axios
           .post("http://localhost:5000/api/participants/createAll", allLists)
           .then((res) => console.log("members creation", res));
       });
@@ -130,9 +130,9 @@ export const CreateContest = () => {
   const fileHandle = (e) => {
     const upload_file = e.target.files[0];
     var name = e.target.name;
-    console.log('name: ', name)
+    console.log("name: ", name);
     const reader = new FileReader();
-    
+
     reader.onloadend = (e) => {
       const text = reader.result;
       const emails = text.split(/\r?\n/);
@@ -141,7 +141,7 @@ export const CreateContest = () => {
 
       setlists({
         ...lists,
-        [name]: emails
+        [name]: emails,
       });
       // console.log("the list: ", lists);
     };
@@ -153,50 +153,53 @@ export const CreateContest = () => {
       <div className="container">
         <div className="row gx-3 gy-2 mt-2">
           <div className="col-2 my-5">
-            <div className="btn-group-vertical"  role="group">
-            <button
-              type="radio"
-              className="btn btn-outline-primary my-2"
-              onClick={general}
-            >
-              General
-            </button>
+            <div className="btn-group-vertical" role="group">
+              <button
+                type="radio"
+                className="btn btn-outline-primary my-2"
+                onClick={general}
+              >
+                General
+              </button>
 
-            <button
-              type="radio"
-              className="btn btn-outline-primary my-2"
-              onClick={timeschedule}
-            >
-              Time schedule
-            </button>
+              <button
+                type="radio"
+                className="btn btn-outline-primary my-2"
+                onClick={timeschedule}
+              >
+                Time schedule
+              </button>
 
-            <button
-              type="radio"
-              className="btn btn-outline-primary my-2"
-              onClick={contesttype}
-            >
-              Contest type
-            </button>
+              <button
+                type="radio"
+                className="btn btn-outline-primary my-2"
+                onClick={contesttype}
+              >
+                Contest type
+              </button>
 
-            <button
-              type="radio"
-              className="btn btn-outline-primary my-2"
-              onClick={contestmedia}
-            >
-              Contest Media
-            </button>
+              <button
+                type="radio"
+                className="btn btn-outline-primary my-2"
+                onClick={contestmedia}
+              >
+                Contest Media
+              </button>
             </div>
           </div>
 
           <div className="col-7">
-          <h1 className=" text-center my-2">Create a New Contest</h1>
+            <h1 className=" text-center my-2">Create a New Contest</h1>
             <form>
               {(() => {
                 if (comp.generalcom === true) {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label">
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label fw-bold"
+                        >
                           Set Contest Title
                         </label>
                         <input
@@ -210,7 +213,7 @@ export const CreateContest = () => {
 
                         <label
                           htmlFor="inputEmail4"
-                          className="form-label my-3"
+                          className="form-label fw-bold my-3"
                         >
                           About Contest
                         </label>
@@ -225,7 +228,7 @@ export const CreateContest = () => {
 
                         <label
                           htmlFor="inputEmail4"
-                          className="form-label my-3"
+                          className="form-label fw-bold my-3"
                         >
                           Vote weight
                         </label>
@@ -240,7 +243,7 @@ export const CreateContest = () => {
 
                         <label
                           htmlFor="inputEmail4"
-                          className="form-label my-3"
+                          className="form-label fw-bold my-3"
                         >
                           Jury Vote Weight
                         </label>
@@ -254,7 +257,7 @@ export const CreateContest = () => {
                         />
                         <div className="my-3">
                           <label
-                            className="form-check-label me-2"
+                            className="form-check-label fw-bold me-2"
                             htmlFor="voterAnonymity"
                           >
                             Anonymous
@@ -279,14 +282,17 @@ export const CreateContest = () => {
                       <div className="mb-3">
                         <label
                           htmlFor="inputEmail4"
-                          className="form-label my-3"
+                          className="form-label fw-bold my-3"
                         >
-                          Registration Start time
+                          Registration/Contest Start Time
                         </label>
                         <input
-                          type="date"
                           min={today}
                           name="startTime"
+                          placeholder="Registration Start Time"
+                          type="text"
+                          onFocus={(e) => (e.target.type = "date")}
+                          onBlur={(e) => (e.target.type = "text")}
                           onChange={handleChange}
                           value={contest.startTime}
                           className="form-control"
@@ -295,14 +301,17 @@ export const CreateContest = () => {
 
                         <label
                           htmlFor="inputEmail4"
-                          className="form-label my-3"
+                          className="form-label fw-bold my-3"
                         >
-                          Registration End time
+                          Registration End Time
                         </label>
                         <input
-                          type="date"
                           min={today}
                           name="registrationEndTime"
+                          placeholder="Registration End Time"
+                          type="text"
+                          onFocus={(e) => (e.target.type = "date")}
+                          onBlur={(e) => (e.target.type = "text")}
                           onChange={handleChange}
                           value={contest.registrationEndTime}
                           className="form-control"
@@ -311,14 +320,17 @@ export const CreateContest = () => {
 
                         <label
                           htmlFor="inputEmail4"
-                          className="form-label my-3"
+                          className="form-label fw-bold my-3"
                         >
-                          Contest End time
+                          Contest End Time
                         </label>
                         <input
-                          type="date"
                           min={today}
                           name="endTime"
+                          type="text"
+                          placeholder="Contest End Time"
+                          onFocus={(e) => (e.target.type = "date")}
+                          onBlur={(e) => (e.target.type = "text")}
                           onChange={handleChange}
                           value={contest.endTime}
                           className="form-control"
@@ -333,7 +345,10 @@ export const CreateContest = () => {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label">
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label fw-bold"
+                        >
                           Set Contest Type
                         </label>
                         <select
@@ -351,7 +366,7 @@ export const CreateContest = () => {
                         <div>
                           <label
                             htmlFor="formFileSm1"
-                            className="form-label my-3"
+                            className="form-label fw-bold my-3"
                           >
                             Jury File Upload
                           </label>
@@ -375,7 +390,7 @@ export const CreateContest = () => {
                         >
                           <label
                             htmlFor="formFileSm1"
-                            className="form-label my-3"
+                            className="form-label fw-bold my-3"
                           >
                             Participant File Upload
                           </label>
@@ -384,7 +399,7 @@ export const CreateContest = () => {
                             type="file"
                             name="contestant"
                             onChange={fileHandle}
-                            id='contestant'
+                            id="contestant"
                           />
                         </div>
 
@@ -396,7 +411,7 @@ export const CreateContest = () => {
                         >
                           <label
                             htmlFor="formFileSm1"
-                            className="form-label my-3"
+                            className="form-label fw-bold my-3"
                           >
                             Voter File Upload
                           </label>
@@ -417,7 +432,10 @@ export const CreateContest = () => {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label">
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label fw-bold"
+                        >
                           Set Contest Objective
                         </label>
                         <select

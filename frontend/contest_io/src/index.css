@@ -23,11 +23,11 @@ body {
 
 
 .navbar-brand {
-  color: #9C27B0 !important;
+  color: #8344CA !important;
 }
 
 .active {
-  color: #9C27B0 !important;
+  color: #8344CA !important;
 }
 
 a {
@@ -36,15 +36,26 @@ a {
 }
 
 a:hover {
-  color: #9C27B0;
+  color: #8344CA;
 }
 
 .contest-box {
   background: rgba(156, 39, 176, 0.09);
   border-radius: 20px;
-  min-width: 30%;
-  min-height: 30%;
+  /* min-width: 30%;
+  min-height: 30%; */
   margin: 10px 0px;
+}
+
+.home-box {
+  background: rgba(156, 39, 176, 0.09);
+  border-radius: 20px;
+  /* min-width: 100%;
+  min-height: 80%; */
+}
+
+.headline {
+  color: #8344CA;
 }
 
 .contest-card {
@@ -72,7 +83,7 @@ a:hover {
 }
 
 .search-bar {
-  border-color: #9C27B0;
+  border-color: #8344CA;
   border-width: 4px;
 }
 
