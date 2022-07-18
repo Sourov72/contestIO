@@ -41,12 +41,19 @@ export const Signup = () => {
 
     if (username && email && bio && password === rePassword) {
       alert("Signup form posted");
-      axios
-        .post("http://localhost:5000/api/user/add", user)
-        .then((res) => console.log(res));
-      window.location = "/";
+      axios.post("http://localhost:5000/api/user/add", user).then((res) => {
+        alert(res.data);
+        if(res.data === "User added!")
+        {
+          alert("signup successfull");
+          window.location = "/";
+        }
+      });
+      //window.location = "/";
     } else {
-      alert("Make sure you have provided proper username, email, password and bio");
+      alert(
+        "Make sure you have provided proper username, email, password and bio"
+      );
     }
   };
 
@@ -63,7 +70,6 @@ export const Signup = () => {
             <input
               type="text"
               name="username"
-              
               onChange={handleChange}
               value={user.username}
               className="form-control"

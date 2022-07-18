@@ -124,7 +124,7 @@ export const CreateContest = () => {
       });
     alert("Contest Creation success");
 
-    // window.location = "/";
+    window.location = "/";
   };
 
   const fileHandle = (e) => {
@@ -285,7 +285,7 @@ export const CreateContest = () => {
                         </label>
                         <input
                           type="date"
-                          min={today}
+                          // min={today}
                           name="startTime"
                           onChange={handleChange}
                           value={contest.startTime}
@@ -301,7 +301,7 @@ export const CreateContest = () => {
                         </label>
                         <input
                           type="date"
-                          min={today}
+                          // min={today}
                           name="registrationEndTime"
                           onChange={handleChange}
                           value={contest.registrationEndTime}
@@ -317,7 +317,7 @@ export const CreateContest = () => {
                         </label>
                         <input
                           type="date"
-                          min={today}
+                          // min={today}
                           name="endTime"
                           onChange={handleChange}
                           value={contest.endTime}

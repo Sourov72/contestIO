@@ -85,7 +85,7 @@ export const ContestParticipantSearch = (props) => {
         <tr key={currentPerson.email}>
           <td>{currentPerson.email}</td>
           <td>{currentPerson.username}</td>
-          <td>{participantValueToType(currentPerson.type)}</td>
+          {/* <td>{participantValueToType(currentPerson.type)}</td> */}
         </tr>
       );
     }) : (
