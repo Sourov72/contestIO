@@ -79,9 +79,8 @@ export const ContestParticipantSearch = (props) => {
       <>
         {" "}
         <tr key="1">
-          <td>Email</td>
-          <td>User Name</td>
-          {/* <td>{participantValueToType(currentPerson.type)}</td> */}
+          <td className="fw-bold">Email</td>
+          <td className="fw-bold">User Name</td>
         </tr>
         {allUsers.map((currentPerson) => {
           return (

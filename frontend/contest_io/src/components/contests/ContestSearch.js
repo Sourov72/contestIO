@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from 'react-router-dom'
+import { useLocation } from "react-router-dom";
 import { ContestBox } from "./contestBox";
 import { objarr2str } from "../helperFunctions";
 
 export const ContestSearch = () => {
-  const location = useLocation()
+  const location = useLocation();
   const [skip, setskip] = useState(0);
   var limit = 8;
   const [search, setSearch] = useState({
@@ -33,7 +33,8 @@ export const ContestSearch = () => {
   };
 
   useEffect(() => {
-    const query = location.state.query + objarr2str({limit: ['limit', limit]})
+    const query =
+      location.state.query + objarr2str({ limit: ["limit", limit] });
     fetchContests(query, setResult);
   }, [location]);
 
@@ -46,13 +47,14 @@ export const ContestSearch = () => {
         value = 0;
       }
     }
-    if (value === "None" || value === 0) {
-      value = "";
-    }
+    console.log("key:", name, "value:", value);
     const today = new Date();
-    if (name === "registrationOpen") {
+    if (!value || value === "None" || value === 0) {
+      value = "";
+      console.log("value set to blank");
+    } else if (name === "registrationOpen") {
       name = "registrationEndTime";
-      if (value === 1) value = today.toJSON();
+      value = today.toJSON();
     } else if (name === "startTime" || name === "endTime") {
       value = new Date(value).toJSON();
     }
@@ -64,6 +66,7 @@ export const ContestSearch = () => {
     });
     console.log(search);
     const str = objarr2str(search);
+    console.log("q", str);
     fetchContests(str, setResult);
   };
 
