@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { obj2qstr, arr2str } from "../helperFunctions";
+import { obj2qstr, arr2str, objarr2str } from "../helperFunctions";
 
 export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
   const [searchData, setsearchField] = useState([]);
@@ -15,7 +15,10 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
       var obj = {};
       obj[queryOn] = arr2str(["regex", e.target.value]);
       obj["limit"] = arr2str(["limit", 3]);
-      const response = await fetch(apiURI + obj2qstr(obj));
+      // console.log('query: ', obj)
+      const q = obj2qstr(obj);
+      // console.log('cq: ', q)
+      const response = await fetch(apiURI + q);
       const json = await response.json();
 
       if (response.ok) {
@@ -26,30 +29,46 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
 
   function moreButton() {
     return (
-        <td>
-        <Link className="d-flex justify-content-center" to="/contests/search">
-          <button className="btn btn-danger px-4">View More Results</button>
+      <td>
+        <Link
+          className="d-flex justify-content-center"
+          to="/contests/search"
+          state={{ query: objarr2str({limit : ['limit', 8]}) }}
+        >
+          <button
+            className="btn btn-danger px-4"
+            onClick={(e) => setSearchShow(false)}
+          >
+            View More Results
+          </button>
         </Link>
-        </td>
-    )
+      </td>
+    );
   }
 
   function searchList() {
     if (searchShow) {
       return (
         <>
-        {searchData.length > 0 ?
-        searchData.map((data) => {
-          return (
-            <tr key={data[keyval]}>
-              <td>{data[queryOn]}</td>
+          {searchData.length > 0 ? (
+            searchData.map((data) => {
+              return (
+                <tr key={data[keyval]}>
+                  <td>
+                    <Link to="/contestshow" state={{ contestID: data[keyval] }}>
+                      {data[queryOn]}
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td className="text-center fw-light fst-italic text-muted">
+                No contests to show
+              </td>
             </tr>
-          );
-        }) :
-        <tr>
-          <td className="text-center fw-light fst-italic text-muted">No contests to show</td>
-        </tr>
-        }
+          )}
         </>
       );
     }
@@ -63,14 +82,16 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
           className="form-control me-2 text-center search-bar"
           type="search"
           placeholder={searchPlaceHolder}
+          onBlur={(e) => {
+            e.target.value = "";
+          }}
           onChange={handleChange}
         />
 
         <table className="table table-borderless table-hover search-table mb-2">
           <tbody>{searchList()}</tbody>
-          <tbody>{searchShow && <tr>{moreButton()}</tr> }</tbody>
+          <tbody>{searchShow && <tr>{moreButton()}</tr>}</tbody>
         </table>
-        
       </div>
       <div className="col-3"></div>
     </div>
