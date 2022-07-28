@@ -1,33 +1,33 @@
-const ContestModel = require('../models/contest.model')
+const ContentModel = require('../models/content.model')
 const mongoose = require('mongoose')
 
-// get all contests
-const getContests = async (req, res) => {
-    const contests = await ContestModel.find({}).sort({createdAt : -1})
+// get all contents
+const getContents = async (req, res) => {  
+    const contents = await ContentModel.find({}).sort({createdAt : -1})
     
-    res.status(200).json(contests)
+    res.status(200).json(contents)
 }
 
-// get single contest
-const getContest = async (req, res) => {
+// get single content
+const getContent = async (req, res) => {
     const {id} = req.params 
     console.log("id ", id);
     if(!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({error : 'No such contest'})
+        return res.status(404).json({error : 'No such content'})
     }
 
-    const contest = await ContestModel.find({ _id: id })
-    // console.log("contest info",contest)
+    const content = await ContentModel.find({ _id: id })
+    // console.log("content info",content)
     
-    if (!contest) {
-        return res.status(404).json({error : 'No such contest'})
+    if (!content) {
+        return res.status(404).json({error : 'No such content'})
     }
     
-    res.status(200).json(contest)
+    res.status(200).json(content)
 }
 
-// get queried list of contests
-const queryContests = async (req, res) => {
+// get queried list of contents
+const queryContents = async (req, res) => {
 
     var query = {}
     var limit = 20
@@ -82,65 +82,65 @@ const queryContests = async (req, res) => {
         }
       }
     // console.log(query)
-    const contests = await ContestModel.find(query).limit(limit).skip(skip)
-    const cnt = await ContestModel.count(query)
+    const contents = await ContentModel.find(query).limit(limit).skip(skip)
+    const cnt = await ContentModel.count(query)
     res.status(200).json({
-        contests : contests,
+        contents : contents,
         count : cnt
     })
 }
 
-// create new contest
-const createContest = async (req, res) => {
+// create new content
+const createContent = async (req, res) => {
     // get the values from the request's body
-    const {hostID, title, type, objective, description, voteWeight, juryVoteWeight, voterAnonymity, startTime, registrationEndTime, endTime} = req.body
+    const {participantID, type, title, description, link} = req.body
     try {
         // try to create a new document
-        const contest = await ContestModel.create({ hostID, title, type, objective, description, voteWeight, juryVoteWeight, voterAnonymity, startTime, registrationEndTime, endTime})
-        res.status(200).json(contest)
+        const content = await ContentModel.create({participantID, type, title, description, link})
+        res.status(200).json(content)
     } catch (error) {
         // if failed, return error
         res.status(400).json({error : error.message})
     }
 }
 
-// delete a contest
-const deleteContest = async (req, res) => {
+// delete a content
+const deleteContent = async (req, res) => {
     const {id} = req.params 
     if(!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({error : 'No such contest'})
+        return res.status(404).json({error : 'No such content'})
     }
 
-    const contest = await ContestModel.findByIdAndDelete(id)
-    if (!contest) {
-        return res.status(404).json({error : 'No such contest'})
+    const content = await ContentModel.findByIdAndDelete(id)
+    if (!content) {
+        return res.status(404).json({error : 'No such content'})
     }
-    res.status(200).json(contest)
+    res.status(200).json(content)
 }
 
-// update a contest
-const updateContest = async (req, res) => {
+// update a content
+const updateContent = async (req, res) => {
     const {id} = req.params 
     if(!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({error : 'No such contest'})
+        return res.status(404).json({error : 'No such content'})
     }
 
-    const contest = await ContestModel.findByIdAndUpdate(id, {
+    const content = await ContentModel.findByIdAndUpdate(id, {
         ...req.body
     })
 
-    if (!contest) {
-        return res.status(404).json({error : 'No such contest'})
+    if (!content) {
+        return res.status(404).json({error : 'No such content'})
     }
-    res.status(200).json(contest)
+    res.status(200).json(content)
 }
 
 // export
 module.exports = {
-    getContest,
-    getContests,
-    queryContests,
-    createContest,
-    deleteContest,
-    updateContest
+    getContent,
+    getContents,
+    queryContents,
+    createContent,
+    deleteContent,
+    updateContent
 }

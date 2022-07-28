@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { obj2str, participantValueToType } from "../helperFunctions";
+import { obj2str } from "../helperFunctions";
 
-// const SearchList = (props) => {
-//   <tr>
-
-//     <td>{props.person.username}</td>
-//     <td>{props.person.email}</td>
-//   </tr>;
-// };
 
 export const ContestParticipantSearch = (props) => {
   const [searchShow, setSearchShow] = useState(false);
@@ -27,17 +20,7 @@ export const ContestParticipantSearch = (props) => {
     await getallUser(e.target.value);
   };
 
-  // const filteredPersons = Array.from(allUsers);
-  // const filteredPersons = searchResultsList.filter((person) => {
-  //     // console.log(person.username);
-  //     return (
-  //         person.username.toLowerCase().includes(searchField.toLowerCase()) ||
-  //         person.email.toLowerCase().includes(searchField.toLowerCase())
-  //     );
-  // });
-
   async function getallUser(name) {
-    // console.log("searchField:", searchField);
     var lte = 0;
     var gt = 0;
     if (type === "voterlist") {
@@ -84,12 +67,9 @@ export const ContestParticipantSearch = (props) => {
         </tr>
         {allUsers.map((currentPerson) => {
           return (
-            //   <SearchList key={currentPerson.email} person={currentPerson} />
-
             <tr key={currentPerson.email}>
               <td>{currentPerson.email}</td>
               <td>{currentPerson.username}</td>
-              {/* <td>{participantValueToType(currentPerson.type)}</td> */}
             </tr>
           );
         })}{" "}
@@ -120,7 +100,6 @@ export const ContestParticipantSearch = (props) => {
 
         <table className="table table-borderless table-hover search-table mb-2">
           <tbody>{searchList()}</tbody>
-          {/* <tbody>{searchShow && <tr>{moreButton()}</tr> }</tbody> */}
         </table>
       </div>
     </div>

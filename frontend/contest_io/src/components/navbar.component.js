@@ -55,49 +55,43 @@ export const Navbar = (props) => {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0 ">
-            <li className="nav-item">
-              <Link to="/" className="nav-link active fw-bold">
-                Home
-                {/* hello
-                {props.id}
-                bello */}
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/contests" className="nav-link fw-bold">
-                Contests
-              </Link>
-            </li>
-            <li className="nav-item">
-                <Link to='/about' className="nav-link fw-bold">
+          <ul className="nav navbar-nav mx-auto mb-2">
+            
+              <li className="nav-item">
+                <Link to="/" className="nav-link active fw-bold">
+                  Home
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/contests" className="nav-link fw-bold">
+                  Contests
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/about" className="nav-link fw-bold">
                   About
                 </Link>
               </li>
-              
 
-            {(() => {
-            if (props.id !== "") {
-              return (
-                <>
-                  <li className="nav-item">
-                    <Link to="/profile" className="nav-link fw-bold">
-                      Profile
-                    </Link>              
-                  </li>
-              
-                  <li className="nav-item">
-                    <Link to='/createcontest' className="nav-link fw-bold">
-                      Create
-                    </Link>
-                  </li>
-                </>
-              );
-            } 
-          })()}
+              {(() => {
+                if (props.id !== "") {
+                  return (
+                    <>
+                      <li className="nav-item">
+                        <Link to="/profile" className="nav-link fw-bold">
+                          Profile
+                        </Link>
+                      </li>
 
-                
-
+                      <li className="nav-item">
+                        <Link to="/createcontest" className="nav-link fw-bold">
+                          Create
+                        </Link>
+                      </li>
+                    </>
+                  );
+                }
+              })()}
           </ul>
 
           {(() => {
@@ -117,7 +111,6 @@ export const Navbar = (props) => {
             } else {
               return (
                 <>
-
                   <Link className="d-flex" to="/logout">
                     <button className="btn btn-success px-4">Logout</button>
                   </Link>
@@ -125,19 +118,6 @@ export const Navbar = (props) => {
               );
             }
           })()}
-
-          {/* {login_logout()} */}
-
-          {/* <Link className="d-flex" to='/login'>
-              <button className="btn btn-success px-4">
-                Login
-              </button>
-            </Link>
-            <Link className="d-flex justify-content-end" to='/signup'>
-              <button className="btn btn-warning px-4 py-3 mx-2">
-                Signup
-              </button>
-            </Link> */}
         </div>
       </div>
     </nav>
