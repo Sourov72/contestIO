@@ -4,6 +4,7 @@ import { Signup } from "./components/signup.component";
 import { Login } from "./components/login.component";
 import { Logout } from "./components/logout.component";
 import { Profileview } from "./components/profileview.component";
+import { EditProfile } from "./components/user/edituser";
 import { Search } from "./components/search.component";
 import { CreateContest } from "./components/createcontest.component";
 import { Contest } from "./components/contests/Contest";
@@ -58,6 +59,7 @@ function App() {
                 path="/profile"
                 element={<Profileview id={localStorage.getItem("id")} />}
               />
+              <Route path="/profileedit" element={<EditProfile/>} />
               <Route path="/login" element={<Login onLogin={onLogin} />} />
               <Route path="/logout" element={<Logout/>} />
               <Route path="/contests/*" element={<Contest id={localStorage.getItem("id")} />} />

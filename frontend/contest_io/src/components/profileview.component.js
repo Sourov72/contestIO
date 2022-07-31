@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ContestBox } from "./contests/contestBox";
 import { obj2str } from "./helperFunctions";
+import { Link } from "react-router-dom";
 
 export const Profileview = (props) => {
   let id = "12";
@@ -78,9 +79,14 @@ export const Profileview = (props) => {
             <p className="fs-4 fw-bold my-0">{user.username}</p>
             <p>@username</p>
             <p>{user.bio}</p>
+
+            <Link to="/profileedit">
             <button type="button" className="btn w-100 btn-outline-dark">
               Edit Profile
             </button>
+                    </Link>
+
+            
             <p className="mb-0 mt-2">Mail: {user.email}</p>
             <p className="mb-0">FB: {user.facebookhandle}</p>
             <p className="mb-0">Insta: {user.instagramhandle}</p>

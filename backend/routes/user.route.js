@@ -60,4 +60,6 @@ router.get("/:id", Users.profilecheck);
 
 router.post("/users", Users.getSpecificUsers);
 
+router.post("/update/:id", Users.updateUser);
+
 module.exports = router;
