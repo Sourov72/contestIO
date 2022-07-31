@@ -183,7 +183,7 @@ const getContestCategories = async (req, res) => {
 
   const { id } = req.params;
 
-  CategoryModel.find({ contestID: id })
+  CategoryModel.find({ contestID: id }).populate("contestID")
     .then((categories) => {
       console.log("categories" + categories);
       res.json(categories);

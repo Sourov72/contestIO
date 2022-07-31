@@ -19,11 +19,12 @@ export const ContestContentAdd = (props) => {
   });
 
   const [content, setcontent] = useState({
-    uploaderID: "",
+    participantID: "",
+    type: "",
     title: "",
     description: "",
-    medianame: "",
-    type: "",
+    link: "",
+    
   });
 
   useEffect(() => {
@@ -31,11 +32,13 @@ export const ContestContentAdd = (props) => {
 
     const type = location.state.contesttype;
 
+    
+
     const userid = localStorage.getItem("id");
 
     setcontent({
       ...content,
-      uploaderID: userid,
+      participantID: userid,
       type: type,
     });
 
@@ -44,8 +47,8 @@ export const ContestContentAdd = (props) => {
       contesttype: type,
     });
 
-    setcontent({
-      ...content,
+    setchoice({
+      ...choice,
       contestID: contestid,
     });
 
@@ -57,8 +60,9 @@ export const ContestContentAdd = (props) => {
   function getallcategories() {
     // console.log(user);
     //path to be corrected
+    console.log("contestid", contestid)
     axios
-      .get("http://localhost:5000/api/contests/getcatogory/" + content.contestID)
+      .get("http://localhost:5000/api/contests/getcatogory/" + contestid)
       .then((res) => {
         console.log(res);
         setcontestattr({
@@ -103,7 +107,7 @@ export const ContestContentAdd = (props) => {
 
     setcontent({
       ...content,
-      medianame: upload_file.name,
+      link: upload_file.name,
     });
 
     console.log("setted file", content.img);
@@ -114,7 +118,7 @@ export const ContestContentAdd = (props) => {
 
     alert("content add form posted");
     axios
-      .post("http://localhost:5000/api/contests/content", content)
+      .post("http://localhost:5000/api/contents/create", content)
       .then((res) => {
         alert(res.data);
         console.log(res.data);

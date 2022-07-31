@@ -78,7 +78,7 @@ export const Profileview = (props) => {
             <p className="fs-4 fw-bold my-0">{user.username}</p>
             <p>@username</p>
             <p>{user.bio}</p>
-            <button type="button" class="btn w-100 btn-outline-dark">
+            <button type="button" className="btn w-100 btn-outline-dark">
               Edit Profile
             </button>
             <p className="mb-0 mt-2">Mail: {user.email}</p>

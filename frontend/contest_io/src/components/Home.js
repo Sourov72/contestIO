@@ -30,7 +30,7 @@ export const Home = (props) => {
               </div>
           </div>
           <div className="col-6 mx-0 px-0">
-            <img src={bg1} class="img-fluid rounded " alt="background-1" />
+            <img src={bg1} className="img-fluid rounded " alt="background-1" />
           </div>
         </div>
       </div>
