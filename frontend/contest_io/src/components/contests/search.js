@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { obj2qstr, arr2str, objarr2str } from "../helperFunctions";
+import { obj2str } from "../helperFunctions";
 
 export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
   const [searchData, setsearchField] = useState([]);
@@ -12,11 +12,12 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
       setSearchShow(false);
     } else {
       setSearchShow(true);
-      var obj = {};
-      obj[queryOn] = arr2str(["regex", e.target.value]);
-      obj["limit"] = arr2str(["limit", 3]);
+      var obj = obj2str([
+        {queryOn : ["regex", e.target.value]},
+        {limit : ["limit", 3]},
+      ]);
       // console.log('query: ', obj)
-      const q = obj2qstr(obj);
+      const q = obj2str(obj);
       // console.log('cq: ', q)
       const response = await fetch(apiURI + q);
       const json = await response.json();
@@ -33,7 +34,7 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
         <Link
           className="d-flex justify-content-center"
           to="/contests/search"
-          state={{ query: objarr2str({limit : ['limit', 8]}) }}
+          state={{ query: obj2str([{limit : ['limit', 8]}]) }}
         >
           <button
             className="btn btn-danger px-4"

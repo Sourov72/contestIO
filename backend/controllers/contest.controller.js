@@ -29,52 +29,67 @@ const getContest = async (req, res) => {
 
 // get queried list of contests
 const queryContests = async (req, res) => {
-  var query = {};
-  var limit = 20;
-  var skip = 0;
-  for (var key in req.query) {
-    if (req.query[key] == "") {
-      continue;
-    }
-    const arr = req.query[key].split(",");
-    switch (arr[0]) {
-      case "eq":
-        query[key] = { $eq: arr[1] };
-        break;
-      case "lt":
-        query[key] = { $lt: arr[1] };
-        break;
-      case "lte":
-        query[key] = { $lte: arr[1] };
-        break;
-      case "gt":
-        query[key] = { $gt: arr[1] };
-        break;
-      case "gte":
-        query[key] = { $gte: arr[1] };
-        break;
-      case "regex":
-        query[key] = { $regex: arr[1], $options: "i" };
-        break;
-      case "limit":
-        limit = parseInt(arr[1]);
-        break;
-      case "skip":
-        skip = parseInt(arr[1]);
-        break;
 
-      default:
-        break;
-    }
-  }
-  // console.log(query)
-  const contests = await ContestModel.find(query).limit(limit).skip(skip);
-  const cnt = await ContestModel.count(query);
-  res.status(200).json({
-    contests: contests,
-    count: cnt,
-  });
-};
+    var query = {}
+    var limit = 20
+    var skip = 0
+    for (var key in req.query) {
+        if (req.query[key] == "") {
+          continue;
+        }
+        var len = 1
+        if( typeof(req.query[key]) === "object") {
+            len = req.query[key].length
+        }
+        else {
+            req.query[key] = [req.query[key]]
+        }
+        console.log(req.query[key]);
+        query[key] = {}
+        for(let i = 0; i < len; i++) {
+            const arr = req.query[key][i].split(",");
+            if(arr[1] === '') {
+                continue;
+            }
+            switch (arr[0]) {
+              case "eq":
+                query[key]['$eq'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
+                break;
+              case "lt":
+                query[key]['$lt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
+                break;
+              case "lte":
+                query[key]['$lte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
+                break;
+              case "gt":
+                query[key]['$gt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
+                break;
+              case "gte":
+                query[key]['$gte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
+                break;
+              case "regex":
+                query[key] = {'$regex' : isNaN(arr[1]) ? arr[1] : parseInt(arr[1]), '$options' : 'i'}
+                break;
+              case "limit":
+                limit = parseInt(arr[1]);
+                break;
+              case "skip":
+                skip = parseInt(arr[1]);
+                break;
+        
+              default:
+                break;
+            }
+        }
+      }
+    // console.log(query)
+    const contests = await ContestModel.find(query).limit(limit).skip(skip)
+    const cnt = await ContestModel.count(query)
+    res.status(200).json({
+        contests : contests,
+        count : cnt
+    })
+}
 
 // create new contest
 const createContest = async (req, res) => {

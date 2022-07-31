@@ -15,7 +15,6 @@ const getAllUser = (req, res) => {
 
 const getUser = (req, res) => {
   console.log(req.body);
-  // res.send("Hello Login!");
   const { email, password } = req.body;
   console.log(email);
 

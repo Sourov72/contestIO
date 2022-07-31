@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ContestBox } from "./contestBox";
-import { obj2qstr, arr2str } from "../helperFunctions";
+import { obj2str} from "../helperFunctions";
 
 export const ContestHome = ({ id }) => {
   // contest stuff
@@ -9,23 +9,23 @@ export const ContestHome = ({ id }) => {
   const [myContests, setMyContests] = useState([]);
   const [pastContests, setPast] = useState([]);
 
-  const ongoingQuery = obj2qstr({
-    registrationEndTime: arr2str(["lte", new Date().toJSON()]),
-    endTime: arr2str(["gt", new Date().toJSON()]),
-    limit: arr2str(["limit", 4]),
-  })
-  const upcomingQuery = obj2qstr({
-    registrationEndTime: arr2str(["gt", new Date().toJSON()]),
-    limit: arr2str(["limit", 4]),
-  })
-  const myContestsQuery = obj2qstr({
-    hostID: arr2str(["eq", id]),
-    limit: arr2str(["limit", 2]),
-  })
-  const pastQuery = obj2qstr({
-    endTime: arr2str(["lt", new Date().toJSON()]),
-    limit: arr2str(["limit", (id ? 2 : 4)]),
-  })
+  const ongoingQuery = obj2str([
+    {registrationEndTime: ["lte", new Date().toJSON()]},
+    {endTime: ["gt", new Date().toJSON()]},
+    {limit: ["limit", 4]},
+  ])
+  const upcomingQuery = obj2str([
+    {registrationEndTime: ["gt", new Date().toJSON()]},
+    {limit: ["limit", 4]},
+  ])
+  const myContestsQuery = obj2str([
+    {hostID: ["eq", id]},
+    {limit: ["limit", 2]},
+  ])
+  const pastQuery = obj2str([
+    {endTime: ["lt", new Date().toJSON()]},
+    {limit: ["limit", (id ? 2 : 4)]},
+  ])
 
   // fires when the function is called
   useEffect(() => {
@@ -37,6 +37,7 @@ export const ContestHome = ({ id }) => {
         func(json.contests);
       }
     };
+    // console.log('ongoing:', ongoingQuery)
     fetchContests(ongoingQuery, setOngoing);
     fetchContests(upcomingQuery, setUpcoming);
     fetchContests(myContestsQuery,setMyContests);
@@ -65,11 +66,6 @@ export const ContestHome = ({ id }) => {
         {id && <ContestBox contests={myContests} boxTitle="My Contests" col={12} q={myContestsQuery.split('limit')[0]} />}
         <ContestBox contests={pastContests} boxTitle="Past Contests" col={12} q={pastQuery.split('limit')[0]} />
       </div>
-      {/* <div className="col-12">
-        <Link className="d-flex justify-content-center" to="/contests/search">
-          <button className="btn btn-danger px-4">View More Results</button>
-        </Link>
-      </div> */}
     </div>
   );
 };

@@ -21,6 +21,9 @@ body {
   padding: 0 30px !important;
 }
 
+.nav-item :hover {
+  color: #8344CA;
+}
 
 .navbar-brand {
   color: #8344CA !important;

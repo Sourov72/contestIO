@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const userRouter = require("./routes/user.route");
 const contestRouter = require("./routes/contest.route")
 const participantRouter = require("./routes/participant.route")
+const contentRouter = require("./routes/content.route")
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -23,6 +24,7 @@ app.use((req, res, next)=> {
 app.use("/api/user", userRouter);
 app.use("/api/contests", contestRouter);
 app.use("/api/participants", participantRouter);
+app.use("/api/contents", contentRouter);
 
 // connect to db
 mongoose.connect(process.env.ATLAS_URI)
