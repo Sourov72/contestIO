@@ -30,7 +30,7 @@ export const Home = (props) => {
               </div>
           </div>
           <div className="col-6 mx-0">
-            <img src={bg1} class="img-fluid rounded " alt="background-1" />
+            <img src={bg1} className="img-fluid rounded " alt="background-1" />
           </div>
         </div>
       </div>
@@ -46,18 +46,18 @@ export const Home = (props) => {
             <br></br>
             <br></br>
             <br></br>
-            <span class="span-block">Join our Comunity</span>
-            <span class="span-block">and</span>
-            <span class="span-block">Host/Particpate for FREE!!</span>
+            <span className="span-block">Join our Comunity</span>
+            <span className="span-block">and</span>
+            <span className="span-block">Host/Particpate for FREE!!</span>
           </h1>
-          <div class="containercenter">
-            <div class="centerbutton">
-              <a class="d-flex" href="/about">
-                <button class="btn btn-success px-4">Learn More</button>
+          <div className="containercenter">
+            <div className="centerbutton">
+              <a className="d-flex" href="/about">
+                <button className="btn btn-success px-4">Learn More</button>
               </a>
               <br></br>
-              <a class="d-flex" href="/signup">
-                <button class="btn btn-warning px-4 mx-2">Join Now</button>
+              <a className="d-flex" href="/signup">
+                <button className="btn btn-warning px-4 mx-2">Join Now</button>
               </a>
             </div>
           </div>
