@@ -152,41 +152,7 @@ export const CreateContest = () => {
     <>
       <div className="container">
         <div className="row gx-3 gy-2 mt-2">
-          <div className="col-2 my-5">
-            <div className="btn-group-vertical" role="group">
-              <button
-                type="radio"
-                className="btn btn-outline-primary my-2"
-                onClick={general}
-              >
-                General
-              </button>
-
-              <button
-                type="radio"
-                className="btn btn-outline-primary my-2"
-                onClick={timeschedule}
-              >
-                Time schedule
-              </button>
-
-              <button
-                type="radio"
-                className="btn btn-outline-primary my-2"
-                onClick={contesttype}
-              >
-                Contest type
-              </button>
-
-              <button
-                type="radio"
-                className="btn btn-outline-primary my-2"
-                onClick={contestmedia}
-              >
-                Contest Media
-              </button>
-            </div>
-          </div>
+          
 
           <div className="col-7">
             <h1 className=" text-center my-2">Create a New Contest</h1>
@@ -272,6 +238,13 @@ export const CreateContest = () => {
                           />
                         </div>
                       </div>
+                      <button
+                        type="button"
+                        className="btn btn-primary my-2"
+                        onClick={timeschedule}
+                      >
+                        Next
+                      </button>
                     </>
                   );
                 }
@@ -336,6 +309,22 @@ export const CreateContest = () => {
                           className="form-control"
                           id="endTime"
                         />
+                      </div>
+                      <div>
+                        <button
+                          type="button"
+                          className="btn btn-primary text-center px-4 me-2 my-2"
+                          onClick={general}
+                        >
+                          Back
+                        </button>
+                        <button
+                        type="button"
+                        className="btn btn-primary text-center px-4 my-2"
+                        onClick={contesttype}
+                        >
+                        Next
+                        </button>
                       </div>
                     </>
                   );
@@ -424,6 +413,22 @@ export const CreateContest = () => {
                           />
                         </div>
                       </div>
+                      <div>
+                        <button
+                          type="button"
+                          className="btn btn-primary text-center px-4 me-2 my-2"
+                          onClick={timeschedule}
+                        >
+                          Back
+                        </button>
+                        <button
+                        type="button"
+                        className="btn btn-primary text-center px-4 my-2"
+                        onClick={contestmedia}
+                        >
+                        Next
+                        </button>
+                      </div>
                     </>
                   );
                 }
@@ -450,6 +455,14 @@ export const CreateContest = () => {
                           <option>Poll</option>
                         </select>
                       </div>
+
+                      <button
+                          type="button"
+                          className="btn btn-primary text-center px-4 me-2 my-2"
+                          onClick={contesttype}
+                        >
+                          Back
+                      </button>
 
                       <button
                         type="button"
