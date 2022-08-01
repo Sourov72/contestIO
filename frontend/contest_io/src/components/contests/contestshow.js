@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-
+import { Link } from "react-router-dom";
 import { ContestParticipantSearch } from "./contestParticipantsSearch";
 
+
 export const ContestShow = () => {
+  let userid = "0";
+
+  const [idd, setidd] = useState("0");
+
   const location = useLocation();
   // let id = "62d3b5f3c1114f0e8e0cc538";
 
@@ -22,6 +27,7 @@ export const ContestShow = () => {
     voterlist: false,
     participantlist: false,
     jurylist: false,
+    categoryadd: false,
   });
 
   const [contest, setcontest] = useState({
@@ -84,8 +90,20 @@ export const ContestShow = () => {
     setcomp({ jurylist: true });
   }
 
+  function addcontestcategory() {
+    console.log("hello there category add");
+    setcomp({ categoryadd: true });
+  }
+
   useEffect(() => {
     const contestID = location.state.contestID;
+
+    userid = localStorage.getItem("id");
+
+    console.log("userID from useeffect", userid);
+
+    setidd(userid)
+
     axios
       .get("http://localhost:5000/api/contests/contest/" + contestID)
       .then((res) => {
@@ -210,6 +228,57 @@ export const ContestShow = () => {
               >
                 Jury List
               </button>
+
+              {/* {(() => {
+                if (userid !== "0") {
+ 
+
+                    <>
+                      {
+
+                        <button
+                          type="submit"
+                          className="btn btn-primary my-2"
+                          onClick={addcontestcategory}
+                        >
+                          Add Category
+                        </button>
+                      }
+                    </>
+
+                  
+                }
+              })} */}
+              {console.log(idd, "in fjskfja")}
+
+              {
+
+                idd === contest.hostID ?
+                  <>
+
+
+                    <Link to="/contestaddcategory" state={{ catcontestID: location.state.contestID }}>
+                      <button className="btn btn-primary px-4 my-2">Add Category</button>
+                    </Link>
+
+                  </> :
+                  <div> </div>
+
+              }
+
+              {
+                <>
+
+
+                  <Link to="/contestcontentadd" state={{ contentcontestID: location.state.contestID, contesttype: contest.objective }}>
+                    <button className="btn btn-primary px-4 my-2">Participate</button>
+                  </Link>
+
+                </>
+              }
+
+
+
             </div>
           </div>
 
@@ -425,6 +494,8 @@ export const ContestShow = () => {
                     />
                   );
                 }
+
+                
               })()}
             </form>
           </div>

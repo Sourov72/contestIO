@@ -5,7 +5,9 @@ const {
     queryContests,
     createContest,
     deleteContest,
-    updateContest
+    updateContest,
+    createCategory,
+    getContestCategories,
 } = require('../controllers/contest.controller')
 
 
@@ -22,6 +24,10 @@ router.get('/contest/:id', getContest)
 
 // POST a new contest
 router.post('/create', createContest)
+
+router.post('/category', createCategory)
+
+router.get('/getcatogory/:id', getContestCategories)
 
 // DELETE a new contest
 router.delete('/delete/:id', deleteContest)

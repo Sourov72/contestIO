@@ -3,8 +3,9 @@ const mongoose = require('mongoose')
 const contentSchema = new mongoose.Schema(
     {
         participantID : {
-            type : String,
-            required : true
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "Participant",
+            required : true,
         },
         type : {
             type : String,
