@@ -37,8 +37,7 @@ export const ContestHome = ({ id }) => {
         func(json.contests);
       }
     };
-    // console.log('ongoing:', ongoingQuery)
-    fetchContests(ongoingQuery, setOngoing);
+     fetchContests(ongoingQuery, setOngoing);
     fetchContests(upcomingQuery, setUpcoming);
     fetchContests(myContestsQuery,setMyContests);
     fetchContests(pastQuery, setPast);
