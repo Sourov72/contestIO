@@ -1,5 +1,6 @@
 const ContestModel = require("../models/contest.model");
 const CategoryModel = require("../models/category.modal");
+const ParticipantModel = require("../models/participant.model");
 const mongoose = require("mongoose");
 
 // get all contests
@@ -29,67 +30,68 @@ const getContest = async (req, res) => {
 
 // get queried list of contests
 const queryContests = async (req, res) => {
-
-    var query = {}
-    var limit = 20
-    var skip = 0
-    for (var key in req.query) {
-        if (req.query[key] == "") {
-          continue;
-        }
-        var len = 1
-        if( typeof(req.query[key]) === "object") {
-            len = req.query[key].length
-        }
-        else {
-            req.query[key] = [req.query[key]]
-        }
-        console.log(req.query[key]);
-        query[key] = {}
-        for(let i = 0; i < len; i++) {
-            const arr = req.query[key][i].split(",");
-            if(arr[1] === '') {
-                continue;
-            }
-            switch (arr[0]) {
-              case "eq":
-                query[key]['$eq'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-                break;
-              case "lt":
-                query[key]['$lt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-                break;
-              case "lte":
-                query[key]['$lte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-                break;
-              case "gt":
-                query[key]['$gt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-                break;
-              case "gte":
-                query[key]['$gte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-                break;
-              case "regex":
-                query[key] = {'$regex' : isNaN(arr[1]) ? arr[1] : parseInt(arr[1]), '$options' : 'i'}
-                break;
-              case "limit":
-                limit = parseInt(arr[1]);
-                break;
-              case "skip":
-                skip = parseInt(arr[1]);
-                break;
-        
-              default:
-                break;
-            }
-        }
+  var query = {};
+  var limit = 20;
+  var skip = 0;
+  for (var key in req.query) {
+    if (req.query[key] == "") {
+      continue;
+    }
+    var len = 1;
+    if (typeof req.query[key] === "object") {
+      len = req.query[key].length;
+    } else {
+      req.query[key] = [req.query[key]];
+    }
+    console.log(req.query[key]);
+    query[key] = {};
+    for (let i = 0; i < len; i++) {
+      const arr = req.query[key][i].split(",");
+      if (arr[1] === "") {
+        continue;
       }
-    // console.log(query)
-    const contests = await ContestModel.find(query).limit(limit).skip(skip)
-    const cnt = await ContestModel.count(query)
-    res.status(200).json({
-        contests : contests,
-        count : cnt
-    })
-}
+      switch (arr[0]) {
+        case "eq":
+          query[key]["$eq"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lt":
+          query[key]["$lt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lte":
+          query[key]["$lte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gt":
+          query[key]["$gt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gte":
+          query[key]["$gte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "regex":
+          query[key] = {
+            $regex: isNaN(arr[1]) ? arr[1] : parseInt(arr[1]),
+            $options: "i",
+          };
+          break;
+        case "limit":
+          limit = parseInt(arr[1]);
+          break;
+        case "skip":
+          skip = parseInt(arr[1]);
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
+  // console.log(query)
+  const contests = await ContestModel.find(query).limit(limit).skip(skip);
+  const cnt = await ContestModel.count(query);
+  res.status(200).json({
+    contests: contests,
+    count: cnt,
+  });
+};
 
 // create new contest
 const createContest = async (req, res) => {
@@ -183,12 +185,64 @@ const getContestCategories = async (req, res) => {
 
   const { id } = req.params;
 
-  CategoryModel.find({ contestID: id }).populate("contestID")
+  CategoryModel.find({ contestID: id })
+    .populate("contestID")
     .then((categories) => {
       console.log("categories" + categories);
       res.json(categories);
     })
     .catch((err) => res.status(400).json("Error: " + err));
+};
+
+const newvoteradd = async (req, res) => {
+  const { id } = req.params;
+  // const var = req.body;
+  console.log("params", req.params);
+  console.log("list", req.body);
+
+  var arrayLength = req.body.length;
+  for (var i = 0; i < arrayLength; i++) {
+    const userID = req.body[i];
+    const contestID = id;
+    const type = 8;
+    console.log(userID, contestID, type)
+    // try {
+    //   // try to create a new document
+    //   const participant = await ParticipantModel.create({
+    //     userID,
+    //     contestID,
+    //     type,
+    //   });
+    //   res.status(200).json({ participant, msg: "Voter Updated!" });
+    // } catch (error) {
+    //   // if failed, return error
+    //   console.log("create participant error!", error);
+    //   res.status(400).json({ error: error.message });
+    // }
+    //Do something
+
+
+    const newvoter = new ParticipantModel({
+      userID,
+      contestID,
+      type,
+    });
+  
+    newvoter
+    .save()
+    .then(() =>  res.json({msg: "Voter Updated!" }))
+    .catch((err) => res.status(400).json("Error hello broth " + err));
+  }
+
+  // var.forEach(function (item, index) {
+
+  // });
+
+  // function myFunction(value) {
+
+  //   // const { userID, contestID, type } = {value, cid, "8"};
+
+  //   }
 };
 
 // export
@@ -201,4 +255,5 @@ module.exports = {
   updateContest,
   createCategory,
   getContestCategories,
+  newvoteradd,
 };

@@ -12,8 +12,9 @@ import { ContestShow } from "./components/contests/contestshow";
 import { ContestCategoryAdd } from "./components/contests/category";
 import { ContestContentAdd } from "./components/contests/contestcontent";
 import { useState } from "react";
-import {Home} from "./components/Home";
-import {About} from "./components/About";
+import { Home } from "./components/Home";
+import { About } from "./components/About";
+import { UploadedContentsShow } from "./components/contents/uploadedcontentsshow";
 // hooks
 // import { useContestContext } from "./hooks/useContestContext";
 
@@ -51,22 +52,35 @@ function App() {
           <Navbar id={localStorage.getItem("id")} />
           <div className="container">
             <Routes>
-              <Route path="/" element={<Home/>} />
-              <Route path="/about" element={<About/>} />
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/search" element={<Search />} />
               <Route
                 path="/profile"
                 element={<Profileview id={localStorage.getItem("id")} />}
               />
-              <Route path="/profileedit" element={<EditProfile/>} />
+              <Route path="/profileedit" element={<EditProfile />} />
               <Route path="/login" element={<Login onLogin={onLogin} />} />
-              <Route path="/logout" element={<Logout/>} />
-              <Route path="/contests/*" element={<Contest id={localStorage.getItem("id")} />} />
+              <Route path="/logout" element={<Logout />} />
+              <Route
+                path="/contests/*"
+                element={<Contest id={localStorage.getItem("id")} />}
+              />
               <Route path="/createcontest" element={<CreateContest />} />
               <Route path="/contestshow" element={<ContestShow />} />
-              <Route path="/contestaddcategory" element={<ContestCategoryAdd />} />
-              <Route path="/contestcontentadd" element={<ContestContentAdd />} />
+              <Route
+                path="/contestaddcategory"
+                element={<ContestCategoryAdd />}
+              />
+              <Route
+                path="/contestcontentadd"
+                element={<ContestContentAdd />}
+              />
+              <Route
+                path="/uploadcontentshow"
+                element={<UploadedContentsShow />}
+              />
             </Routes>
           </div>
         </Router>

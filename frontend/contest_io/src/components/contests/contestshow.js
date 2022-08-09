@@ -4,8 +4,9 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { ContestParticipantSearch } from "./contestParticipantsSearch";
 
+import { Search } from "../search.component";
 
-export const ContestShow = () => {
+export const ContestShow = (props) => {
   let userid = "0";
 
   const [idd, setidd] = useState("0");
@@ -28,6 +29,7 @@ export const ContestShow = () => {
     participantlist: false,
     jurylist: false,
     categoryadd: false,
+    newvoteradd: false,
   });
 
   const [contest, setcontest] = useState({
@@ -95,14 +97,21 @@ export const ContestShow = () => {
     setcomp({ categoryadd: true });
   }
 
+  function voteradd() {
+    console.log("hello there category add");
+    setcomp({ newvoteradd: true });
+  }
+
   useEffect(() => {
     const contestID = location.state.contestID;
 
+    // const contestID = props.contestID;
+    console.log("contest id in contest show", contestID);
     userid = localStorage.getItem("id");
 
     console.log("userID from useeffect", userid);
 
-    setidd(userid)
+    setidd(userid);
 
     axios
       .get("http://localhost:5000/api/contests/contest/" + contestID)
@@ -229,6 +238,14 @@ export const ContestShow = () => {
                 Jury List
               </button>
 
+              <button
+                type="submit"
+                className="btn btn-primary my-2"
+                onClick={voteradd}
+              >
+                New Voter Add
+              </button>
+
               {/* {(() => {
                 if (userid !== "0") {
  
@@ -251,34 +268,36 @@ export const ContestShow = () => {
               })} */}
               {console.log(idd, "in fjskfja")}
 
-              {
-
-                idd === contest.hostID ?
-                  <>
-
-
-                    <Link to="/contestaddcategory" state={{ catcontestID: location.state.contestID }}>
-                      <button className="btn btn-primary px-4 my-2">Add Category</button>
-                    </Link>
-
-                  </> :
-                  <div> </div>
-
-              }
+              {idd === contest.hostID ? (
+                <>
+                  <Link
+                    to="/contestaddcategory"
+                    state={{ catcontestID: location.state.contestID }}
+                  >
+                    <button className="btn btn-primary px-4 my-2">
+                      Add Category
+                    </button>
+                  </Link>
+                </>
+              ) : (
+                <div> </div>
+              )}
 
               {
                 <>
-
-
-                  <Link to="/contestcontentadd" state={{ contentcontestID: location.state.contestID, contesttype: contest.objective }}>
-                    <button className="btn btn-primary px-4 my-2">Participate</button>
+                  <Link
+                    to="/contestcontentadd"
+                    state={{
+                      contentcontestID: location.state.contestID,
+                      contesttype: contest.objective,
+                    }}
+                  >
+                    <button className="btn btn-primary px-4 my-2">
+                      Participate
+                    </button>
                   </Link>
-
                 </>
               }
-
-
-
             </div>
           </div>
 
@@ -495,7 +514,11 @@ export const ContestShow = () => {
                   );
                 }
 
-                
+                if (comp.newvoteradd === true) {
+                  console.log("helo there new voter add");
+
+                  return <Search contestvoteaddID={location.state.contestID} />;
+                }
               })()}
             </form>
           </div>

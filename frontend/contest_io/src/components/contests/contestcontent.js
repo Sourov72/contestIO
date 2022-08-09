@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const ContestContentAdd = (props) => {
   let contestid = "0";
+  let navigate = useNavigate(); 
 
   const location = useLocation();
 
@@ -15,7 +16,6 @@ export const ContestContentAdd = (props) => {
   const [choice, setchoice] = useState({
     contestID: "",
     categoryID: "",
-    contentID: "",
   });
 
   const [content, setcontent] = useState({
@@ -24,15 +24,12 @@ export const ContestContentAdd = (props) => {
     title: "",
     description: "",
     link: "",
-    
   });
 
   useEffect(() => {
     contestid = location.state.contentcontestID;
 
     const type = location.state.contesttype;
-
-    
 
     const userid = localStorage.getItem("id");
 
@@ -52,7 +49,7 @@ export const ContestContentAdd = (props) => {
       contestID: contestid,
     });
 
-    console.log("contestid in useeffect", content.contestID);
+    console.log("contestid in useeffect", choice.contestID);
 
     getallcategories();
   }, []);
@@ -60,7 +57,7 @@ export const ContestContentAdd = (props) => {
   function getallcategories() {
     // console.log(user);
     //path to be corrected
-    console.log("contestid", contestid)
+    console.log("contestid", contestid);
     axios
       .get("http://localhost:5000/api/contests/getcatogory/" + contestid)
       .then((res) => {
@@ -80,25 +77,27 @@ export const ContestContentAdd = (props) => {
       [name]: value,
     });
 
-    console.log("contestID ", content.contestID);
+    console.log("contestID ", choice.contestID);
   };
 
   const categoryChange = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
 
-    console.log("value", value)
+    console.log("value", value);
 
-    var foundValue = contestattr.contestcategories.filter((obj) => obj.title === value);
+    var foundValue = contestattr.contestcategories.filter(
+      (obj) => obj.title === value
+    );
 
-    console.log("category id", foundValue)
+    console.log("category id", foundValue[0]._id);
 
     setchoice({
       ...choice,
-      categoryID: foundValue._id,
+      categoryID: foundValue[0]._id,
     });
 
-    console.log("contestID ", content.contestID);
+    console.log("categoryID ", choice.categoryID);
   };
 
   const fileHandle = (e) => {
@@ -110,7 +109,7 @@ export const ContestContentAdd = (props) => {
       link: upload_file.name,
     });
 
-    console.log("setted file", content.img);
+    console.log("setted file", content.link);
   };
 
   const createNewCategory = (e) => {
@@ -118,14 +117,18 @@ export const ContestContentAdd = (props) => {
 
     alert("content add form posted");
     axios
-      .post("http://localhost:5000/api/contents/create", content)
+      .post("http://localhost:5000/api/contents/create", {
+        content: content,
+        choice: choice,
+      })
       .then((res) => {
         alert(res.data);
         console.log(res.data);
         if (res.data.msg === "added successfully") {
-          alert("signup successfull");
+          
           console.log("added successfully");
           //   window.location = "/";
+          navigate("/contestshow", { state: {contestID : choice.contestID} });
         }
       });
     //window.location = "/";
@@ -251,6 +254,7 @@ export const ContestContentAdd = (props) => {
                 <button
                   type="submit"
                   className="btn btn-primary mb-3"
+                  data-bs-dismiss="modal"
                   onClick={createNewCategory}
                 >
                   Submit

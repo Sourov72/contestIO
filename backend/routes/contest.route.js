@@ -8,6 +8,7 @@ const {
     updateContest,
     createCategory,
     getContestCategories,
+    newvoteradd,
 } = require('../controllers/contest.controller')
 
 
@@ -34,5 +35,7 @@ router.delete('/delete/:id', deleteContest)
 
 // UPDATE a new contest
 router.patch('/update/:id', updateContest)
+
+router.post('/voteradd/:id', newvoteradd)
 
 module.exports = router

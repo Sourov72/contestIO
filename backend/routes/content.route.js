@@ -5,7 +5,9 @@ const {
     queryContents,
     createContent,
     deleteContent,
-    updateContent
+    updateContent,
+    getallContent,
+    getuserContent,
 } = require('../controllers/content.controller')
 
 
@@ -22,6 +24,10 @@ router.get('/content/:id', getContent)
 
 // POST a new content
 router.post('/create', createContent)
+
+router.get('/getallcontent/:id', getallContent)
+
+router.post('/getusercontent', getuserContent)
 
 // DELETE a new content
 router.delete('/delete/:id', deleteContent)

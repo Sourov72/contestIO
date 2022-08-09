@@ -9,13 +9,12 @@ import axios from "axios";
 //   </tr>;
 // };
 
-
-
-
-export const Search = () => {
+export const Search = (props) => {
     const [searchField, setsearchField] = useState("");
     const [searchShow, setSearchShow] = useState(false);
     const [allUsers, setallUsers] = useState("");
+
+    const [newvoters, setnewvoters] = useState([])
 
     useEffect(() => {
         getallUser();
@@ -28,7 +27,6 @@ export const Search = () => {
             setSearchShow(false);
         } else {
             setSearchShow(true);
-
         }
         getallUser();
     };
@@ -42,7 +40,6 @@ export const Search = () => {
     //     );
     // });
 
-
     var stylingObject = {
         scrollbar: {
             position: "relative",
@@ -50,42 +47,79 @@ export const Search = () => {
             overflow: "auto",
             color: "red",
             display: "block",
-        }
+        },
+    };
+
+    function getallUser() {
+        const user = {
+            username: searchField,
+        };
+        console.log(user);
+        axios.post("http://localhost:5000/api/user/users", user).then((res) => {
+            console.log(res);
+            setallUsers(res.data);
+        });
     }
 
-    function getallUser(){
-        const user = {
-            username: searchField
-        }
-        console.log(user)
+    function voteradd(a, b) {
+        console.log("voter add", a, "fjsdkf", b);
+        newvoters.push(b);
+        console.log("newvoters", (newvoters), "heloo", props.contestvoteaddID);
+    }
+
+    function add() {
+
+        // e.preventDefault();
+
+        // console.log(b);
+
+        // axios.post()
+
         axios
-            .post("http://localhost:5000/api/user/users", user)
+            .post(
+                "http://localhost:5000/api/contests/voteradd/" + props.contestvoteaddID,
+                newvoters
+            )
             .then((res) => {
-                console.log(res)
-                setallUsers(res.data);
+                if (res.data.msg === "Voter Updated!") {
+                    alert("updated successfully");
+                    // window.location = "/profile";
+                }
+                window.location = "/";
             });
+            
+
     }
 
     function searchList() {
-
         // if (searchShow) {
-            
-            return filteredPersons.map((currentPerson) => {
-                return (
-                    //   <SearchList key={currentPerson.email} person={currentPerson} />
-                    <tr key={currentPerson.email}>
-                        <td>{currentPerson.email}</td>
-                        <td>{currentPerson.username}</td>
-                    </tr>
-                );
-            });
+
+        return filteredPersons.map((currentPerson) => {
+            return (
+                //   <SearchList key={currentPerson.email} person={currentPerson} />
+                <tr key={currentPerson.email} onClick={() => voteradd(currentPerson.email, currentPerson._id)} >
+                    <td>{currentPerson.email}</td>
+                    <td>{currentPerson.username}</td>
+                    {/* <td><button
+                        type="submit"
+                        className="btn btn-primary my-2"
+                        onClick={voteradd(currentPerson.email)}
+                    >
+                        Add
+                    </button></td> */}
+
+                </tr>
+
+
+
+
+            );
+        });
         // }
     }
 
     return (
         <div>
-
-
             helo terjkfjkdsajflkds
             {console.log("in consoleasjf", allUsers)}
             <div className="">
@@ -97,15 +131,19 @@ export const Search = () => {
                 />
             </div>
             <div className="container" style={stylingObject.scrollbar}>
+                <table className="table table-dark  mb-0">
+                    <tbody>{searchList()}
+                    <tr>
+                    <td><button
+                            type="submit"
+                            className="btn btn-primary my-2"
+                            onClick={add}
+                        >
+                            Voters add
+                        </button></td>
+                    </tr>
+                        </tbody>
 
-
-                <table className="table table-striped table-hover mb-0">
-                    <tbody>
-                        <tr>
-                            <td>template one</td>
-                        </tr>
-                        {searchList()}
-                    </tbody>
                 </table>
             </div>
         </div>
