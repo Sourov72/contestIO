@@ -23,12 +23,12 @@ export const Profileview = (props) => {
     // here id is send simpliflically not as a object
     const uid = location.state.id;
     const myContestsQuery = obj2str([
-      { hostID: ["eq", uid] },
-      { limit: ["limit", 2] },
+      { userID: ["eq", uid] },
+      
     ]);
 
     axios.get("http://localhost:5000/api/user/" + uid).then((res) => {
-      console.log(res.data.user.socialhandles.facebookhandle);
+      // console.log(res.data.user.socialhandles.facebookhandle);
       setuser({
         username: res.data.user.username,
         email: res.data.user.email,
@@ -38,20 +38,27 @@ export const Profileview = (props) => {
         img: decodeURIComponent(res.data.user.img),
       });
     });
-
+    
     const fetchContests = async (query, func) => {
-      const response = await fetch(`/api/contests/query?${query}`);
+      // console.log('the query:', query)
+      const response = await fetch(`/api/participants/queryContests?${query}`);
       const json = await response.json();
 
       if (response.ok) {
-        func(json.contests);
+        var contests = []
+        // console.log("received:", json.contests)
+        for(let i = 0; i < json.contests.length; i++) {
+          contests.push(json.contests[i]['contestID'])
+        }
+        // console.log('contests:', contests)
+        func(contests);
       }
     };
     fetchContests(myContestsQuery, setMyContests);
   }, [location]);
 
   let source = "../images/" + user.img;
-  console.log("hello vro", source);
+  // console.log("hello vro", source);
 
   var stylingObject = {
     image: {

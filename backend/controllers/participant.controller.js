@@ -3,14 +3,14 @@ const userModel = require("../models/user.model");
 const mongoose = require("mongoose");
 
 // participant types
-const ptype = { 
-    'BLOCKED' : 1 << 1,
-    'FOLLOWER' : 1 << 2,
-    'VOTER' : 1 << 3,
-    'JURY' : 1 << 4,
-    'CONTESTANT' : 1 << 5,
-    'HOST' : 1<<6,
-  }
+const ptype = {
+  BLOCKED: 1 << 1,
+  FOLLOWER: 1 << 2,
+  VOTER: 1 << 3,
+  JURY: 1 << 4,
+  CONTESTANT: 1 << 5,
+  HOST: 1 << 6,
+};
 
 function pt2v() {
   let retval = 0;
@@ -42,76 +42,162 @@ const getParticipant = async (req, res) => {
   res.status(200).json(participant);
 };
 
+// get all contests for this user
+const queryContests = async (req, res) => {
+  var query = {};
+  var limit = 20;
+  var skip = 0;
+  //   console.log('req. query:', req.query)
+  for (var key in req.query) {
+    if (req.query[key] == "") {
+      continue;
+    }
+    var len = 1;
+    if (typeof req.query[key] === "object") {
+      len = req.query[key].length;
+    } else {
+      req.query[key] = [req.query[key]];
+    }
+    console.log(req.query[key]);
+    query[key] = {};
+    for (let i = 0; i < len; i++) {
+      const arr = req.query[key][i].split(",");
+      if (arr[1] === "") {
+        continue;
+      }
+      switch (arr[0]) {
+        case "eq":
+          query[key]["$eq"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lt":
+          query[key]["$lt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lte":
+          query[key]["$lte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gt":
+          query[key]["$gt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gte":
+          query[key]["$gte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "bitsAnySet":
+          query[key]["$bitsAnySet"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "regex":
+          query[key] = {
+            $regex: isNaN(arr[1]) ? arr[1] : parseInt(arr[1]),
+            $options: "i",
+          };
+          break;
+        case "limit":
+          limit = parseInt(arr[1]);
+          break;
+        case "skip":
+          skip = parseInt(arr[1]);
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
+
+  // console.log('query: ',query);
+  const contests = await ParticipantModel.find(query).populate('contestID')
+  // const contests = await ParticipantModel.aggregate([
+  //   {
+  //     $addFields: {
+  //       contestObjID: { $toObjectId: "$contestID" },
+  //     },
+  //   },
+  //   {
+  //     $match: query,
+  //   },
+  //   {
+  //     $lookup: {
+  //       from: "contests",
+  //       localField: "contestObjID",
+  //       foreignField: "_id",
+  //       as: "contestData",
+  //     },
+  //   },
+    
+  // ]);
+
+  res.status(200).json({
+    contests: contests,
+    count: contests.length,
+  });
+};
+
 // get queried list of participants
 const queryParticipants = async (req, res) => {
   var query = {};
   var limit = 20;
   var skip = 0;
-//   console.log('req. query:', req.query)
+  //   console.log('req. query:', req.query)
   for (var key in req.query) {
     if (req.query[key] == "") {
       continue;
     }
-    var len = 1
-    if( typeof(req.query[key]) === "object") {
-        len = req.query[key].length
+    var len = 1;
+    if (typeof req.query[key] === "object") {
+      len = req.query[key].length;
+    } else {
+      req.query[key] = [req.query[key]];
     }
-    else {
-        req.query[key] = [req.query[key]]
-    }
-    console.log(req.query[key]);
-    query[key] = {}
-    for(let i = 0; i < len; i++) {
-        const arr = req.query[key][i].split(",");
-        if(arr[1] === '') {
-            continue;
-        }
-        switch (arr[0]) {
-          case "eq":
-            query[key]['$eq'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "lt":
-            query[key]['$lt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "lte":
-            query[key]['$lte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "gt":
-            query[key]['$gt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "gte":
-            query[key]['$gte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "bitsAnySet":
-            query[key]['$bitsAnySet'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "regex":
-            query[key] = {'$regex' : isNaN(arr[1]) ? arr[1] : parseInt(arr[1]), '$options' : 'i'}
-            break;
-          case "limit":
-            limit = parseInt(arr[1]);
-            break;
-          case "skip":
-            skip = parseInt(arr[1]);
-            break;
-    
-          default:
-            break;
-        }
+    // console.log(req.query[key]);
+    query[key] = {};
+    for (let i = 0; i < len; i++) {
+      const arr = req.query[key][i].split(",");
+      if (arr[1] === "") {
+        continue;
+      }
+      switch (arr[0]) {
+        case "eq":
+          query[key]["$eq"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lt":
+          query[key]["$lt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lte":
+          query[key]["$lte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gt":
+          query[key]["$gt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gte":
+          query[key]["$gte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "bitsAnySet":
+          query[key]["$bitsAnySet"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "regex":
+          query[key] = {
+            $regex: isNaN(arr[1]) ? arr[1] : parseInt(arr[1]),
+            $options: "i",
+          };
+          break;
+        case "limit":
+          limit = parseInt(arr[1]);
+          break;
+        case "skip":
+          skip = parseInt(arr[1]);
+          break;
+
+        default:
+          break;
+      }
     }
   }
-   
-  console.log('query: ',query);
-//   const finalq = { $and: query };
-//   console.log('final query:', finalq)
-//   const participants = await ParticipantModel.find(finalq).skip(skip);
-//   console.log(participants)
-const participants = await ParticipantModel.aggregate([
-    { 
-        "$addFields": 
-        { 
-            "participantObjID": { "$toObjectId": "$userID" },
-        }
+
+  // console.log("query: ", query);
+  const participants = await ParticipantModel.aggregate([
+    {
+      $addFields: {
+        participantObjID: { $toObjectId: "$userID" },
+      },
     },
     {
       $lookup: {
@@ -121,20 +207,20 @@ const participants = await ParticipantModel.aggregate([
         as: "userData",
       },
     },
-    { 
-        $project: {
-            userID : 1,
-            contestID : 1,
-            type : 1,
-            username : '$userData.username',
-            email : '$userData.email'
-        }
+    {
+      $project: {
+        userID: 1,
+        contestID: 1,
+        type: 1,
+        username: "$userData.username",
+        email: "$userData.email",
+      },
     },
     {
-        "$match" : query
+      $match: query,
     },
   ]);
-//   const cnt = await ParticipantModel.count(query);
+  //   const cnt = await ParticipantModel.count(query);
   res.status(200).json({
     participants: participants,
     count: participants.length,
@@ -198,7 +284,7 @@ const createParticipants = async (list, contestID, type) => {
     res.total += 1;
     const user = await userModel.find({ email: list[i].toLowerCase() });
     if (!user) {
-      console.log("no user found for", list[i]);
+      // console.log("no user found for", list[i]);
       continue;
     }
     // console.log(user)
@@ -276,6 +362,7 @@ module.exports = {
   getParticipant,
   getParticipants,
   queryParticipants,
+  queryContests,
   createParticipant,
   createParticipantsAll,
   deleteParticipant,
