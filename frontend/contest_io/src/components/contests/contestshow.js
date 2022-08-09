@@ -3,20 +3,13 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { ContestParticipantSearch } from "./contestParticipantsSearch";
-
+import { participantValueToType, obj2str } from "../helperFunctions";
 
 export const ContestShow = () => {
-  let userid = "0";
-
-  const [idd, setidd] = useState("0");
-
   const location = useLocation();
-  // let id = "62d3b5f3c1114f0e8e0cc538";
 
-  // const [userid, setid] = useState({
-  //   id : "",
-  // });
-
+  const [userid, setuserid] = useState("0");
+  const [userType, setUserType] = useState("");
   const [startdate, setstartdate] = useState();
 
   const [comp, setcomp] = useState({
@@ -54,14 +47,11 @@ export const ContestShow = () => {
 
   function general() {
     console.log("hello there general");
-
     setcomp({ generalcom: true });
   }
 
   function timeschedule() {
-    // dd = today.getDate();
     console.log("hello there time schedule");
-
     setcomp({ timeschedulecom: true });
   }
 
@@ -97,17 +87,14 @@ export const ContestShow = () => {
 
   useEffect(() => {
     const contestID = location.state.contestID;
+    const uid = localStorage.getItem("id");
 
-    userid = localStorage.getItem("id");
-
-    console.log("userID from useeffect", userid);
-
-    setidd(userid)
+    console.log("userID from useeffect", uid);
+    setuserid(uid);
 
     axios
       .get("http://localhost:5000/api/contests/contest/" + contestID)
       .then((res) => {
-        console.log(res.data[0].hostID);
         setcontest({
           hostID: res.data[0].hostID,
           title: res.data[0].title,
@@ -122,15 +109,21 @@ export const ContestShow = () => {
           endTime: res.data[0].endTime,
         });
 
-        console.log("time", res.data[0].registrationEndTime);
-        console.log("second time", Date.parse(res.data[0].registrationEndTime));
-
         setstartdate(
           new Date(Date.parse(res.data[0].registrationEndTime) + 86400000)
         );
-        //console.log("start date", startdate)
       });
-  }, [location]);
+    var q = [{ userID: ["eq", uid] }];
+    const query = obj2str(q);
+    axios
+      .get(`http://localhost:5000/api/participants/query?${query}`)
+      .then((res) => {
+        // console.log("current participant:", res.data.participants[0]);
+        let types = participantValueToType(res.data.participants[0]["type"]);
+        console.log("participant types:", types);
+        setUserType(types);
+      });
+  }, [location, userid]);
 
   function dateconver(date) {
     var myDate = new Date(Date.parse(date));
@@ -249,36 +242,61 @@ export const ContestShow = () => {
                   
                 }
               })} */}
-              {console.log(idd, "in fjskfja")}
+              {/* {console.log(userid, "in fjskfja")} */}
 
-              {
-
-                idd === contest.hostID ?
-                  <>
-
-
-                    <Link to="/contestaddcategory" state={{ catcontestID: location.state.contestID }}>
-                      <button className="btn btn-primary px-4 my-2">Add Category</button>
-                    </Link>
-
-                  </> :
-                  <div> </div>
-
-              }
-
-              {
+              {userType.includes("HOST") ? (
                 <>
-
-
-                  <Link to="/contestcontentadd" state={{ contentcontestID: location.state.contestID, contesttype: contest.objective }}>
-                    <button className="btn btn-primary px-4 my-2">Participate</button>
+                  <Link
+                    to="/contestaddcategory"
+                    state={{ catcontestID: location.state.contestID }}
+                  >
+                    <button className="btn btn-danger px-4 my-2">
+                      Add Category
+                    </button>
                   </Link>
-
+                  <Link to="" state={{}}>
+                    <button className="btn btn-danger px-4 my-2">
+                      Edit Contest
+                    </button>
+                  </Link>
                 </>
-              }
+              ) : (
+                <div> </div>
+              )}
 
-
-
+              {userType.length === 0 && (
+                <>
+                  <Link
+                    to="/contestcontentadd"
+                    state={{
+                      contentcontestID: location.state.contestID,
+                      contesttype: contest.objective,
+                    }}
+                  >
+                    <button className="btn btn-danger px-4 my-2">
+                      Participate
+                    </button>
+                  </Link>
+                </>
+              )}
+              {!userType.includes("BLOCKED") && (
+                <>
+                  <Link to="/" state={{}}>
+                    <button className="btn btn-danger px-4 my-2">
+                      See Contents
+                    </button>
+                  </Link>
+                </>
+              )}
+              {userType.includes("CONTESTANT") && (
+                <>
+                  <Link to="/" state={{}}>
+                    <button className="btn btn-danger px-4 my-2">
+                      Upload Contents
+                    </button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -466,7 +484,6 @@ export const ContestShow = () => {
                 }
 
                 if (comp.voterlist === true) {
-                  console.log("helo ther voter");
                   return (
                     <ContestParticipantSearch
                       type="voterlist"
@@ -476,7 +493,6 @@ export const ContestShow = () => {
                 }
 
                 if (comp.participantlist === true) {
-                  console.log("helo ther participantlist");
                   return (
                     <ContestParticipantSearch
                       type="participantlist"
@@ -486,7 +502,6 @@ export const ContestShow = () => {
                 }
 
                 if (comp.jurylist === true) {
-                  console.log("helo ther jury");
                   return (
                     <ContestParticipantSearch
                       type="jurylist"
@@ -494,8 +509,6 @@ export const ContestShow = () => {
                     />
                   );
                 }
-
-                
               })()}
             </form>
           </div>

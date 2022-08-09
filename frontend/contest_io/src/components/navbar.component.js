@@ -78,7 +78,7 @@ export const Navbar = (props) => {
                   return (
                     <>
                       <li className="nav-item">
-                        <Link to="/profile" className="nav-link fw-bold">
+                        <Link to="/profile" className="nav-link fw-bold" state={{id: localStorage.getItem("id")}}>
                           Profile
                         </Link>
                       </li>

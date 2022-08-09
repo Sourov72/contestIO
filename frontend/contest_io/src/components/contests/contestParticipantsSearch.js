@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { obj2str } from "../helperFunctions";
-
+import { obj2str, participantTypeToValue } from "../helperFunctions";
 
 export const ContestParticipantSearch = (props) => {
   const [searchShow, setSearchShow] = useState(false);
@@ -21,24 +21,19 @@ export const ContestParticipantSearch = (props) => {
   };
 
   async function getallUser(name) {
-    var lte = 0;
-    var gt = 0;
+    var bitmask = 0;
     if (type === "voterlist") {
-      lte = 15;
-      gt = 2;
+      bitmask = participantTypeToValue(["voter"]);
     }
     if (type === "participantlist") {
-      lte = 44;
-      gt = 32;
+      bitmask = participantTypeToValue(["contestant"]);
     }
     if (type == "jurylist") {
-      lte = 20;
-      gt = 16;
+      bitmask = participantTypeToValue(["jury"]);
     }
 
     var q = [
-      { type: ["lte", lte] },
-      { type: ["gt", gt] },
+      { type: ["bitsAnySet", bitmask] },
       { contestID: ["eq", contestID] },
     ];
     if (name) {
@@ -68,11 +63,25 @@ export const ContestParticipantSearch = (props) => {
         {allUsers.map((currentPerson) => {
           return (
             <tr key={currentPerson.email}>
-              <td>{currentPerson.email}</td>
-              <td>{currentPerson.username}</td>
+              <td>
+                <Link
+                  to="/profile"
+                  state={{ id: currentPerson.userID }}
+                >
+                  {currentPerson.email}
+                </Link>
+              </td>
+              <td>
+                <Link
+                  to="/profile"
+                  state={{ id: currentPerson.userID }}
+                >
+                  {currentPerson.username}
+                </Link>
+              </td>
             </tr>
           );
-        })}{" "}
+        })}
       </>
     ) : (
       <tr>

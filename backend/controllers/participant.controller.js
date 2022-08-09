@@ -82,6 +82,9 @@ const queryParticipants = async (req, res) => {
           case "gte":
             query[key]['$gte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
             break;
+          case "bitsAnySet":
+            query[key]['$bitsAnySet'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
+            break;
           case "regex":
             query[key] = {'$regex' : isNaN(arr[1]) ? arr[1] : parseInt(arr[1]), '$options' : 'i'}
             break;
