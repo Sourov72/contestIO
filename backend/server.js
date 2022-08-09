@@ -7,6 +7,8 @@ const userRouter = require("./routes/user.route");
 const contestRouter = require("./routes/contest.route")
 const participantRouter = require("./routes/participant.route")
 const contentRouter = require("./routes/content.route")
+const ChoiceRouter = require("./routes/choice.route")
+const VoteRouter = require("./routes/vote.route")
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -25,6 +27,8 @@ app.use("/api/user", userRouter);
 app.use("/api/contests", contestRouter);
 app.use("/api/participants", participantRouter);
 app.use("/api/contents", contentRouter);
+app.use("/api/choices", contentRouter);
+app.use("/api/votes", contentRouter);
 
 // connect to db
 mongoose.connect(process.env.ATLAS_URI)

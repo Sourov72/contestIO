@@ -1,10 +1,10 @@
 const mongoose = require('mongoose')
 
-const participantSchema = new mongoose.Schema(
+const choiceSchema = new mongoose.Schema(
     {
-        userID : {
+        categoryID : {
             type : mongoose.Schema.Types.ObjectId,
-            ref : "User",
+            ref : "Category",
             required : true
         },
         contestID : {
@@ -12,16 +12,15 @@ const participantSchema = new mongoose.Schema(
             ref : "Contest",
             required : true
         },
-        type : {
-            type : Number,
+        contentID : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "Content",
             required : true
-        }
+        },
     },
     {
         timestamps : true
     }
 )
 
-participantSchema.index({userID: 1, contestID: 1}, {unique: true})
-
-module.exports = mongoose.model('Participant', participantSchema)
+module.exports = mongoose.model('Choice', choiceSchema)

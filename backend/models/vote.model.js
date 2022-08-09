@@ -1,18 +1,23 @@
 const mongoose = require('mongoose')
 
-const participantSchema = new mongoose.Schema(
+const voteSchema = new mongoose.Schema(
     {
         userID : {
             type : mongoose.Schema.Types.ObjectId,
             ref : "User",
             required : true
         },
-        contestID : {
+        choiceID : {
             type : mongoose.Schema.Types.ObjectId,
-            ref : "Contest",
+            ref : "Choice",
             required : true
         },
-        type : {
+        categoryID : {
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "Category",
+            required : true
+        },
+        weight : {
             type : Number,
             required : true
         }
@@ -22,6 +27,6 @@ const participantSchema = new mongoose.Schema(
     }
 )
 
-participantSchema.index({userID: 1, contestID: 1}, {unique: true})
+voteSchema.index({userID: 1, choiceID: 1, categoryID: 1}, {unique: true})
 
-module.exports = mongoose.model('Participant', participantSchema)
+module.exports = mongoose.model('Vote', voteSchema)
