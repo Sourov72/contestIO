@@ -29,18 +29,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-
-    // createAt: {
-    //     type: Date,
-    //     immutable: true,
-    //     default : () => Date.now(),
-
-    // },
     socialhandles: {
       facebookhandle: String,
       instagramhandle: String,
     },
-
     img :{
       type : String,
     }

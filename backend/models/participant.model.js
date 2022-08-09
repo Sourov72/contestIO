@@ -20,4 +20,6 @@ const participantSchema = new mongoose.Schema(
     }
 )
 
+participantSchema.index({userID: 1, contestID: 1}, {unique: true})
+
 module.exports = mongoose.model('Participant', participantSchema)
