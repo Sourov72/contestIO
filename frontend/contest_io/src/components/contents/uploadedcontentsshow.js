@@ -36,8 +36,8 @@ export const UploadedContentsShow = () => {
   });
 
   useEffect(() => {
-    // contestid = location.state.contestID;
-    contestid = "62d50baa66f2e7694652ff74";
+     contestid = location.state.contestID;
+    // contestid = "62d50baa66f2e7694652ff74";
 
     console.log("userid", localStorage.getItem("id"))
 

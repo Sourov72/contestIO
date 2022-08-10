@@ -7,12 +7,8 @@ import { participantValueToType, obj2str } from "../helperFunctions";
 import { Search } from "../search.component";
 
 export const ContestShow = (props) => {
-  let userid = "0";
-
   const [idd, setidd] = useState("0");
-
   const location = useLocation();
-
   const [userid, setuserid] = useState("0");
   const [userType, setUserType] = useState("");
   const [startdate, setstartdate] = useState();
@@ -102,7 +98,7 @@ export const ContestShow = (props) => {
 
     // const contestID = props.contestID;
     console.log("contest id in contest show", contestID);
-    userid = localStorage.getItem("id");
+    setuserid( localStorage.getItem("id"));
 
     console.log("userID from useeffect", userid);
 
@@ -305,7 +301,7 @@ export const ContestShow = (props) => {
               )}
               {!userType.includes("BLOCKED") && (
                 <>
-                  <Link to="/" state={{}}>
+                  <Link to="/uploadcontentshow" state={{ contestID: location.state.contestID }}>
                     <button className="btn btn-danger px-4 my-2">
                       See Contents
                     </button>
@@ -321,8 +317,8 @@ export const ContestShow = (props) => {
                       contesttype: contest.objective,
                     }}
                   >
-                    <button className="btn btn-primary px-4 my-2">
-                      Participate
+                    <button className="btn btn-danger px-4 my-2">
+                      Add Contents
                     </button>
                   </Link>
                 </>
