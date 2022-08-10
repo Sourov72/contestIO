@@ -21,9 +21,9 @@ export const Profileview = (props) => {
     // here id is send simpliflically not as a object
     id = localStorage.getItem("id");
     const myContestsQuery = obj2str([
-      {hostID: ["eq", id]},
-      {limit: ["limit", 2]},
-    ])
+      { hostID: ["eq", id] },
+      { limit: ["limit", 2] },
+    ]);
 
     axios.get("http://localhost:5000/api/user/" + id).then((res) => {
       console.log(res.data.user.socialhandles.facebookhandle);
@@ -81,12 +81,11 @@ export const Profileview = (props) => {
             <p>{user.bio}</p>
 
             <Link to="/profileedit">
-            <button type="button" className="btn w-100 btn-outline-dark">
-              Edit Profile
-            </button>
-                    </Link>
+              <button type="button" className="btn w-100 btn-outline-dark">
+                Edit Profile
+              </button>
+            </Link>
 
-            
             <p className="mb-0 mt-2">Mail: {user.email}</p>
             <p className="mb-0">FB: {user.facebookhandle}</p>
             <p className="mb-0">Insta: {user.instagramhandle}</p>

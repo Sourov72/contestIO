@@ -66,6 +66,11 @@ export const ContestContentAdd = (props) => {
           ...contestattr,
           contestcategories: res.data,
         });
+
+        setchoice({
+          ...choice,
+          categoryID:  res.data[0]._id,
+        });
       });
   }
 

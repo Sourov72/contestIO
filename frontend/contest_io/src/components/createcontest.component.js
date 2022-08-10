@@ -470,7 +470,10 @@ export const CreateContest = () => {
                         <div className="modal-dialog modal-dialog-centered">
                           <div className="modal-content">
                             <div className="modal-header">
-                              <h5 className="modal-title" id="exampleModalLabel">
+                              <h5
+                                className="modal-title"
+                                id="exampleModalLabel"
+                              >
                                 Create Contest
                               </h5>
                               <button

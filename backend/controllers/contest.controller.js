@@ -188,7 +188,7 @@ const getContestCategories = async (req, res) => {
   CategoryModel.find({ contestID: id })
     .populate("contestID")
     .then((categories) => {
-      console.log("categories" + categories);
+      // console.log("categories" + categories);
       res.json(categories);
     })
     .catch((err) => res.status(400).json("Error: " + err));

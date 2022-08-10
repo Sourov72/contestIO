@@ -34,33 +34,66 @@ const getallContent = async (req, res) => {
   const { id } = req.params;
   console.log("id ", id);
 
-  ChoiceModel.find({ categoryID: id })
-    .select("contentID")
-    .populate("contentID")
-    .then((contents) => {
-      console.log("categories" + contents);
-      res.json(contents);
-    })
-    .catch((err) => res.status(400).json("Error: " + err));
+  // ChoiceModel.find({ categoryID: id })
+  //   .select("contentID")
+  //   .populate("contentID")
+  //   .then((contents) => {
+  //     console.log("categories" + contents);
+  //     res.json(contents);
+  //   })
+  //   .catch((err) => res.status(400).json("Error: " + err));
+
+
+
+    const contents = await ChoiceModel.aggregate([
+      {
+        $lookup: {
+          from: "contents",
+          localField: "contentID",
+          foreignField: "_id",
+          
+          as: "contentData",
+        },
+      },
+      //
+  
+      {
+        $match: {
+          categoryID: ObjectId(id),
+        },
+      },
+  
+      {
+        $project: {
+         contentID: "$contentData._id",
+          link: "$contentData.link",
+          title: "$contentData.title",
+          description: "$contentData.description",
+        },
+      },
+    ]);
+
+    res.json(contents);
+
 };
 
 const getuserContent = async (req, res) => {
   console.log("reqbody", req.body);
-  const { userID, contestID, categoryID } = req.body;
-
-  console.log(categoryID);
+  const { userID, contestID } = req.body.contest;
+  const { categoryID } = req.body.category;
+  console.log(userID, " ff", contestID, "ttt ", categoryID);
 
   var participantid = "";
 
   // for participant id search
 
-  ParticipantModel.find({ userID: userID, contestID: contestID })
-    .then((participant) => {
-      // participantid = participant._id;
-      console.log("query successfull $ id ", participant);
-      // console.log("participant", participant._id)
-    })
-    .catch((err) => console.log("query unsuccessfull"));
+  // ParticipantModel.find({ userID: userID, contestID: contestID })
+  //   .then((participant) => {
+  //     // participantid = participant._id;
+  //     console.log("query successfull $ id ", participant);
+  //     // console.log("participant", participant._id)
+  //   })
+  //   .catch((err) => console.log("query unsuccessfull"));
 
   // ChoiceModel.find({ categoryID: categoryID, 'contentID' : { $exists: true, $ne: null } })
   //   .select("contentID")
@@ -73,7 +106,6 @@ const getuserContent = async (req, res) => {
   //       },
   //     },
   //   })
-    
 
   //   .then((contents) => {
   //     console.log("contents" + contents);
@@ -87,19 +119,17 @@ const getuserContent = async (req, res) => {
         from: "contents",
         localField: "contentID",
         foreignField: "_id",
-        pipeline: [{ $match: {
-
-          participantID:ObjectId(userID)
-
-        } }],
+        pipeline: [
+          {
+            $match: {
+              participantID: ObjectId(userID),
+            },
+          },
+        ],
         as: "contentData",
       },
     },
-    // {
-    //   $project: {
-    //     categoryID: 1,
-    //   },
-    // },
+    //
 
     {
       $match: {
@@ -107,11 +137,19 @@ const getuserContent = async (req, res) => {
         contentData: { $exists: true, $not: { $size: 0 } },
       },
     },
+
+    {
+      $project: {
+        // categoryID: 1,
+        contentID: "$contentData._id",
+        link: "$contentData.link",
+        title: "$contentData.title",
+        description: "$contentData.description",
+      },
+    },
   ]);
   // console.log("cont", contents);
-  res.status(200).json({
-    contents: contents,
-  });
+  res.json(contents);
 };
 
 // get queried list of contents
