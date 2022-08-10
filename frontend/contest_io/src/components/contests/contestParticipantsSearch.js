@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { obj2str, participantTypeToValue } from "../helperFunctions";
+import { obj2str, participantTypeToValue, participantValueToType } from "../helperFunctions";
 
 export const ContestParticipantSearch = (props) => {
   const [searchShow, setSearchShow] = useState(false);
@@ -45,8 +45,11 @@ export const ContestParticipantSearch = (props) => {
     axios
       .get(`http://localhost:5000/api/participants/query?${query}`)
       .then((res) => {
-        console.log("response:", res);
+        // console.log("response:", res);
+        // setallUsers([])
+        // console.log("allusers before:", allUsers)
         setallUsers(res.data.participants);
+        // console.log("allusers after:", allUsers)
       });
   }
 
@@ -79,6 +82,7 @@ export const ContestParticipantSearch = (props) => {
                   {currentPerson.username}
                 </Link>
               </td>
+              <td>{participantValueToType(currentPerson.type)}</td>
             </tr>
           );
         })}
