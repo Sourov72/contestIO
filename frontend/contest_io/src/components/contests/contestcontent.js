@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export const ContestContentAdd = (props) => {
   let contestid = "0";
-  let navigate = useNavigate(); 
+  let navigate = useNavigate();
 
   const location = useLocation();
 
@@ -14,12 +14,12 @@ export const ContestContentAdd = (props) => {
   });
 
   const [choice, setchoice] = useState({
-    contestID: "",
     categoryID: "",
   });
 
   const [content, setcontent] = useState({
-    participantID: "",
+    userID: "",
+    contestID: "",
     type: "",
     title: "",
     description: "",
@@ -35,7 +35,8 @@ export const ContestContentAdd = (props) => {
 
     setcontent({
       ...content,
-      participantID: userid,
+      userID: userid,
+      contestID:contestid,
       type: type,
     });
 
@@ -44,10 +45,10 @@ export const ContestContentAdd = (props) => {
       contesttype: type,
     });
 
-    setchoice({
-      ...choice,
-      contestID: contestid,
-    });
+    // setchoice({
+    //   ...choice,
+    //   contestID: contestid,
+    // });
 
     console.log("contestid in useeffect", choice.contestID);
 
@@ -69,7 +70,7 @@ export const ContestContentAdd = (props) => {
 
         setchoice({
           ...choice,
-          categoryID:  res.data[0]._id,
+          categoryID: res.data[0]._id,
         });
       });
   }
@@ -82,7 +83,7 @@ export const ContestContentAdd = (props) => {
       [name]: value,
     });
 
-    console.log("contestID ", choice.contestID);
+    console.log("contestID in handlechange ", content.contestID);
   };
 
   const categoryChange = (e) => {
@@ -117,7 +118,7 @@ export const ContestContentAdd = (props) => {
     console.log("setted file", content.link);
   };
 
-  const createNewCategory = (e) => {
+  const createNewContent = (e) => {
     e.preventDefault();
 
     alert("content add form posted");
@@ -130,10 +131,9 @@ export const ContestContentAdd = (props) => {
         alert(res.data);
         console.log(res.data);
         if (res.data.msg === "added successfully") {
-          
           console.log("added successfully");
           //   window.location = "/";
-          navigate("/contestshow", { state: {contestID : choice.contestID} });
+          navigate("/contestshow", { state: { contestID: content.contestID } });
         }
       });
     //window.location = "/";
@@ -260,7 +260,7 @@ export const ContestContentAdd = (props) => {
                   type="submit"
                   className="btn btn-primary mb-3"
                   data-bs-dismiss="modal"
-                  onClick={createNewCategory}
+                  onClick={createNewContent}
                 >
                   Submit
                 </button>

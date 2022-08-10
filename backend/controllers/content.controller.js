@@ -43,38 +43,37 @@ const getallContent = async (req, res) => {
   //   })
   //   .catch((err) => res.status(400).json("Error: " + err));
 
+  const contents = await ChoiceModel.aggregate([
+    {
+      $lookup: {
+        from: "contents",
+        localField: "contentID",
+        foreignField: "_id",
 
-
-    const contents = await ChoiceModel.aggregate([
-      {
-        $lookup: {
-          from: "contents",
-          localField: "contentID",
-          foreignField: "_id",
-          
-          as: "contentData",
-        },
+        as: "contentData",
       },
-      //
-  
-      {
-        $match: {
-          categoryID: ObjectId(id),
-        },
-      },
-  
-      {
-        $project: {
-         contentID: "$contentData._id",
-          link: "$contentData.link",
-          title: "$contentData.title",
-          description: "$contentData.description",
-        },
-      },
-    ]);
+    },
+    //
 
-    res.json(contents);
+    {
+      $match: {
+        categoryID: ObjectId(id),
+      },
+    },
 
+    {
+      $project: {
+        categoryID: 1,
+        _id:1,
+        contentID: "$contentData._id",
+        link: "$contentData.link",
+        title: "$contentData.title",
+        description: "$contentData.description",
+      },
+    },
+  ]);
+
+  res.json(contents);
 };
 
 const getuserContent = async (req, res) => {
@@ -84,6 +83,19 @@ const getuserContent = async (req, res) => {
   console.log(userID, " ff", contestID, "ttt ", categoryID);
 
   var participantid = "";
+
+
+  var participantID = "";
+
+  // for participant id search
+
+  await ParticipantModel.findOne({ userID: userID, contestID: contestID })
+    .then((participant) => {
+      participantID = participant._id;
+      console.log("query successfull $ id ", participant);
+      console.log("participant", participant._id);
+    })
+    .catch((err) => console.log("query unsuccessfull"));
 
   // for participant id search
 
@@ -122,7 +134,7 @@ const getuserContent = async (req, res) => {
         pipeline: [
           {
             $match: {
-              participantID: ObjectId(userID),
+              participantID: ObjectId(participantID),
             },
           },
         ],
@@ -140,7 +152,8 @@ const getuserContent = async (req, res) => {
 
     {
       $project: {
-        // categoryID: 1,
+        categoryID: 1,
+        _id:1,
         contentID: "$contentData._id",
         link: "$contentData.link",
         title: "$contentData.title",
@@ -226,7 +239,28 @@ const createContent = async (req, res) => {
   console.log("req body", req.body);
   console.log("req content body", req.body.content);
   console.log("req choice body", req.body.choice);
-  const { participantID, type, title, description, link } = req.body.content;
+  const { userID, contestID, type, title, description, link } = req.body.content;
+
+  
+
+  // console.log("category id", categoryID);
+  console.log("contest id", contestID);
+  console.log("user id", userID);
+
+  var participantID = "";
+
+  // for participant id search
+
+  await ParticipantModel.findOne({ userID: userID, contestID: contestID })
+    .then((participant) => {
+      participantID = participant._id;
+      console.log("query successfull $ id ", participant);
+      console.log("participant", participant._id);
+    })
+    .catch((err) => console.log("query unsuccessfull"));
+
+
+  console.log("helllooo") 
   try {
     // try to create a new document
 
@@ -244,9 +278,10 @@ const createContent = async (req, res) => {
     // if failed, return error
     res.status(400).json({ error: error.message });
   }
-  // console.log("content id", content)
-  const { categoryID, contestID } = req.body.choice;
+  
+  const { categoryID } = req.body.choice;
   const contentID = content._id;
+  console.log("content id",  content._id)
   try {
     // try to create a new document
 

@@ -16,7 +16,7 @@ export const UploadedContentsShow = () => {
 
   const location = useLocation();
 
-  const [check, setcheck] = useState(false)
+  const [check, setcheck] = useState(false);
 
   const [contestattr, setcontestattr] = useState({
     userID: "",
@@ -25,7 +25,7 @@ export const UploadedContentsShow = () => {
 
   const [category, setcategoryid] = useState({
     categoryID: "",
-  })
+  });
 
   const [categories, setcategories] = useState({
     contestcategories: "",
@@ -36,16 +36,15 @@ export const UploadedContentsShow = () => {
   });
 
   useEffect(() => {
-     contestid = location.state.contestID;
+    contestid = location.state.contestID;
     // contestid = "62d50baa66f2e7694652ff74";
 
-    console.log("userid", localStorage.getItem("id"))
+    console.log("userid", localStorage.getItem("id"));
 
     setcontestattr({
       ...contestattr,
       userID: localStorage.getItem("id"),
       contestID: contestid,
-
     });
 
     getallcategories();
@@ -76,7 +75,6 @@ export const UploadedContentsShow = () => {
   }
 
   function getcategorycontent() {
-
     console.log("category id in get category  content", categoryid);
     axios
       .get("http://localhost:5000/api/contents/getallcontent/" + categoryid)
@@ -85,13 +83,11 @@ export const UploadedContentsShow = () => {
         setcontents({
           categorycontents: res.data,
         });
-        if (res.data.length > 0)
-          console.log("category contents", res.data[0]);
+        if (res.data.length > 0) console.log("category contents", res.data[0]);
       });
   }
 
   function getusercategorycontent() {
-
     const categorytemp = {
       categoryID: categoryid,
     };
@@ -110,7 +106,6 @@ export const UploadedContentsShow = () => {
         if (res.data.length > 0)
           console.log("category user contents", res.data[0].link);
       });
-
   }
 
   const categoryChange = (e) => {
@@ -136,18 +131,15 @@ export const UploadedContentsShow = () => {
     console.log("categoryID from change ", category.categoryID);
     console.log("user id from change", contestattr.userID);
     console.log("contest id from change", contestattr.contestID);
-    console.log("check value", check)
-    if (check === false)
-      getcategorycontent();
-    else
-      getusercategorycontent();
+    console.log("check value", check);
+    if (check === false) getcategorycontent();
+    else getusercategorycontent();
   };
 
   const handleChange = async (e) => {
-
     console.log("category id", category.categoryID);
-    categoryid = category.categoryID;;
-    var { name, value } = e.target
+    categoryid = category.categoryID;
+    var { name, value } = e.target;
 
     if (name === "ownuploads") {
       if (e.target.checked) {
@@ -157,14 +149,13 @@ export const UploadedContentsShow = () => {
       }
     }
     if (value === 1) {
-      setcheck(true)
+      setcheck(true);
       getusercategorycontent();
-    }
-    else {
-      setcheck(false)
+    } else {
+      setcheck(false);
       getcategorycontent();
     }
-  }
+  };
 
   var stylingObject = {
     image: {
@@ -189,7 +180,9 @@ export const UploadedContentsShow = () => {
         // value={contest.objective}
         id="category"
       >
-        <option value="" selected disabled hidden>Please select category</option>
+        <option value="" selected disabled hidden>
+          Please select category
+        </option>
         {categories.contestcategories.length > 0 ? (
           <>
             {categories.contestcategories.map((contestcat) => (
@@ -199,8 +192,6 @@ export const UploadedContentsShow = () => {
         ) : (
           <></>
         )}
-
-
       </select>
 
       {participant_type === "uploader" ? (
@@ -213,48 +204,57 @@ export const UploadedContentsShow = () => {
               onChange={handleChange}
               id="ownuploads"
             />
-            <label
-              className="form-check-label"
-              htmlFor="ownuploads"
-            >
+            <label className="form-check-label" htmlFor="ownuploads">
               Your Uploaded Contents
             </label>
           </div>
         </>
-      ) : (<>
-      </>)}
+      ) : (
+        <></>
+      )}
 
       <div className="text-center">
-
         <div className="container text-center">
           <div className="row justify-content-center">
+            {console.log("contentssss", contents.categorycontents)}
             {contents.categorycontents.length > 0 ? (
               <>
-                {contents.categorycontents.map((content) => (
-                  // <img
-                  //   key={content.contentID[0]}
-                  //   src={"../images/" + content.link[0]}
-                  //   className=" img-thumbnail"
-                  //   style={stylingObject.image}
-                  // // alt={user.username}
-                  // ></img>
-                  col = 12 - col,
-                  // console.log("col", col),
+                {contents.categorycontents.map(
+                  (content) => (
+                    // <img
+                    //   key={content.contentID[0]}
+                    //   src={"../images/" + content.link[0]}
+                    //   className=" img-thumbnail"
+                    //   style={stylingObject.image}
+                    // // alt={user.username}
+                    // ></img>
+                    (col = 12 - col),
+                    (
+                      // console.log("col", col),
 
-
-                  <Contentcard key={content.contentID[0]} link={content.link[0]} col={col} title={content.title[0]} description={content.description[0]} />
-
-
-
-
-                ))}
+                      <Contentcard
+                        key={content.contentID[0]}
+                        userID={contestattr.userID}
+                        contestID={contestattr.contestID}
+                        choiceID={content._id}
+                        categoryID={content.categoryID}
+                        contentID={content.contentID[0]}
+                        link={content.link[0]}
+                        col={col}
+                        title={content.title[0]}
+                        description={content.description[0]}
+                      />
+                    )
+                  )
+                )}
               </>
             ) : (
-              <><div>no contents to show</div></>
+              <>
+                <div>no contents to show</div>
+              </>
             )}
           </div>
         </div>
-
       </div>
     </div>
   );

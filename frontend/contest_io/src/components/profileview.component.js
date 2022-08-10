@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ContestBox } from "./contests/contestBox";
 import { obj2str } from "./helperFunctions";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+// import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 
 export const Profileview = (props) => {
-  const location = useLocation()
+  const location = useLocation();
   const [myContests, setMyContests] = useState([]);
   const [user, setuser] = useState({
     username: "",
@@ -22,10 +22,7 @@ export const Profileview = (props) => {
   useEffect(() => {
     // here id is send simpliflically not as a object
     const uid = location.state.id;
-    const myContestsQuery = obj2str([
-      { userID: ["eq", uid] },
-      
-    ]);
+    const myContestsQuery = obj2str([{ userID: ["eq", uid] }]);
 
     axios.get("http://localhost:5000/api/user/" + uid).then((res) => {
       // console.log(res.data.user.socialhandles.facebookhandle);
@@ -38,17 +35,17 @@ export const Profileview = (props) => {
         img: decodeURIComponent(res.data.user.img),
       });
     });
-    
+
     const fetchContests = async (query, func) => {
       // console.log('the query:', query)
       const response = await fetch(`/api/participants/queryContests?${query}`);
       const json = await response.json();
 
       if (response.ok) {
-        var contests = []
+        var contests = [];
         // console.log("received:", json.contests)
-        for(let i = 0; i < json.contests.length; i++) {
-          contests.push(json.contests[i]['contestID'])
+        for (let i = 0; i < json.contests.length; i++) {
+          contests.push(json.contests[i]["contestID"]);
         }
         // console.log('contests:', contests)
         func(contests);
@@ -91,7 +88,7 @@ export const Profileview = (props) => {
             <button type="button" className="btn w-100 btn-outline-dark">
               Edit Profile
             </button>
-            <p className="mb-0 mt-2">
+            {/* <p className="mb-0 mt-2">
               <FontAwesomeIcon icon={faEnvelope} /> &nbsp;
               {user.email}
             </p>
@@ -102,7 +99,7 @@ export const Profileview = (props) => {
             <p className="mb-0">
               <FontAwesomeIcon icon={faInstagram} /> &nbsp;
               {user.instagramhandle}
-            </p>
+            </p> */}
           </div>
         </div>
 

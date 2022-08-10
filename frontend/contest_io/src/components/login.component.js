@@ -19,9 +19,10 @@ export const Login = (props) => {
   const login = (e) => {
     e.preventDefault();
     axios.post("http://localhost:5000/api/user/login", user).then((res) => {
-      alert(res.data.message);
+      
       if (res.data.message === "Login Successfull") {
         // props.onLogin(res.data.user);
+        alert(res.data.message);
 
         localStorage.setItem('id',res.data.user._id);
         console.log("hello this is logged in person userid: ", localStorage.getItem('id'));
@@ -30,7 +31,7 @@ export const Login = (props) => {
 
         
       } else {
-        alert(res.data.message, "in else cond");
+        alert(res.data.message);
       }
     });
   };
