@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const ContestModel = require("../models/contest.model");
+const ContestModel = require("./contest.model");
 
 const categorySchema = new mongoose.Schema(
   {

@@ -3,6 +3,7 @@ const {
     getParticipant,
     getParticipants,
     queryParticipants,
+    queryContests,
     createParticipant,
     createParticipantsAll,
     deleteParticipant,
@@ -17,6 +18,7 @@ router.get('/', getParticipants)
 
 // GET a queried list of participants
 router.get('/query', queryParticipants);
+router.get('/queryContests', queryContests);
 
 // GET a single participant
 router.get('/participant/:id', getParticipant)

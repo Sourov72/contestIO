@@ -1,5 +1,5 @@
 const ContestModel = require("../models/contest.model");
-const CategoryModel = require("../models/category.modal");
+const CategoryModel = require("../models/category.model");
 const ParticipantModel = require("../models/participant.model");
 const mongoose = require("mongoose");
 
