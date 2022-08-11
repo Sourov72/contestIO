@@ -5,8 +5,11 @@ import { Link } from "react-router-dom";
 import { ContestParticipantSearch } from "./contestParticipantsSearch";
 import { participantValueToType, obj2str } from "../helperFunctions";
 import { Search } from "../search.component";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const ContestShow = (props) => {
+  const token = cookies.get("TOKEN");
   const [idd, setidd] = useState("0");
   const location = useLocation();
   const [userid, setuserid] = useState("0");
@@ -105,7 +108,11 @@ export const ContestShow = (props) => {
     setidd(userid);
 
     axios
-      .get("http://localhost:5000/api/contests/contest/" + contestID)
+      .get("http://localhost:5000/api/contests/contest/" + contestID, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         setcontest({
           hostID: res.data[0].hostID,
@@ -128,9 +135,14 @@ export const ContestShow = (props) => {
     var q = [{ userID: ["eq", uid] }];
     const query = obj2str(q);
     axios
-      .get(`http://localhost:5000/api/participants/query?${query}`)
+      .get(`http://localhost:5000/api/participants/query?${query}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
-        // console.log("current participant:", res.data.participants[0]);
+        // console.log("current participant:", res.data.participants);
         let types = participantValueToType(res.data.participants[0]["type"]);
         console.log("participant types:", types);
         setUserType(types);

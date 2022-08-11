@@ -1,6 +1,55 @@
 const ChoiceModel = require("../models/choice.model");
 const mongoose = require("mongoose");
 
+const ParticipantModel = require("../models/participant.model");
+// participant types
+const ptype = {
+  BLOCKED: 1 << 1,
+  FOLLOWER: 1 << 2,
+  VOTER: 1 << 3,
+  JURY: 1 << 4,
+  CONTESTANT: 1 << 5,
+  HOST: 1 << 6,
+};
+
+function pt2v() {
+  let retval = 0;
+  for (let i = 0; i < arguments.length; i++) {
+    retval ^= ptype[arguments[i].toUpperCase()];
+  }
+  return retval;
+}
+
+
+const isHost = async(userID, contestID) => {
+  const participant = await ParticipantModel.find({
+    userID : userID,
+    contestID : contestID
+  })
+
+  if(!participant) {
+    return false;
+  }
+  if(participant.type & pt2v('host')) {
+    return true;
+  }
+  return false;
+}
+
+const isParticipant = async(userID, contestID) => {
+  const participant = await ParticipantModel.find({
+    userID : userID,
+    contestID : contestID
+  })
+
+  if(!participant) {
+    return false;
+  }
+  if(!(participant.type & pt2v('blocked'))) {
+    return true;
+  }
+  return false;
+}
 
 // get all choices
 const getChoices = async (req, res) => {
@@ -97,6 +146,12 @@ const queryChoices = async (req, res) => {
 const createChoice = async (req, res) => {
   // get the values from the request's body
   const { categoryID, contestID, contentID } = req.body;
+  if(! isHost(req.user.userID, contestID)) {
+    console.log("user [", req.user.email, '] cannot delete contest:', id)
+    return res.status(400).json({
+      message: "don't have sufficient permissions to delete contest"
+    });
+  }
   try {
     // try to create a new document
     const choice = await ChoiceModel.create({

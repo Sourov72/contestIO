@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { ContestBox } from "./contestBox";
 import { obj2str } from "../helperFunctions";
 
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+
 export const ContestHome = ({ id }) => {
+  const token = cookies.get("TOKEN");
   // contest stuff
   const [ongoingContests, setOngoing] = useState([]);
   const [upcomingContests, setUpcoming] = useState([]);
@@ -30,14 +35,35 @@ export const ContestHome = ({ id }) => {
   // fires when the function is called
   useEffect(() => {
     const fetchContests = async (query, func) => {
-      const response = await fetch(`/api/contests/query?${query}`);
-      const json = await response.json();
+      // console.log("current query", query)
+      // console.log("current token", token)
+      axios
+      .get(`http://localhost:5000/api/contests/query?${query}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        // console.log('response:', response.data)
+        func(response.data.contests);
+      
+      })
 
-      if (response.ok) {
-        func(json.contests);
-      }
+      // const response = await fetch(`/api/contests/query?${query}`, {
+      //   method: 'get',
+      //   headers: new Headers({
+      //     'Authorization': `Bearer ${token}`,
+      //   }),
+      // });
+      // const json = await response.json();
+      // console.log(response)
+      // if (response.ok) {
+        
+      //   func(json.contests);
+      // }
     };
-     fetchContests(ongoingQuery, setOngoing);
+    // console.log('ongoing query', ongoingQuery)
+    fetchContests(ongoingQuery, setOngoing);
     fetchContests(upcomingQuery, setUpcoming);
     fetchContests(myContestsQuery, setMyContests);
     fetchContests(pastQuery, setPast);

@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const ContestContentAdd = (props) => {
   let contestid = "0";
-  let navigate = useNavigate(); 
+  const token = cookies.get("TOKEN");
+  let navigate = useNavigate();
 
   const location = useLocation();
 
@@ -59,7 +62,11 @@ export const ContestContentAdd = (props) => {
     //path to be corrected
     console.log("contestid", contestid);
     axios
-      .get("http://localhost:5000/api/contests/getcatogory/" + contestid)
+      .get("http://localhost:5000/api/contests/getcatogory/" + contestid, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         console.log(res);
         setcontestattr({
@@ -69,7 +76,7 @@ export const ContestContentAdd = (props) => {
 
         setchoice({
           ...choice,
-          categoryID:  res.data[0]._id,
+          categoryID: res.data[0]._id,
         });
       });
   }
@@ -122,18 +129,25 @@ export const ContestContentAdd = (props) => {
 
     alert("content add form posted");
     axios
-      .post("http://localhost:5000/api/contents/create", {
-        content: content,
-        choice: choice,
-      })
+      .post(
+        "http://localhost:5000/api/contents/create",
+        {
+          content: content,
+          choice: choice,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
         alert(res.data);
         console.log(res.data);
         if (res.data.msg === "added successfully") {
-          
           console.log("added successfully");
           //   window.location = "/";
-          navigate("/contestshow", { state: {contestID : choice.contestID} });
+          navigate("/contestshow", { state: { contestID: choice.contestID } });
         }
       });
     //window.location = "/";

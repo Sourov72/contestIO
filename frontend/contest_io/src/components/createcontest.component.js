@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { participantTypeToValue } from "../components/helperFunctions";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const CreateContest = () => {
   var today, mm, dd, yyyy;
   let id = "12";
+  const token = cookies.get("TOKEN");
 
   const [comp, setcomp] = useState({
     generalcom: true,
@@ -103,7 +106,11 @@ export const CreateContest = () => {
     console.log("hostid ", contest.hostID);
 
     axios
-      .post("http://localhost:5000/api/contests/create", contest)
+      .post("http://localhost:5000/api/contests/create", contest, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         console.log("contest created successfully!", res);
         const host = {
@@ -112,14 +119,22 @@ export const CreateContest = () => {
           type: participantTypeToValue("host", "voter", "follower"),
         };
         axios
-          .post("http://localhost:5000/api/participants/create", host)
+          .post("http://localhost:5000/api/participants/create", host, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
           .then((res) => console.log("host creation", res));
         const allLists = {
           ...lists,
           contestID: res.data._id,
         };
         axios
-          .post("http://localhost:5000/api/participants/createAll", allLists)
+          .post("http://localhost:5000/api/participants/createAll", allLists, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
           .then((res) => console.log("members creation", res));
       });
     alert("Contest Creation success");

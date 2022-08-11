@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { ContestBox } from "./contestBox";
 import { objarr2str } from "../helperFunctions";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const ContestSearch = () => {
+  const token = cookies.get("TOKEN");
   const location = useLocation();
   const [skip, setskip] = useState(0);
   var limit = 8;
@@ -24,12 +28,20 @@ export const ContestSearch = () => {
   });
 
   const fetchContests = async (q, func) => {
-    const response = await fetch(`/api/contests/query?${q}`);
-    const json = await response.json();
+    axios.get(`http://localhost:5000/api/contests/query?${q}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      func(response.data)
+    })
+    // const response = await fetch(`/api/contests/query?${q}`);
+    // const json = await response.json();
 
-    if (response.ok) {
-      func(json);
-    }
+    // if (response.ok) {
+    //   func(json);
+    // }
   };
 
   useEffect(() => {

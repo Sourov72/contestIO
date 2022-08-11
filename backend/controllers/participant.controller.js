@@ -102,7 +102,16 @@ const queryContests = async (req, res) => {
       }
     }
   }
-
+  console.log(query) 
+  for (let key in query) {
+    if(key.includes('ID')) {
+      for (let key2 in query[key]) {
+        query[key][key2] = mongoose.Types.ObjectId(query[key][key2])
+      }
+    }
+    
+  }
+  console.log(query)
   // console.log('query: ',query);
   const contests = await ParticipantModel.find(query).populate('contestID')
   // const contests = await ParticipantModel.aggregate([
@@ -124,7 +133,7 @@ const queryContests = async (req, res) => {
   //   },
     
   // ]);
-
+  console.log("contests: ", contests)
   res.status(200).json({
     contests: contests,
     count: contests.length,

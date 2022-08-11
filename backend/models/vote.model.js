@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const voteSchema = new mongoose.Schema(
     {
-        userID : {
+        participantID : {
             type : mongoose.Schema.Types.ObjectId,
             ref : "User",
             required : true
@@ -27,6 +27,6 @@ const voteSchema = new mongoose.Schema(
     }
 )
 
-voteSchema.index({userID: 1, choiceID: 1, categoryID: 1}, {unique: true})
+voteSchema.index({participantID: 1, choiceID: 1, categoryID: 1}, {unique: true})
 
 module.exports = mongoose.model('Vote', voteSchema)

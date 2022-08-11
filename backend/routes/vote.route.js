@@ -7,8 +7,7 @@ const {
     deleteVote,
     updateVote
 } = require('../controllers/vote.controller')
-
-
+const { basicAuth, selfAuth } = require("../controllers/auth.controller")
 const router = express.Router()
 
 // GET all votes
@@ -21,12 +20,12 @@ router.get('/query', queryVotes);
 router.get('/vote/:id', getVote)
 
 // POST a new vote
-router.post('/create', createVote)
+router.post('/create', basicAuth, createVote)
 
 // DELETE a new vote
-router.delete('/delete/:id', deleteVote)
+router.delete('/delete/:id',basicAuth,  deleteVote)
 
 // UPDATE a new vote
-router.patch('/update/:id', updateVote)
+router.patch('/update/:id', basicAuth, updateVote)
 
 module.exports = router

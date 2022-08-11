@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const EditProfile = () => {
+  const token = cookies.get("TOKEN");
   const [user, setuser] = useState({
     username: "",
     oldpassword: "",
@@ -16,7 +19,12 @@ export const EditProfile = () => {
     // here id is send simpliflically not as a object
     const id = localStorage.getItem("id");
 
-    axios.get("http://localhost:5000/api/user/" + id).then((res) => {
+    axios.get("http://localhost:5000/api/user/" + id,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => {
       console.log(res.data.user.socialhandles.facebookhandle);
       setuser({
         username: res.data.user.username,
@@ -53,10 +61,8 @@ export const EditProfile = () => {
   const update = (e) => {
     e.preventDefault();
 
-    
-
-    console.log("pass", user.oldpassword)
-    console.log("repass", user.reoldpassword)
+    console.log("pass", user.oldpassword);
+    console.log("repass", user.reoldpassword);
 
     if (user.oldpassword === user.reoldpassword) {
       axios
@@ -76,9 +82,9 @@ export const EditProfile = () => {
     }
 
     setuser({
-        ...user,
-        reoldpassword: "",
-    })
+      ...user,
+      reoldpassword: "",
+    });
   };
 
   let source = "../images/" + user.img;
@@ -191,7 +197,6 @@ export const EditProfile = () => {
                     type="button"
                     className="btn-close"
                     data-bs-dismiss="modal"
-                    
                     aria-label="Close"
                   ></button>
                 </div>

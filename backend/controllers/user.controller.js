@@ -1,4 +1,7 @@
 const User = require("../models/user.model");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 
 // router.route("/").get((req, res) => {
 //   User.find()
@@ -10,7 +13,6 @@ const getAllUser = (req, res) => {
   User.find()
     .then((users) => res.json(users))
     .catch((err) => res.status(400).json("Error :" + err));
-  console.log("heree in all users class");
 };
 
 const getUser = (req, res) => {
@@ -18,17 +20,57 @@ const getUser = (req, res) => {
   const { email, password } = req.body;
   console.log(email);
 
-  User.findOne({ email: email }, function (err, user) {
-    if (user) {
-      if (password === user.password) {
-        res.send({ message: "Login Successfull", user: user });
-      } else {
-        res.send({ message: "Password didn't match" });
+  User.findOne({ email: email })
+    .then((user) => {
+      // console.log("user:", user);
+      if(!user) {
+        return res.status(400).send({
+          message: "No such user exists"
+        });
       }
-    } else {
-      res.send({ message: "User not registerd" });
-    }
-  });
+      // check if the hashed pwd matches
+      bcrypt
+        .compare(password, user.password)
+        .then((pwdCheck) => {
+          if (!pwdCheck) {
+            return res.status(400).send({
+              message: "Passwords does not match",
+              error,
+            });
+          }
+
+          // if success in matching, then create a jwt token
+          const token = jwt.sign(
+            {
+              userID: user._id,
+              userEmail: user.email,
+            },
+            "login-token",
+            { expiresIn: "24h" }
+          );
+
+          //   return success res
+          res.status(200).send({
+            message: "Login Successful",
+            user: user,
+            token,
+          });
+        })
+        .catch((error) => {
+          // if password did not match
+          res.status(400).send({
+            message: "Passwords does not match",
+            error,
+          });
+        });
+    })
+    // catch error if email does not exist
+    .catch((e) => {
+      res.status(400).send({
+        message: "Email not found",
+        e,
+      });
+    });
 };
 
 const getSpecificUsers = (req, res) => {
@@ -50,7 +92,7 @@ const getSpecificUsers = (req, res) => {
       },
     ],
   })
-    .then((users) => res.json(users))
+    .then((users) => res.status(200).json(users))
     .catch((err) => res.status(400).json("Error :" + err));
 };
 
@@ -76,60 +118,77 @@ const createUser = (req, res) => {
   const instagramhandle = req.body.instagramhandle;
   const img = req.body.img;
 
-  console.log("img", img);
-
   User.findOne({ email: email }, function (err, result) {
     if (result) {
-      res.json("User already registered");
-    } else {
-      const newUser = new User({
-        username,
-        password,
-        email,
-        bio,
-        socialhandles: {
-          facebookhandle,
-          instagramhandle,
-        },
-        img,
+      res.status(400).json({
+        message: "User already registered",
       });
-      console.log("in new user addtion")
-
-      newUser
-        .save()
-        .then(() => res.json("User added!"))
-        .catch((err) => res.status(400).json("Error hello broth " + err));
+    } else {
+      bcrypt
+        .hash(password, 10)
+        .then((password) => {
+          console.log("hashed password: ", password)
+          const newUser = new User({
+            username,
+            password,
+            email,
+            bio,
+            socialhandles: {
+              facebookhandle,
+              instagramhandle,
+            },
+            img,
+          });
+          // console.log("new user:", newUser)
+          newUser
+            .save()
+            .then(() =>
+              res.status(200).json({
+                message: "User added successfully",
+              })
+            )
+            .catch((err) => {
+              console.log(err)
+              res.status(400).json({
+                message: "Register Error",
+                error: err,
+              })
+            });
+        })
+        .catch((err) =>
+          res.status(400).json({
+            message: "Password was not hashed successfully",
+            error: err,
+          })
+        );
     }
   });
 };
 
+const updateUser = async (req, res) => {
+  const { id } = req.params;
 
-const updateUser = async(req, res) => {
-  const {id} = req.params;
-
-  console.log("req",req.body)
+  console.log("req", req.body);
 
   // if (!mongoose.Types.ObjectId.isValid(id)) {
   //   return res.status(404).json({ error: "No such contest" });
   // }
 
   const user = await User.findByIdAndUpdate(id, {
-    "username" : req.body.username,
-    "bio" : req.body.bio,
-    "socialhandles": {
-      "facebookhandle" : req.body.facebookhandle,
-      "instagramhandle" : req.body.instagramhandle,
+    username: req.body.username,
+    bio: req.body.bio,
+    socialhandles: {
+      facebookhandle: req.body.facebookhandle,
+      instagramhandle: req.body.instagramhandle,
     },
-    "img" : req.body.img,
-
+    img: req.body.img,
   });
 
   if (!user) {
     return res.status(404).json({ error: "No such user" });
   }
-  res.status(200).json({user, message: "User Updated!"});
-
-}
+  res.status(200).json({ user, message: "User Updated!" });
+};
 
 // module.exports = {createUser}
 
@@ -141,4 +200,3 @@ module.exports = {
   getSpecificUsers,
   updateUser,
 };
-

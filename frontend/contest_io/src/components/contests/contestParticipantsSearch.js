@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { obj2str, participantTypeToValue, participantValueToType } from "../helperFunctions";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const ContestParticipantSearch = (props) => {
+  const token = cookies.get("TOKEN");
   const [searchShow, setSearchShow] = useState(false);
   const [allUsers, setallUsers] = useState([]);
 
@@ -43,7 +46,12 @@ export const ContestParticipantSearch = (props) => {
     console.log("query", query);
 
     axios
-      .get(`http://localhost:5000/api/participants/query?${query}`)
+      .get(`http://localhost:5000/api/participants/query?${query}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         // console.log("response:", res);
         // setallUsers([])

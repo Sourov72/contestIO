@@ -79,7 +79,8 @@ const getallContent = async (req, res) => {
 
 const getuserContent = async (req, res) => {
   console.log("reqbody", req.body);
-  const { userID, contestID } = req.body.contest;
+  const userID = req.user.userID;
+  const { contestID } = req.body.contest.contestID;
   const { categoryID } = req.body.category;
   console.log(userID, " ff", contestID, "ttt ", categoryID);
 
@@ -283,6 +284,17 @@ const updateContent = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No such content" });
+  }
+
+  const cntnt = await ContentModel.findById(id)
+  if(! cntnt) {
+    return res.status(404).json({ error: "No such content" });
+  }
+
+  const participant = await ParticipantModel.find({participantID: cntnt.participantID})
+
+  if(participant.userID != req.user.userID) {
+    return res.status(400).json({ error: "Don't have sufficient permissions to edit this content" });
   }
 
   const content = await ContentModel.findByIdAndUpdate(id, {

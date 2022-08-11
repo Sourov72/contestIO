@@ -6,8 +6,12 @@ import { obj2str } from "./helperFunctions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+
 
 export const Profileview = (props) => {
+  const token = cookies.get("TOKEN");
   const location = useLocation()
   const [myContests, setMyContests] = useState([]);
   const [user, setuser] = useState({
@@ -41,18 +45,20 @@ export const Profileview = (props) => {
     
     const fetchContests = async (query, func) => {
       // console.log('the query:', query)
-      const response = await fetch(`/api/participants/queryContests?${query}`);
-      const json = await response.json();
-
-      if (response.ok) {
+      axios
+      .get(`http://localhost:5000/api/participants/queryContests?${query}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
         var contests = []
-        // console.log("received:", json.contests)
-        for(let i = 0; i < json.contests.length; i++) {
-          contests.push(json.contests[i]['contestID'])
+        for(let i = 0; i < res.data.contests.length; i++) {
+          contests.push(res.data.contests[i]['contestID'])
         }
-        // console.log('contests:', contests)
-        func(contests);
-      }
+        func(contests)
+      });
     };
     fetchContests(myContestsQuery, setMyContests);
   }, [location]);

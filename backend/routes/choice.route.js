@@ -7,8 +7,7 @@ const {
     deleteChoice,
     updateChoice
 } = require('../controllers/choice.controller')
-
-
+const { basicAuth, selfAuth } = require("../controllers/auth.controller")
 const router = express.Router()
 
 // GET all choices
@@ -21,12 +20,12 @@ router.get('/query', queryChoices);
 router.get('/choice/:id', getChoice)
 
 // POST a new choice
-router.post('/create', createChoice)
+router.post('/create', basicAuth, createChoice)
 
 // DELETE a new choice
-router.delete('/delete/:id', deleteChoice)
+router.delete('/delete/:id', basicAuth, deleteChoice)
 
 // UPDATE a new choice
-router.patch('/update/:id', updateChoice)
+router.patch('/update/:id', basicAuth, updateChoice)
 
 module.exports = router
