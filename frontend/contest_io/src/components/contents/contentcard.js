@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import axios from "axios";
+
 function ImageView(props) {
   return (
     <div className="modal-body">
@@ -10,7 +12,7 @@ function ImageView(props) {
 
         // alt={user.username}
       />{" "}
-      {console.log("image name props in functionsssss", props.img)}
+      {/* {console.log("image name props in functionsssss", props.img)} */}
     </div>
   );
 }
@@ -23,6 +25,50 @@ export const Contentcard = (props) => {
   const [image, setimage] = useState({
     imagename: "",
   });
+  const [check, setcheck] = useState(false);
+
+  useEffect(
+    () => {
+      console.log("In content Use Effect");
+      // console.log("userid", props.userID);
+
+      // console.log("contestid", props.contestID);
+
+      console.log("choiceid", props.choiceID);
+
+      // console.log("categoryid", props.categoryID);
+
+      console.log("contentid", props.contentID);
+
+      const vote = {
+        userID: props.userID,
+        contestID: props.contestID,
+        choiceID: props.choiceID,
+        categoryID: props.categoryID,
+      };
+
+      axios
+        .get("http://localhost:5000/api/votes/vote", {
+          params: vote,
+        })
+        .then((res) => {
+          console.log("res body in vote get", res.data);
+
+          if (res.data.message === "vote found") {
+            setcheck(true);
+          } else {
+            setcheck(false);
+          }
+        });
+    },
+    [
+      // props.contestID,
+      // props.choiceID,
+      // props.categoryID,
+      // props.contentID,
+      // props.userID,
+    ]
+  );
 
   const imageClick = (e) => {
     console.log("Click", e.target.name);
@@ -43,16 +89,56 @@ export const Contentcard = (props) => {
   };
 
   const handleChange = async (e) => {
+    // e.preventDefault();
     if (e.target.checked) {
-      console.log("userid", props.userID);
+      console.log("in check option");
 
-      console.log("contestid", props.contestID);
+      // console.log("userid", props.userID);
+
+      // console.log("contestid", props.contestID);
 
       console.log("choiceid", props.choiceID);
 
-      console.log("categoryid", props.categoryID);
+      // console.log("categoryid", props.categoryID);
 
       console.log("contentid", props.contentID);
+
+      const vote = {
+        userID: props.userID,
+        contestID: props.contestID,
+        choiceID: props.choiceID,
+        categoryID: props.categoryID,
+      };
+
+      axios.post("http://localhost:5000/api/votes/create", vote).then((res) => {
+        console.log("res body in vote create", res.data);
+      });
+      setcheck(true)
+    } else {
+      setcheck(false)
+      console.log("in uncheck option");
+      // console.log("userid", props.userID);
+
+      // console.log("contestid", props.contestID);
+
+      console.log("choiceid", props.choiceID);
+
+      // console.log("categoryid", props.categoryID);
+
+      console.log("contentid", props.contentID);
+
+      const vote = {
+        userID: props.userID,
+        contestID: props.contestID,
+        choiceID: props.choiceID,
+        categoryID: props.categoryID,
+      };
+
+      axios
+        .delete("http://localhost:5000/api/votes/delete", { data: vote })
+        .then((res) => {
+          console.log("res body in vote delete", res.data);
+        });
     }
   };
 
@@ -75,7 +161,7 @@ export const Contentcard = (props) => {
 
   var linkStyle;
   if (hov === true) {
-    console.log("hello there");
+    // console.log("hello there");
     linkStyle = {
       image: {
         borderColor: "purple",
@@ -117,15 +203,32 @@ export const Contentcard = (props) => {
           <h5 className="card-title">{props.title}</h5>
           <p className="card-text">{props.description}</p>
         </div>
+
+        {check === true ? (
+          <>
+            <input
+              className="form-check-input"
+              type="checkbox"
+              name="ownuploads"
+              onChange={handleChange}
+              id="ownuploads"
+              checked
+              // {...1===1? {"checked"}:<>bla</>}
+            />
+          </>
+        ) : (
+          <>
+            <input
+              className="form-check-input"
+              type="checkbox"
+              name="ownuploads"
+              onChange={handleChange}
+              id="ownuploads"
+              // {...1===1? {"checked"}:<>bla</>}
+            />
+          </>
+        )}
         <div className="form-check">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            name="ownuploads"
-            onChange={handleChange}
-            id="ownuploads"
-            // {...1===1? {"checked"}:<>bla</>}
-          />
           <label className="form-check-label" htmlFor="ownuploads">
             Your Uploaded Contents
           </label>
@@ -175,7 +278,7 @@ export const Contentcard = (props) => {
                             />  */}
 
             {/* </div> */}
-            {console.log("image name props", props.link)}
+            {/* {console.log("image name props", props.link)} */}
 
             <ImageView img={props.link} />
             <div className="modal-footer">

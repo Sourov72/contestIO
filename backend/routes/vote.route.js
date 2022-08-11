@@ -18,13 +18,13 @@ router.get('/', getVotes)
 router.get('/query', queryVotes);
 
 // GET a single vote
-router.get('/vote/:id', getVote)
+router.get('/vote', getVote)
 
 // POST a new vote
 router.post('/create', createVote)
 
 // DELETE a new vote
-router.delete('/delete/:id', deleteVote)
+router.delete('/delete', deleteVote)
 
 // UPDATE a new vote
 router.patch('/update/:id', updateVote)

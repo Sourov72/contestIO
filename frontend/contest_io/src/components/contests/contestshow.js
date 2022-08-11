@@ -125,12 +125,12 @@ export const ContestShow = (props) => {
           new Date(Date.parse(res.data[0].registrationEndTime) + 86400000)
         );
       });
-    var q = [{ userID: ["eq", uid] }];
+    var q = [{ userID: ["eq", uid] }, {contestID:["eq", contestID]}];
     const query = obj2str(q);
     axios
       .get(`http://localhost:5000/api/participants/query?${query}`)
       .then((res) => {
-        // console.log("current participant:", res.data.participants[0]);
+        console.log("current participant:", res.data.participants[0]);
         let types = participantValueToType(res.data.participants[0]["type"]);
         console.log("participant types:", types);
         setUserType(types);
@@ -262,7 +262,7 @@ export const ContestShow = (props) => {
                   
                 }
               })} */}
-              {console.log(idd, "in fjskfja")}
+              {/* {console.log("jhjhjkhjhjh", userType)} */}
 
               {userType.includes("HOST") ? (
                 <>

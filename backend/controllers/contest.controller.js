@@ -245,6 +245,28 @@ const newvoteradd = async (req, res) => {
   //   }
 };
 
+
+const aptype = ["BLOCKED", "FOLLOWER", "VOTER", "JURY", "CONTESTANT", "HOST"];
+
+// module.exports = {createUser}
+
+function participantValueToType(value) {
+  let retval = []
+  for (let i = 0; i < 6; i++) {
+    (value & 1<<(i+1)) && retval.push(aptype[i])
+  }
+  return retval
+}
+
+ function getcontestfunc(contestID){
+  var contest="";
+  contest = ContestModel.findById(contestID)
+  
+  return contest
+
+    
+}
+
 // export
 module.exports = {
   getContest,
@@ -256,4 +278,6 @@ module.exports = {
   createCategory,
   getContestCategories,
   newvoteradd,
+  participantValueToType,
+  getcontestfunc,
 };

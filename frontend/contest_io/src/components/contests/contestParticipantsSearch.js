@@ -23,13 +23,13 @@ export const ContestParticipantSearch = (props) => {
   async function getallUser(name) {
     var bitmask = 0;
     if (type === "voterlist") {
-      bitmask = participantTypeToValue(["voter"]);
+      bitmask = participantTypeToValue("voter");
     }
     if (type === "participantlist") {
-      bitmask = participantTypeToValue(["contestant"]);
+      bitmask = participantTypeToValue("contestant");
     }
     if (type == "jurylist") {
-      bitmask = participantTypeToValue(["jury"]);
+      bitmask = participantTypeToValue("jury");
     }
 
     var q = [

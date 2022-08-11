@@ -106,11 +106,14 @@ export const CreateContest = () => {
       .post("http://localhost:5000/api/contests/create", contest)
       .then((res) => {
         console.log("contest created successfully!", res);
+        console.log("host type value", participantTypeToValue("host", "voter", "follower"))
         const host = {
           userID: localStorage.getItem("id"),
           contestID: res.data._id,
           type: participantTypeToValue("host", "voter", "follower"),
         };
+
+        console.log("object host type value", host.type)
         axios
           .post("http://localhost:5000/api/participants/create", host)
           .then((res) => console.log("host creation", res));
@@ -463,7 +466,7 @@ export const CreateContest = () => {
                       <div
                         className="modal fade"
                         id="exampleModal"
-                        tabindex="-1"
+                        tabIndex="-1"
                         aria-labelledby="exampleModalLabel"
                         aria-hidden="true"
                       >

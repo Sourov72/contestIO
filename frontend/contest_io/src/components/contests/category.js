@@ -52,12 +52,15 @@ export const ContestCategoryAdd = (props) => {
             // window.location = "/contestshow";
 
             setcategory({
+              ...category,
               title: "",
               description: "",
               maxvoteperUser: "",
               maxchoices: "",
             });
         }
+
+        
       });
     //window.location = "/";
   };

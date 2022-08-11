@@ -1,6 +1,7 @@
 const ParticipantModel = require("../models/participant.model");
 const userModel = require("../models/user.model");
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 // participant types
 const ptype = {
@@ -104,7 +105,7 @@ const queryContests = async (req, res) => {
   }
 
   // console.log('query: ',query);
-  const contests = await ParticipantModel.find(query).populate('contestID')
+  const contests = await ParticipantModel.find(query).populate("contestID");
   // const contests = await ParticipantModel.aggregate([
   //   {
   //     $addFields: {
@@ -122,7 +123,7 @@ const queryContests = async (req, res) => {
   //       as: "contestData",
   //     },
   //   },
-    
+
   // ]);
 
   res.status(200).json({
@@ -192,25 +193,29 @@ const queryParticipants = async (req, res) => {
     }
   }
 
-  // console.log("query: ", query);
+  console.log("query: ", query);
   const participants = await ParticipantModel.aggregate([
-    {
-      $addFields: {
-        participantObjID: { $toObjectId: "$userID" },
-      },
-    },
+    // {
+    //   $addFields: {
+    //     participantObjID: { $toObjectId: "$userID" },
+    //   },
+    // },
     {
       $lookup: {
         from: "users",
-        localField: "participantObjID",
+        localField: "userID",
         foreignField: "_id",
         as: "userData",
       },
     },
     {
       $project: {
-        userID: 1,
-        contestID: 1,
+        userID: {
+           $toString: "$userID"
+        },
+        contestID: {
+           $toString: "$contestID"
+       },
         type: 1,
         username: "$userData.username",
         email: "$userData.email",
@@ -357,6 +362,15 @@ const updateParticipant = async (req, res) => {
   res.status(200).json(participant);
 };
 
+function getParticipantfunc(userID, contestID) {
+  var participant = "";
+  participant = ParticipantModel.findOne({
+    userID: ObjectId(userID),
+    contestID: ObjectId(contestID),
+  });
+
+  return participant;
+}
 // export
 module.exports = {
   getParticipant,
@@ -367,4 +381,5 @@ module.exports = {
   createParticipantsAll,
   deleteParticipant,
   updateParticipant,
+  getParticipantfunc,
 };

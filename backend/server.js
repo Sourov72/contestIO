@@ -27,8 +27,8 @@ app.use("/api/user", userRouter);
 app.use("/api/contests", contestRouter);
 app.use("/api/participants", participantRouter);
 app.use("/api/contents", contentRouter);
-app.use("/api/choices", contentRouter);
-app.use("/api/votes", contentRouter);
+app.use("/api/choices", ChoiceRouter);
+app.use("/api/votes", VoteRouter);
 
 // connect to db
 mongoose.connect(process.env.ATLAS_URI)

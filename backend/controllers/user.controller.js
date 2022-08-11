@@ -93,7 +93,7 @@ const createUser = (req, res) => {
         },
         img,
       });
-      console.log("in new user addtion")
+      console.log("in new user addtion");
 
       newUser
         .save()
@@ -103,35 +103,33 @@ const createUser = (req, res) => {
   });
 };
 
+const updateUser = async (req, res) => {
+  const { id } = req.params;
 
-const updateUser = async(req, res) => {
-  const {id} = req.params;
-
-  console.log("req",req.body)
+  console.log("req", req.body);
 
   // if (!mongoose.Types.ObjectId.isValid(id)) {
   //   return res.status(404).json({ error: "No such contest" });
   // }
 
   const user = await User.findByIdAndUpdate(id, {
-    "username" : req.body.username,
-    "bio" : req.body.bio,
-    "socialhandles": {
-      "facebookhandle" : req.body.facebookhandle,
-      "instagramhandle" : req.body.instagramhandle,
+    username: req.body.username,
+    bio: req.body.bio,
+    socialhandles: {
+      facebookhandle: req.body.facebookhandle,
+      instagramhandle: req.body.instagramhandle,
     },
-    "img" : req.body.img,
-
+    img: req.body.img,
   });
 
   if (!user) {
     return res.status(404).json({ error: "No such user" });
   }
-  res.status(200).json({user, message: "User Updated!"});
+  res.status(200).json({ user, message: "User Updated!" });
+};
 
-}
 
-// module.exports = {createUser}
+
 
 module.exports = {
   createUser,
@@ -140,5 +138,5 @@ module.exports = {
   profilecheck,
   getSpecificUsers,
   updateUser,
+  
 };
-
