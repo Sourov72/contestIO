@@ -98,7 +98,7 @@ export const ContestShow = (props) => {
 
     // const contestID = props.contestID;
     console.log("contest id in contest show", contestID);
-    setuserid( localStorage.getItem("id"));
+    setuserid(localStorage.getItem("id"));
 
     console.log("userID from useeffect", userid);
 
@@ -125,7 +125,7 @@ export const ContestShow = (props) => {
           new Date(Date.parse(res.data[0].registrationEndTime) + 86400000)
         );
       });
-    var q = [{ userID: ["eq", uid] }, {contestID:["eq", contestID]}];
+    var q = [{ userID: ["eq", uid] }, { contestID: ["eq", contestID] }];
     const query = obj2str(q);
     axios
       .get(`http://localhost:5000/api/participants/query?${query}`)
@@ -301,7 +301,10 @@ export const ContestShow = (props) => {
               )}
               {!userType.includes("BLOCKED") && (
                 <>
-                  <Link to="/uploadcontentshow" state={{ contestID: location.state.contestID }}>
+                  <Link
+                    to="/uploadcontentshow"
+                    state={{ contestID: location.state.contestID }}
+                  >
                     <button className="btn btn-danger px-4 my-2">
                       See Contents
                     </button>

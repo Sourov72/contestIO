@@ -19,15 +19,18 @@ const getVote = async (req, res) => {
   //   return res.status(404).json({ error: "No such vote" });
   // }
 
-  // console.log("get vote res body", req.query);
+  console.log("get vote res body", req.query);
 
-  // // get the values from the request's body
+  //  get the values from the request's body
   const { userID, contestID, choiceID, categoryID } = req.query;
 
   var participantID = "",
     participant = "";
 
   participant = await participantmod.getParticipantfunc(userID, contestID);
+  if (!participant) {
+    return res.send({ message: "No such participant found" });
+  }
   // console.log("from participant func", participant);
 
   participantID = participant._id;
@@ -129,7 +132,8 @@ const createVote = async (req, res) => {
     participant;
 
   participant = await participantmod.getParticipantfunc(userID, contestID);
-  console.log("from participant func", participant);
+  console.log("from participant func", participant._id);
+
 
   participantID = participant._id;
   value = participant.type;
@@ -212,6 +216,32 @@ const updateVote = async (req, res) => {
   res.status(200).json(vote);
 };
 
+// function deletevotefunc(participantID){
+
+//   const votes =  VoteModel.deleteMany({
+//     participantID: participantID,
+//   });
+//   if (!votes) {
+//     console.log("no vote found for deletion")
+//   }
+//   else{
+//     console.log("succuessfully deleted the votes", votes)
+//   }
+
+// }
+
+// function deletevotechoicefunc(choiceID){
+//   const votes =  VoteModel.deleteMany({
+//     choiceID: choiceID,
+//   });
+//   if (!votes) {
+//     console.log("no vote found for deletion")
+//   }
+//   else{
+//     console.log("succuessfully deleted the votes", votes)
+//   }
+// }
+
 // export
 module.exports = {
   getVote,
@@ -220,4 +250,6 @@ module.exports = {
   createVote,
   deleteVote,
   updateVote,
+  // deletevotefunc,
+  // deletevotechoicefunc,
 };

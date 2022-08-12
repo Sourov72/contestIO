@@ -59,18 +59,25 @@ export const UploadedContentsShow = () => {
       .get("http://localhost:5000/api/contests/getcatogory/" + contestid)
       .then((res) => {
         // console.log(res);
-        categoryid = res.data[0]._id;
+        
         console.log("categories", res.data);
+        if (res.data.length > 0) categoryid = res.data[0]._id;
 
         setcategories({
           ...categories,
           contestcategories: res.data,
         });
 
-        setcategoryid({
-          ...category,
-          categoryID: res.data[0]._id,
-        });
+        if(res.data.length > 0) {
+
+          setcategoryid({
+            ...category,
+            categoryID: res.data[0]._id,
+          });
+
+        }
+
+       
       });
   }
 

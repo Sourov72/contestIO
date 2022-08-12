@@ -1,5 +1,8 @@
 const ParticipantModel = require("../models/participant.model");
 const userModel = require("../models/user.model");
+// const votemod = require("../controllers/vote.controller");
+// const contentmod = require("../controllers/content.controller")
+const deletemod = require("../controllers/delete.controller");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -30,12 +33,18 @@ const getParticipants = async (req, res) => {
 
 // get single participant
 const getParticipant = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No such participant" });
-  }
+  // const { id } = req.params;
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return res.status(404).json({ error: "No such participant" });
+  // }
+  console.log("req query", req.query);
+  const { userID, contestID } = req.query;
 
-  const participant = await ParticipantModel.find(id);
+  console.log("userid", userID, "contestid", contestID);
+  const participant = await ParticipantModel.findOne({
+    userID: ObjectId(userID),
+    contestID: ObjectId(contestID),
+  });
 
   if (!participant) {
     return res.status(404).json({ error: "No such participant" });
@@ -211,11 +220,11 @@ const queryParticipants = async (req, res) => {
     {
       $project: {
         userID: {
-           $toString: "$userID"
+          $toString: "$userID",
         },
         contestID: {
-           $toString: "$contestID"
-       },
+          $toString: "$contestID",
+        },
         type: 1,
         username: "$userData.username",
         email: "$userData.email",
@@ -333,16 +342,34 @@ const createParticipants = async (list, contestID, type) => {
 
 // delete a participant
 const deleteParticipant = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  // const { id } = req.params;
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return res.status(404).json({ error: "No such participant" });
+  // }
+  console.log("req body in delete parti", req.body);
+  const { userID, contestID } = req.body;
+
+  const participant = await ParticipantModel.find({
+    userID: ObjectId(userID),
+    contestID: ObjectId(contestID),
+  });
+
+  console.log("participant delete", participant);
+  if (participant) await deletemod.deletecontentfunc(participant[0]._id);
+
+  const participantdeleted = await ParticipantModel.deleteOne({
+    userID: ObjectId(userID),
+    contestID: ObjectId(contestID),
+  });
+  if (!participantdeleted) {
     return res.status(404).json({ error: "No such participant" });
   }
 
-  const participant = await ParticipantModel.findByIdAndDelete(id);
-  if (!participant) {
-    return res.status(404).json({ error: "No such participant" });
-  }
-  res.status(200).json(participant);
+  // await contentmod.deletecontentfunc(participant._id);
+  // await votemod.deletevotefunc(participant._id)
+
+
+  res.status(200).json(participantdeleted);
 };
 
 // update a participant
@@ -362,15 +389,16 @@ const updateParticipant = async (req, res) => {
   res.status(200).json(participant);
 };
 
-function getParticipantfunc(userID, contestID) {
+const getParticipantfunc = async (userID, contestID) => {
   var participant = "";
+  // console.log("in participant func", req, res);
   participant = ParticipantModel.findOne({
     userID: ObjectId(userID),
     contestID: ObjectId(contestID),
   });
 
   return participant;
-}
+};
 // export
 module.exports = {
   getParticipant,

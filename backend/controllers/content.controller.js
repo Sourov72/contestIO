@@ -1,6 +1,7 @@
 const ContentModel = require("../models/content.model");
 const ChoiceModel = require("../models/choice.model");
 const participantmod = require("../controllers/participant.controller");
+const choicemod = require("../controllers/choice.controller")
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 // get all contents
@@ -88,6 +89,10 @@ const getuserContent = async (req, res) => {
   // for participant id search
 
   participant = await participantmod.getParticipantfunc(userID, contestID);
+
+  if (!participant) {
+    return res.send({ message: "No such participant found" });
+  }
 
   participantID = participant._id;
 
@@ -318,6 +323,22 @@ const updateContent = async (req, res) => {
   res.status(200).json(content);
 };
 
+
+function deletecontentfunc(participantID){
+
+  const contents =  ContentModel.deleteMany({
+    participantID: participantID,
+  });
+  if (!contents) {
+    console.log("no content found for deletion")
+  }
+  else{
+    console.log("succuessfully deleted the contents", contents)
+    choicemod.deletechoicefunc(contents)
+  }
+
+}
+
 // export
 module.exports = {
   getContent,
@@ -328,4 +349,5 @@ module.exports = {
   updateContent,
   getallContent,
   getuserContent,
+  deletecontentfunc,
 };

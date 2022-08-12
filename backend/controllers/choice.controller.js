@@ -1,6 +1,6 @@
 const ChoiceModel = require("../models/choice.model");
 const mongoose = require("mongoose");
-
+const votemod = require("../controllers/vote.controller")
 
 // get all choices
 const getChoices = async (req, res) => {
@@ -29,63 +29,65 @@ const queryChoices = async (req, res) => {
   var query = {};
   var limit = 20;
   var skip = 0;
-//   console.log('req. query:', req.query)
+  //   console.log('req. query:', req.query)
   for (var key in req.query) {
     if (req.query[key] == "") {
       continue;
     }
-    var len = 1
-    if( typeof(req.query[key]) === "object") {
-        len = req.query[key].length
-    }
-    else {
-        req.query[key] = [req.query[key]]
+    var len = 1;
+    if (typeof req.query[key] === "object") {
+      len = req.query[key].length;
+    } else {
+      req.query[key] = [req.query[key]];
     }
     console.log(req.query[key]);
-    query[key] = {}
-    for(let i = 0; i < len; i++) {
-        const arr = req.query[key][i].split(",");
-        if(arr[1] === '') {
-            continue;
-        }
-        switch (arr[0]) {
-          case "eq":
-            query[key]['$eq'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "lt":
-            query[key]['$lt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "lte":
-            query[key]['$lte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "gt":
-            query[key]['$gt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "gte":
-            query[key]['$gte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "bitsAnySet":
-            query[key]['$bitsAnySet'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "regex":
-            query[key] = {'$regex' : isNaN(arr[1]) ? arr[1] : parseInt(arr[1]), '$options' : 'i'}
-            break;
-          case "limit":
-            limit = parseInt(arr[1]);
-            break;
-          case "skip":
-            skip = parseInt(arr[1]);
-            break;
-    
-          default:
-            break;
-        }
+    query[key] = {};
+    for (let i = 0; i < len; i++) {
+      const arr = req.query[key][i].split(",");
+      if (arr[1] === "") {
+        continue;
+      }
+      switch (arr[0]) {
+        case "eq":
+          query[key]["$eq"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lt":
+          query[key]["$lt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lte":
+          query[key]["$lte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gt":
+          query[key]["$gt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gte":
+          query[key]["$gte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "bitsAnySet":
+          query[key]["$bitsAnySet"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "regex":
+          query[key] = {
+            $regex: isNaN(arr[1]) ? arr[1] : parseInt(arr[1]),
+            $options: "i",
+          };
+          break;
+        case "limit":
+          limit = parseInt(arr[1]);
+          break;
+        case "skip":
+          skip = parseInt(arr[1]);
+          break;
+
+        default:
+          break;
+      }
     }
   }
-   
-  console.log('query: ',query);
 
-  const choices = await ChoiceModel.find(query).limit(limit).skip(skip)
+  console.log("query: ", query);
+
+  const choices = await ChoiceModel.find(query).limit(limit).skip(skip);
 
   res.status(200).json({
     choices: choices,
@@ -100,9 +102,9 @@ const createChoice = async (req, res) => {
   try {
     // try to create a new document
     const choice = await ChoiceModel.create({
-        categoryID,
-        contestID,
-        contentID
+      categoryID,
+      contestID,
+      contentID,
     });
     res.status(200).json(choice);
   } catch (error) {
@@ -143,6 +145,27 @@ const updateChoice = async (req, res) => {
   res.status(200).json(choice);
 };
 
+// function deletechoicefunc(contents) {
+//   console.log("come into choice deletion function");
+
+//   var arrayLength = contents.length;
+//   var choices = "";
+
+//   for (var i = 0; i < arrayLength; i++) {
+//     choices = ChoiceModel.deleteMany({
+//       contentID: contents[i]._id,
+//     });
+
+//     if (!choices) {
+//       console.log("no choice found for deletion");
+      
+//     } else {
+//       console.log("succuessfully deleted the choices", choices);
+//       votemod.deletevotechoicefunc(choice._id)
+//     }
+//   }
+// }
+
 // export
 module.exports = {
   getChoice,
@@ -151,4 +174,5 @@ module.exports = {
   createChoice,
   deleteChoice,
   updateChoice,
+  // deletechoicefunc,
 };

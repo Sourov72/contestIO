@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { participantValueToType, obj2str } from "../helperFunctions";
 
 import axios from "axios";
 
@@ -26,6 +27,7 @@ export const Contentcard = (props) => {
     imagename: "",
   });
   const [check, setcheck] = useState(false);
+  const [userType, setUserType] = useState("");
 
   useEffect(
     () => {
@@ -46,6 +48,16 @@ export const Contentcard = (props) => {
         choiceID: props.choiceID,
         categoryID: props.categoryID,
       };
+
+      axios
+        .get("http://localhost:5000/api/participants/getparticipant", {
+          params: vote,
+        })
+        .then((res) => {
+          console.log("res body in participant get", res.data.type);
+          let types = participantValueToType(res.data.type);
+          setUserType(types);
+        });
 
       axios
         .get("http://localhost:5000/api/votes/vote", {
@@ -113,9 +125,9 @@ export const Contentcard = (props) => {
       axios.post("http://localhost:5000/api/votes/create", vote).then((res) => {
         console.log("res body in vote create", res.data);
       });
-      setcheck(true)
+      setcheck(true);
     } else {
-      setcheck(false)
+      setcheck(false);
       console.log("in uncheck option");
       // console.log("userid", props.userID);
 
@@ -204,35 +216,46 @@ export const Contentcard = (props) => {
           <p className="card-text">{props.description}</p>
         </div>
 
-        {check === true ? (
+        {userType.includes("VOTER") ? (
           <>
-            <input
-              className="form-check-input"
-              type="checkbox"
-              name="ownuploads"
-              onChange={handleChange}
-              id="ownuploads"
-              checked
-              // {...1===1? {"checked"}:<>bla</>}
-            />
+            {check === true ? (
+              <>
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="ownuploads"
+                  onChange={handleChange}
+                  id="ownuploads"
+                  checked
+                  // {...1===1? {"checked"}:<>bla</>}
+                />
+                <div className="form-check">
+                  <label className="form-check-label" htmlFor="ownuploads">
+                    vote
+                  </label>
+                </div>
+              </>
+            ) : (
+              <>
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  name="ownuploads"
+                  onChange={handleChange}
+                  id="ownuploads"
+                  // {...1===1? {"checked"}:<>bla</>}
+                />
+                <div className="form-check">
+                  <label className="form-check-label" htmlFor="ownuploads">
+                    vote
+                  </label>
+                </div>
+              </>
+            )}
           </>
         ) : (
-          <>
-            <input
-              className="form-check-input"
-              type="checkbox"
-              name="ownuploads"
-              onChange={handleChange}
-              id="ownuploads"
-              // {...1===1? {"checked"}:<>bla</>}
-            />
-          </>
+          <></>
         )}
-        <div className="form-check">
-          <label className="form-check-label" htmlFor="ownuploads">
-            Your Uploaded Contents
-          </label>
-        </div>
       </div>
     );
   };
@@ -256,7 +279,7 @@ export const Contentcard = (props) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Create Contest
+                Image
               </h5>
               <button
                 type="button"
@@ -299,6 +322,7 @@ export const Contentcard = (props) => {
             </div>
           </div>
         </div>
+        {console.log("types", userType)}
       </div>
     </>
   );
