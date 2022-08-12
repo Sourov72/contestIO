@@ -5,12 +5,12 @@ const ChoiceModel = require("../models/choice.model");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
- function deletevotechoicefunc(choices) {
+async function deletevotechoicefunc(choices) {
   console.log("vote choice fun", choices);
   var arrayLength = choices.length;
 
   for (var i = 0; i < arrayLength; i++) {
-    const votesdeleted =  VoteModel.deleteMany({
+    const votesdeleted = await VoteModel.deleteMany({
       choiceID: choices[i]._id,
     });
     console.log("votesss choice deleted", votesdeleted);
@@ -22,7 +22,7 @@ const ObjectId = mongoose.Types.ObjectId;
   }
 }
 
- function deletechoicefunc(contents) {
+async function deletechoicefunc(contents) {
   console.log("come into choice deletion function", contents);
 
   var arrayLength = contents.length;
@@ -30,12 +30,12 @@ const ObjectId = mongoose.Types.ObjectId;
   var choicesdelete = "";
 
   for (var i = 0; i < arrayLength; i++) {
-    choices =  ChoiceModel.find({
+    choices = await ChoiceModel.find({
       contentID: contents[i]._id,
     });
 
-    if (choices)  deletevotechoicefunc(choices);
-    choicesdelete =  ChoiceModel.deleteMany({
+    if (choices) await deletevotechoicefunc(choices);
+    choicesdelete = await ChoiceModel.deleteMany({
       contentID: contents[i]._id,
     });
 
@@ -49,14 +49,14 @@ const ObjectId = mongoose.Types.ObjectId;
   }
 }
 
- function deletevotefunc(participantID) {
-  const votes =  VoteModel.find({
+async function deletevotefunc(participantID) {
+  const votes = await VoteModel.find({
     participantID: participantID,
   });
 
   console.log("votes", votes);
 
-  const votesdeleted =  VoteModel.deleteMany({
+  const votesdeleted = await VoteModel.deleteMany({
     participantID: participantID,
   });
   console.log("contents deleted", votesdeleted);
@@ -67,17 +67,17 @@ const ObjectId = mongoose.Types.ObjectId;
   }
 }
 
- function deletecontentfunc(participantID) {
+async function deletecontentfunc(participantID) {
   console.log("delete contentsfucn", participantID);
-  const contents =  ContentModel.find({
+  const contents = await ContentModel.find({
     participantID: participantID,
   });
 
   console.log("contents", contents);
 
-  if (contents)  deletechoicefunc(contents);
+  if (contents) await deletechoicefunc(contents);
 
-  const contentsdeleted =  ContentModel.deleteMany({
+  const contentsdeleted = await ContentModel.deleteMany({
     participantID: participantID,
   });
 
