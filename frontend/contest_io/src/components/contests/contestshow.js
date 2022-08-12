@@ -374,6 +374,11 @@ export const ContestShow = () => {
                           </div>
                         </div>
                       </div>
+                      <a href="/editgeneral{contestID}">
+                        <button type="button" className="btn btn-primary" >
+                                Edit
+                        </button>
+                      </a>
                     </>
                   );
                 }

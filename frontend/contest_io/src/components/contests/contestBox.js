@@ -9,7 +9,7 @@ export const ContestBox = ({contests, boxTitle, q, col}) => {
       {contests.length > 0 ? 
         <>
         {contests.map((contest) => (
-        <ContestCard key={contest._id} contest={contest} col={col} />
+        <ContestCard key={contest._id} contest={contest} col={col} fol={0} />
         ))}
         {col == 12 && 
         <Link className="d-flex justify-content-center" to="/contests/search" state={{query : q}}>
