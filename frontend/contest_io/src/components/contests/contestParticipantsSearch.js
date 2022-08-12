@@ -26,13 +26,13 @@ export const ContestParticipantSearch = (props) => {
   async function getallUser(name) {
     var bitmask = 0;
     if (type === "voterlist") {
-      bitmask = participantTypeToValue(["voter"]);
+      bitmask = participantTypeToValue("voter");
     }
     if (type === "participantlist") {
-      bitmask = participantTypeToValue(["contestant"]);
+      bitmask = participantTypeToValue("contestant");
     }
     if (type == "jurylist") {
-      bitmask = participantTypeToValue(["jury"]);
+      bitmask = participantTypeToValue("jury");
     }
 
     var q = [
@@ -43,7 +43,7 @@ export const ContestParticipantSearch = (props) => {
       q.push({ username: ["regex", name] });
     }
     const query = obj2str(q);
-    console.log("query", query);
+    // console.log("query", query);
 
     axios
       .get(`http://localhost:5000/api/participants/query?${query}`,
@@ -76,7 +76,7 @@ export const ContestParticipantSearch = (props) => {
             <tr key={currentPerson.email}>
               <td>
                 <Link
-                  to="/profile"
+                  to={"/profile/" + currentPerson.userID}
                   state={{ id: currentPerson.userID }}
                 >
                   {currentPerson.email}
@@ -84,7 +84,7 @@ export const ContestParticipantSearch = (props) => {
               </td>
               <td>
                 <Link
-                  to="/profile"
+                  to={"/profile/" + currentPerson.userID}
                   state={{ id: currentPerson.userID }}
                 >
                   {currentPerson.username}

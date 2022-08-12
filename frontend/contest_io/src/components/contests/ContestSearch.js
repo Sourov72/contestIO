@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Search } from "./search";
 import { useLocation } from "react-router-dom";
 import { ContestBox } from "./contestBox";
 import { objarr2str } from "../helperFunctions";
@@ -28,14 +29,15 @@ export const ContestSearch = () => {
   });
 
   const fetchContests = async (q, func) => {
-    axios.get(`http://localhost:5000/api/contests/query?${q}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => {
-      func(response.data)
-    })
+    axios
+      .get(`http://localhost:5000/api/contests/query?${q}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        func(response.data);
+      });
     // const response = await fetch(`/api/contests/query?${q}`);
     // const json = await response.json();
 
@@ -84,6 +86,14 @@ export const ContestSearch = () => {
 
   return (
     <>
+      <div className="container py-3">
+        <Search
+          apiURI={`/api/contests/query?`}
+          searchPlaceHolder="Search for Contests..."
+          queryOn="title"
+          keyval="_id"
+        />
+      </div>
       <div className="row">
         <div className="col-3"></div>
         <div className="col-6 fw-light fst-italic text-muted fs-6 mb-2">

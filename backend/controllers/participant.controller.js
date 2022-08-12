@@ -102,17 +102,15 @@ const queryContests = async (req, res) => {
       }
     }
   }
-  console.log(query) 
+  // convert keys with trailing 'ID' to ObjectID
   for (let key in query) {
     if(key.includes('ID')) {
       for (let key2 in query[key]) {
         query[key][key2] = mongoose.Types.ObjectId(query[key][key2])
       }
     }
-    
   }
-  console.log(query)
-  // console.log('query: ',query);
+  // console.log(query)
   const contests = await ParticipantModel.find(query).populate('contestID')
   // const contests = await ParticipantModel.aggregate([
   //   {
@@ -200,18 +198,20 @@ const queryParticipants = async (req, res) => {
       }
     }
   }
-
+  // convert keys with trailing 'ID' to ObjectID
+  for (let key in query) {
+    if(key.includes('ID')) {
+      for (let key2 in query[key]) {
+        query[key][key2] = mongoose.Types.ObjectId(query[key][key2])
+      }
+    }
+  }
   // console.log("query: ", query);
   const participants = await ParticipantModel.aggregate([
     {
-      $addFields: {
-        participantObjID: { $toObjectId: "$userID" },
-      },
-    },
-    {
       $lookup: {
         from: "users",
-        localField: "participantObjID",
+        localField: "userID",
         foreignField: "_id",
         as: "userData",
       },
@@ -230,6 +230,7 @@ const queryParticipants = async (req, res) => {
     },
   ]);
   //   const cnt = await ParticipantModel.count(query);
+  // console.log("participants, ", participants)
   res.status(200).json({
     participants: participants,
     count: participants.length,

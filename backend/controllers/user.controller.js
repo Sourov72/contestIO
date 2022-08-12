@@ -2,7 +2,6 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-
 // router.route("/").get((req, res) => {
 //   User.find()
 //     .then((users) => res.json(users))
@@ -16,16 +15,15 @@ const getAllUser = (req, res) => {
 };
 
 const getUser = (req, res) => {
-  console.log(req.body);
   const { email, password } = req.body;
   console.log(email);
 
   User.findOne({ email: email })
     .then((user) => {
       // console.log("user:", user);
-      if(!user) {
+      if (!user) {
         return res.status(400).send({
-          message: "No such user exists"
+          message: "No such user exists",
         });
       }
       // check if the hashed pwd matches
@@ -50,7 +48,7 @@ const getUser = (req, res) => {
           );
 
           //   return success res
-          res.status(200).send({
+          return res.status(200).send({
             message: "Login Successful",
             user: user,
             token,
@@ -58,7 +56,7 @@ const getUser = (req, res) => {
         })
         .catch((error) => {
           // if password did not match
-          res.status(400).send({
+          return res.status(400).send({
             message: "Passwords does not match",
             error,
           });
@@ -66,7 +64,7 @@ const getUser = (req, res) => {
     })
     // catch error if email does not exist
     .catch((e) => {
-      res.status(400).send({
+      return res.status(400).send({
         message: "Email not found",
         e,
       });
@@ -120,14 +118,14 @@ const createUser = (req, res) => {
 
   User.findOne({ email: email }, function (err, result) {
     if (result) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "User already registered",
       });
     } else {
       bcrypt
         .hash(password, 10)
         .then((password) => {
-          console.log("hashed password: ", password)
+          console.log("hashed password: ", password);
           const newUser = new User({
             username,
             password,
@@ -142,37 +140,59 @@ const createUser = (req, res) => {
           // console.log("new user:", newUser)
           newUser
             .save()
-            .then(() =>
-              res.status(200).json({
+            .then(() => {
+              return res.status(200).json({
                 message: "User added successfully",
               })
+            }
             )
             .catch((err) => {
-              console.log(err)
-              res.status(400).json({
+              console.log(err);
+              return res.status(400).json({
                 message: "Register Error",
                 error: err,
-              })
+              });
             });
         })
-        .catch((err) =>
-          res.status(400).json({
+        .catch((err) => {
+          return res.status(400).json({
             message: "Password was not hashed successfully",
             error: err,
           })
+        }
         );
     }
   });
 };
 
 const updateUser = async (req, res) => {
-  const { id } = req.params;
+  const id = req.user.userID;
+  // console.log("req body", req.body)
+  // console.log("req user", req.user)
 
-  console.log("req", req.body);
+  const pass = req.body.reoldpassword;
+  // console.log("req id", id);
+  // console.log("req body pass", pass);
+  const prevUser = await User.findById(id); 
+  // console.log("prevuser", prevUser)
 
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
-  //   return res.status(404).json({ error: "No such contest" });
-  // }
+  bcrypt
+    .compare(pass, prevUser.password)
+    .then((pwdCheck) => {
+      if (!pwdCheck) {
+        return res.status(400).send({
+          message: "Passwords does not match",
+          error,
+        });
+      }
+    })
+    .catch((error) => {
+      // if password did not match
+      return res.status(400).send({
+        message: "Passwords does not match",
+        error,
+      });
+    });
 
   const user = await User.findByIdAndUpdate(id, {
     username: req.body.username,
@@ -182,12 +202,13 @@ const updateUser = async (req, res) => {
       instagramhandle: req.body.instagramhandle,
     },
     img: req.body.img,
-  });
+  }); 
 
   if (!user) {
-    return res.status(404).json({ error: "No such user" });
+    return res.status(400).json({ message: "Could not update" });
   }
-  res.status(200).json({ user, message: "User Updated!" });
+  console.log("user update success")
+  return res.status(200).json({ message: "User Updated!" });
 };
 
 // module.exports = {createUser}

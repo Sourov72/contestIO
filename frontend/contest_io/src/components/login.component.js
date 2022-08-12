@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
-export const Login = (props) => {
+export const Login = () => {
   const [user, setuser] = useState({
     email: "",
     password: "",
@@ -28,6 +28,7 @@ export const Login = (props) => {
         // set the cookie
         cookies.set("TOKEN", res.data.token, {
           path: "/",
+          sameSite: true,
         });
         // redirect to home
         window.location = "/";

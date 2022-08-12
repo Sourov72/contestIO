@@ -10,17 +10,17 @@ const {
     updateParticipant
 } = require('../controllers/participant.controller')
 const router = express.Router()
-const { basicAuth, selfAuth } = require("../controllers/auth.controller")
+const { basicAuth, selfAuth, optionalAuth } = require("../controllers/auth.controller")
 
 // GET all participants
-router.get('/', getParticipants)
+router.get('/', optionalAuth, getParticipants)
 
 // GET a queried list of participants
-router.get('/query', basicAuth, queryParticipants);
-router.get('/queryContests', basicAuth, queryContests);
+router.get('/query', optionalAuth, queryParticipants);
+router.get('/queryContests', optionalAuth, queryContests);
 
 // GET a single participant
-router.get('/participant/:id', basicAuth, getParticipant)
+router.get('/participant/:id', optionalAuth, getParticipant)
 
 // POST a new participant
 router.post('/create', basicAuth, createParticipant)

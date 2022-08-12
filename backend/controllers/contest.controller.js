@@ -62,22 +62,28 @@ const getContests = async (req, res) => {
 // get single contest
 const getContest = async (req, res) => {
   const { id } = req.params;
-
-  if(! isParticipant(req.user.userID, id)) {
-    console.log("user [", req.user.email, '] cannot create category of contest:', id)
-    return res.status(400).json({
-      message: "don't have sufficient permissions to create contest category"
-    });
-  }
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const contestID = id
+  // console.log('contest id received, ----------->', contestID)
+  if (!mongoose.Types.ObjectId.isValid(contestID)) {
+    console.log("no such contest")
     return res.status(404).json({ error: "No such contest" });
   }
 
-  const contest = await ContestModel.find({ _id: id });
-  // console.log("contest info",contest)
+  const contest = await ContestModel.findById(contestID);
 
   if (!contest) {
+    console.log("nothing found")
     return res.status(404).json({ error: "No such contest" });
+  }
+  // console.log('contest info', contest)
+
+  if(contest['type'] === 'Private') {
+    if(!req.user || (req.user && !isParticipant(req.user.userID, contestID))) {
+      console.log("user cannot view this contest:", contestID)
+    return res.status(400).json({
+      message: "don't have sufficient permissions to view contest"
+    });
+    }
   }
 
   res.status(200).json(contest);
@@ -85,18 +91,18 @@ const getContest = async (req, res) => {
 
 // get queried list of contests
 const queryContests = async (req, res) => {
-  var query = {};
+  var query = {}; 
   var limit = 20;
   var skip = 0;
   for (var key in req.query) {
-    if (req.query[key] == "") {
+    if (req.query[key] == "" || req.query[key] == {}) {
       continue;
     }
     var len = 1;
     if (typeof req.query[key] === "object") {
       len = req.query[key].length;
     } else {
-      req.query[key] = [req.query[key]];
+      req.query[key] = [req.query[key]]; 
     }
     // console.log(req.query[key]);
     if(key != 'limit' && key != 'skip') query[key] = {};
@@ -257,7 +263,7 @@ const createCategory = async (req, res) => {
 const getContestCategories = async (req, res) => {
   const { id } = req.params;
 
-  if(! isParticipant(req.user.userID, id)) {
+  if(!isParticipant(req.user.userID, id)) {
     console.log("user [", req.user.email, '] cannot access categories of contest:', id)
     return res.status(400).json({
       message: "don't have sufficient permissions to view contest contents"

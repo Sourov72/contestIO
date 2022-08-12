@@ -46,7 +46,7 @@ const aptype = ['BLOCKED', 'FOLLOWER', 'VOTER', 'JURY', 'CONTESTANT', 'HOST']
 export function participantTypeToValue() {
   let retval = 0
   for(let i = 0; i < arguments.length; i++) {
-    console.log(arguments[i])
+    // console.log(arguments[i])
     retval ^= ptype[arguments[i].toUpperCase()];
   }
   return retval

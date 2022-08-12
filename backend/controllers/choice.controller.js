@@ -162,7 +162,7 @@ const createChoice = async (req, res) => {
     res.status(200).json(choice);
   } catch (error) {
     // if failed, return error
-    console.log("create choice error!", error);
+    console.log("create choice error!", error); 
     res.status(400).json({ error: error.message });
   }
 };

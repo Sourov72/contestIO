@@ -56,42 +56,44 @@ export const Navbar = (props) => {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="nav navbar-nav mx-auto mb-2">
-            
-              <li className="nav-item">
-                <Link to="/" className="nav-link active fw-bold">
-                  Home
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/contests" className="nav-link fw-bold">
-                  Contests
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link to="/about" className="nav-link fw-bold">
-                  About
-                </Link>
-              </li>
+            <li className="nav-item">
+              <Link to="/" className="nav-link active fw-bold">
+                Home
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/contests" className="nav-link fw-bold">
+                Contests
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/about" className="nav-link fw-bold">
+                About
+              </Link>
+            </li>
 
-              {(() => {
-                if (props.id !== "") {
-                  return (
-                    <>
-                      <li className="nav-item">
-                        <Link to="/profile" className="nav-link fw-bold" state={{id: localStorage.getItem("id")}}>
-                          Profile
-                        </Link>
-                      </li>
+            {(() => {
+              if (props.id !== "") {
+                return (
+                  <>
+                    <li className="nav-item">
+                      <Link
+                        to={"/profile/" + localStorage.getItem("id")}
+                        className="nav-link fw-bold"
+                      >
+                        Profile
+                      </Link>
+                    </li>
 
-                      <li className="nav-item">
-                        <Link to="/createcontest" className="nav-link fw-bold">
-                          Create
-                        </Link>
-                      </li>
-                    </>
-                  );
-                }
-              })()}
+                    <li className="nav-item">
+                      <Link to="/contests/create" className="nav-link fw-bold">
+                        Create
+                      </Link>
+                    </li>
+                  </>
+                );
+              }
+            })()}
           </ul>
 
           {(() => {

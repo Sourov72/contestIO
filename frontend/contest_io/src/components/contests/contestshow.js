@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { ContestParticipantSearch } from "./contestParticipantsSearch";
@@ -8,11 +8,10 @@ import { Search } from "../search.component";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
-export const ContestShow = (props) => {
+export const ContestShow = () => {
+  const { contestID } = useParams();
   const token = cookies.get("TOKEN");
-  const [idd, setidd] = useState("0");
   const location = useLocation();
-  const [userid, setuserid] = useState("0");
   const [userType, setUserType] = useState("");
   const [startdate, setstartdate] = useState();
 
@@ -51,61 +50,43 @@ export const ContestShow = (props) => {
   // here id is send simpliflically not as a object
 
   function general() {
-    console.log("hello there general");
     setcomp({ generalcom: true });
   }
 
   function timeschedule() {
-    console.log("hello there time schedule");
     setcomp({ timeschedulecom: true });
   }
 
   function contesttype() {
-    console.log("hello there contest type", contest.type);
     setcomp({ contesttypecom: true });
   }
 
   function contestmedia() {
-    console.log("hello there contest media");
     setcomp({ contestmediacom: true });
   }
 
   function contestvoter() {
-    console.log("hello there contest voter");
     setcomp({ voterlist: true });
   }
 
   function contestparticipant() {
-    console.log("hello there contest participant");
     setcomp({ participantlist: true });
   }
 
   function contestjury() {
-    console.log("hello there contest jury");
     setcomp({ jurylist: true });
   }
 
   function addcontestcategory() {
-    console.log("hello there category add");
     setcomp({ categoryadd: true });
   }
 
   function voteradd() {
-    console.log("hello there category add");
     setcomp({ newvoteradd: true });
   }
 
   useEffect(() => {
-    const contestID = location.state.contestID;
     const uid = localStorage.getItem("id");
-
-    // const contestID = props.contestID;
-    console.log("contest id in contest show", contestID);
-    setuserid( localStorage.getItem("id"));
-
-    console.log("userID from useeffect", userid);
-
-    setidd(userid);
 
     axios
       .get("http://localhost:5000/api/contests/contest/" + contestID, {
@@ -115,39 +96,41 @@ export const ContestShow = (props) => {
       })
       .then((res) => {
         setcontest({
-          hostID: res.data[0].hostID,
-          title: res.data[0].title,
-          type: res.data[0].type,
-          objective: res.data[0].objective,
-          description: res.data[0].description,
-          voteWeight: res.data[0].voteWeight,
-          juryVoteWeight: res.data[0].juryVoteWeight,
-          voterAnonymity: res.data[0].voterAnonymity,
-          startTime: res.data[0].startTime,
-          registrationEndTime: res.data[0].registrationEndTime,
-          endTime: res.data[0].endTime,
+          hostID: res.data.hostID,
+          title: res.data.title,
+          type: res.data.type,
+          objective: res.data.objective,
+          description: res.data.description,
+          voteWeight: res.data.voteWeight,
+          juryVoteWeight: res.data.juryVoteWeight,
+          voterAnonymity: res.data.voterAnonymity,
+          startTime: res.data.startTime,
+          registrationEndTime: res.data.registrationEndTime,
+          endTime: res.data.endTime,
         });
 
         setstartdate(
-          new Date(Date.parse(res.data[0].registrationEndTime) + 86400000)
+          new Date(Date.parse(res.data.registrationEndTime) + 86400000)
         );
       });
     var q = [{ userID: ["eq", uid] }];
     const query = obj2str(q);
     axios
-      .get(`http://localhost:5000/api/participants/query?${query}`,
-      {
+      .get(`http://localhost:5000/api/participants/query?${query}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
-        // console.log("current participant:", res.data.participants);
-        let types = participantValueToType(res.data.participants[0]["type"]);
-        console.log("participant types:", types);
-        setUserType(types);
+        if (res.data.participants === []) {
+          let types = participantValueToType(res.data.participants[0]["type"]);
+          setUserType(types);
+        } else {
+          setUserType("");
+        }
+        // console.log("participant types:", types);
       });
-  }, [location, userid]);
+  }, [contestID]);
 
   function dateconver(date) {
     var myDate = new Date(Date.parse(date));
@@ -246,36 +229,6 @@ export const ContestShow = (props) => {
                 Jury List
               </button>
 
-              <button
-                type="submit"
-                className="btn btn-primary my-2"
-                onClick={voteradd}
-              >
-                New Voter Add
-              </button>
-
-              {/* {(() => {
-                if (userid !== "0") {
- 
-
-                    <>
-                      {
-
-                        <button
-                          type="submit"
-                          className="btn btn-primary my-2"
-                          onClick={addcontestcategory}
-                        >
-                          Add Category
-                        </button>
-                      }
-                    </>
-
-                  
-                }
-              })} */}
-              {console.log(idd, "in fjskfja")}
-
               {userType.includes("HOST") ? (
                 <>
                   <Link
@@ -291,6 +244,14 @@ export const ContestShow = (props) => {
                       Edit Contest
                     </button>
                   </Link>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary my-2"
+                    onClick={voteradd}
+                  >
+                    New Voter Add
+                  </button>
                 </>
               ) : (
                 <div> </div>
@@ -299,9 +260,9 @@ export const ContestShow = (props) => {
               {userType.length === 0 && (
                 <>
                   <Link
-                    to="/contestcontentadd"
+                    to="/"
                     state={{
-                      contentcontestID: location.state.contestID,
+                      contentcontestID: contestID,
                       contesttype: contest.objective,
                     }}
                   >
@@ -311,9 +272,12 @@ export const ContestShow = (props) => {
                   </Link>
                 </>
               )}
-              {!userType.includes("BLOCKED") && (
+              {userType.includes("FOLLOWER") && (
                 <>
-                  <Link to="/uploadcontentshow" state={{ contestID: location.state.contestID }}>
+                  <Link
+                    to="/uploadcontentshow"
+                    state={{ contestID: contestID }}
+                  >
                     <button className="btn btn-danger px-4 my-2">
                       See Contents
                     </button>
