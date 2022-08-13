@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const ContestCategoryAdd = (props) => {
   let contestid = "0";
-
+  const token = cookies.get("TOKEN");
   const location = useLocation();
 
   const [category, setcategory] = useState({
@@ -42,7 +44,12 @@ export const ContestCategoryAdd = (props) => {
 
     // alert("Category add form posted");
     axios
-      .post("http://localhost:5000/api/contests/category", category)
+      .post("http://localhost:5000/api/contests/category", category,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         // alert(res.data);
         console.log(res.data);

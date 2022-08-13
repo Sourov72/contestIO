@@ -3,6 +3,55 @@ const CategoryModel = require("../models/category.model");
 const ParticipantModel = require("../models/participant.model");
 const mongoose = require("mongoose");
 
+// participant types
+const ptype = {
+  BLOCKED: 1 << 1,
+  FOLLOWER: 1 << 2,
+  VOTER: 1 << 3,
+  JURY: 1 << 4,
+  CONTESTANT: 1 << 5,
+  HOST: 1 << 6,
+};
+
+function pt2v() {
+  let retval = 0;
+  for (let i = 0; i < arguments.length; i++) {
+    retval ^= ptype[arguments[i].toUpperCase()];
+  }
+  return retval;
+}
+
+
+const isHost = async(userID, contestID) => {
+  const participant = await ParticipantModel.find({
+    userID : userID,
+    contestID : contestID
+  })
+
+  if(!participant) {
+    return false;
+  }
+  if(participant.type & pt2v('host')) {
+    return true;
+  }
+  return false;
+}
+
+const isParticipant = async(userID, contestID) => {
+  const participant = await ParticipantModel.find({
+    userID : userID,
+    contestID : contestID
+  })
+
+  if(!participant) {
+    return false;
+  }
+  if(!(participant.type & pt2v('blocked'))) {
+    return true;
+  }
+  return false;
+}
+
 // get all contests
 const getContests = async (req, res) => {
   const contests = await ContestModel.find({}).sort({ createdAt: -1 });
@@ -13,16 +62,28 @@ const getContests = async (req, res) => {
 // get single contest
 const getContest = async (req, res) => {
   const { id } = req.params;
-  console.log("id ", id);
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const contestID = id
+  // console.log('contest id received, ----------->', contestID)
+  if (!mongoose.Types.ObjectId.isValid(contestID)) {
+    console.log("no such contest")
     return res.status(404).json({ error: "No such contest" });
   }
 
-  const contest = await ContestModel.find({ _id: id });
-  // console.log("contest info",contest)
+  const contest = await ContestModel.findById(contestID);
 
   if (!contest) {
+    console.log("nothing found")
     return res.status(404).json({ error: "No such contest" });
+  }
+  // console.log('contest info', contest)
+
+  if(contest['type'] === 'Private') {
+    if(!req.user || (req.user && !isParticipant(req.user.userID, contestID))) {
+      console.log("user cannot view this contest:", contestID)
+    return res.status(400).json({
+      message: "don't have sufficient permissions to view contest"
+    });
+    }
   }
 
   res.status(200).json(contest);
@@ -30,21 +91,21 @@ const getContest = async (req, res) => {
 
 // get queried list of contests
 const queryContests = async (req, res) => {
-  var query = {};
+  var query = {}; 
   var limit = 20;
   var skip = 0;
   for (var key in req.query) {
-    if (req.query[key] == "") {
+    if (req.query[key] == "" || req.query[key] == {}) {
       continue;
     }
     var len = 1;
     if (typeof req.query[key] === "object") {
       len = req.query[key].length;
     } else {
-      req.query[key] = [req.query[key]];
+      req.query[key] = [req.query[key]]; 
     }
-    console.log(req.query[key]);
-    query[key] = {};
+    // console.log(req.query[key]);
+    if(key != 'limit' && key != 'skip') query[key] = {};
     for (let i = 0; i < len; i++) {
       const arr = req.query[key][i].split(",");
       if (arr[1] === "") {
@@ -87,6 +148,7 @@ const queryContests = async (req, res) => {
   // console.log(query)
   const contests = await ContestModel.find(query).limit(limit).skip(skip);
   const cnt = await ContestModel.count(query);
+  // console.log('contests', contests)
   res.status(200).json({
     contests: contests,
     count: cnt,
@@ -134,6 +196,12 @@ const createContest = async (req, res) => {
 // delete a contest
 const deleteContest = async (req, res) => {
   const { id } = req.params;
+  if(! isHost(req.user.userID, id)) {
+    console.log("user [", req.user.email, '] cannot delete contest:', id)
+    return res.status(400).json({
+      message: "don't have sufficient permissions to delete contest"
+    });
+  }
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No such contest" });
   }
@@ -147,7 +215,14 @@ const deleteContest = async (req, res) => {
 
 // update a contest
 const updateContest = async (req, res) => {
+
   const { id } = req.params;
+  if(! isHost(req.user.userID, id)) {
+    console.log("user [", req.user.email, '] cannot update contest:', id)
+    return res.status(400).json({
+      message: "don't have sufficient permissions to update contest"
+    });
+  }
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No such contest" });
   }
@@ -163,9 +238,14 @@ const updateContest = async (req, res) => {
 };
 
 const createCategory = async (req, res) => {
-  console.log("create category", req.body);
   const { contestID, title, description, maxvoteperUser, maxchoices } =
     req.body;
+    if(! isHost(req.user.userID, contestID)) {
+      console.log("user [", req.user.email, '] cannot create category of contest:', id)
+      return res.status(400).json({
+        message: "don't have sufficient permissions to create contest category"
+      });
+    }
   try {
     const category = await CategoryModel.create({
       contestID,
@@ -181,9 +261,14 @@ const createCategory = async (req, res) => {
 };
 
 const getContestCategories = async (req, res) => {
-  console.log("get categories", req.params);
-
   const { id } = req.params;
+
+  if(!isParticipant(req.user.userID, id)) {
+    console.log("user [", req.user.email, '] cannot access categories of contest:', id)
+    return res.status(400).json({
+      message: "don't have sufficient permissions to view contest contents"
+    });
+  }
 
   CategoryModel.find({ contestID: id })
     .populate("contestID")

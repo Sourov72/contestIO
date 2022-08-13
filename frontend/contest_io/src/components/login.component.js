@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
-export const Login = (props) => {
+export const Login = () => {
   const [user, setuser] = useState({
     email: "",
     password: "",
@@ -19,20 +21,25 @@ export const Login = (props) => {
   const login = (e) => {
     e.preventDefault();
     axios.post("http://localhost:5000/api/user/login", user).then((res) => {
-      
-      if (res.data.message === "Login Successfull") {
-        // props.onLogin(res.data.user);
-        alert(res.data.message);
 
         localStorage.setItem('id',res.data.user._id);
-        console.log("hello this is logged in person userid: ", localStorage.getItem('id'));
+        // console.log("hello this is logged in person userid: ", localStorage.getItem('id'));
 
+        // set the cookie
+        cookies.set("TOKEN", res.data.token, {
+          path: "/",
+          sameSite: true,
+        });
+        // redirect to home
         window.location = "/";
-
-        
-      } else {
-        alert(res.data.message);
-      }
+    })
+    .catch((error) => {
+      // login failure, send an alert
+      alert(error.response.data.message);
+      setuser({
+        email: '',
+        password: ''
+      })
     });
   };
 

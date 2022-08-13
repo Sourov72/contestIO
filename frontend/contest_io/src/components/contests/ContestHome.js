@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { ContestBox } from "./contestBox";
+import { Search } from "./search";
 import { obj2str } from "../helperFunctions";
 
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
+
 export const ContestHome = ({ id }) => {
+  const token = cookies.get("TOKEN");
   // contest stuff
   const [ongoingContests, setOngoing] = useState([]);
   const [upcomingContests, setUpcoming] = useState([]);
@@ -30,52 +36,66 @@ export const ContestHome = ({ id }) => {
   // fires when the function is called
   useEffect(() => {
     const fetchContests = async (query, func) => {
-      const response = await fetch(`/api/contests/query?${query}`);
-      const json = await response.json();
-
-      if (response.ok) {
-        func(json.contests);
-      }
+      // console.log("current query", query)
+      // console.log("current token", token)
+      axios
+        .get(`http://localhost:5000/api/contests/query?${query}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // console.log('response:', response.data)
+          func(response.data.contests);
+        });
     };
-     fetchContests(ongoingQuery, setOngoing);
+    fetchContests(ongoingQuery, setOngoing);
     fetchContests(upcomingQuery, setUpcoming);
-    fetchContests(myContestsQuery, setMyContests);
+    if(token) fetchContests(myContestsQuery, setMyContests);
     fetchContests(pastQuery, setPast);
   }, []);
 
   return (
-    <div className="row">
-      <div className="col-4">
-        <ContestBox
-          contests={ongoingContests}
-          boxTitle="Ongoing Contests"
-          q={ongoingQuery.split("limit")[0]}
-          col={12}
-        />
-      </div>
-      <div className="col-4">
-        <ContestBox
-          contests={upcomingContests}
-          boxTitle="Upcoming Contests"
-          q={upcomingQuery.split("limit")[0]}
-          col={12}
-        />
-      </div>
-      <div className="col-4">
-        {id && (
+    <div className="container py-3">
+      <Search
+        apiURI={`/api/contests/query?`}
+        searchPlaceHolder="Search for Contests..."
+        queryOn="title"
+        keyval="_id"
+      />
+      <div className="row">
+        <div className="col-4">
           <ContestBox
-            contests={myContests}
-            boxTitle="My Contests"
+            contests={ongoingContests}
+            boxTitle="Ongoing Contests"
+            q={ongoingQuery.split("limit")[0]}
             col={12}
-            q={myContestsQuery.split("limit")[0]}
           />
-        )}
-        <ContestBox
-          contests={pastContests}
-          boxTitle="Past Contests"
-          col={12}
-          q={pastQuery.split("limit")[0]}
-        />
+        </div>
+        <div className="col-4">
+          <ContestBox
+            contests={upcomingContests}
+            boxTitle="Upcoming Contests"
+            q={upcomingQuery.split("limit")[0]}
+            col={12}
+          />
+        </div>
+        <div className="col-4">
+          {id && (
+            <ContestBox
+              contests={myContests}
+              boxTitle="My Contests"
+              col={12}
+              q={myContestsQuery.split("limit")[0]}
+            />
+          )}
+          <ContestBox
+            contests={pastContests}
+            boxTitle="Past Contests"
+            col={12}
+            q={pastQuery.split("limit")[0]}
+          />
+        </div>
       </div>
     </div>
   );

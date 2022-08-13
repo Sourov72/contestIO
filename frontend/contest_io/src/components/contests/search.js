@@ -1,8 +1,13 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { obj2str } from "../helperFunctions";
+import Cookies from "universal-cookie";
+import axios from "axios";
+const cookies = new Cookies();
 
 export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
+  const token = cookies.get("TOKEN");
+  
   const [searchData, setsearchField] = useState([]);
   const [searchShow, setSearchShow] = useState(false);
 
@@ -19,12 +24,15 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
       // console.log('query: ', obj)
       const q = obj2str(obj);
       // console.log('cq: ', q)
-      const response = await fetch(apiURI + q);
-      const json = await response.json();
-
-      if (response.ok) {
-        setsearchField(json.contests);
-      }
+      axios
+      .get('http://localhost:5000' + apiURI + q, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setsearchField(response.data.contests)
+      })
     }
   };
 
@@ -56,7 +64,7 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
               return (
                 <tr key={data[keyval]}>
                   <td>
-                    <Link to="/contestshow" state={{ contestID: data[keyval] }}>
+                    <Link to={"/contests/" + data[keyval]} state={{ contestID: data[keyval] }}>
                       {data[queryOn]}
                     </Link>
                   </td>

@@ -1,2 +1,0 @@
-# OnlinePhotoContest
-a

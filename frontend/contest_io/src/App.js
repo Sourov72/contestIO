@@ -1,13 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+} from "react-router-dom";
 import { Navbar } from "./components/navbar.component";
 import { Signup } from "./components/signup.component";
 import { Login } from "./components/login.component";
 import { Logout } from "./components/logout.component";
 import { Profileview } from "./components/profileview.component";
 import { EditProfile } from "./components/user/edituser";
-import { Search } from "./components/search.component";
-import { CreateContest } from "./components/createcontest.component";
+// import { Search } from "./components/search.component";
+import { ContestHome } from "./components/contests/ContestHome";
 import { Contest } from "./components/contests/Contest";
+import { ContestSearch } from "./components/contests/ContestSearch";
+import { Search } from "./components/contests/search";
+import { CreateContest } from "./components/createcontest.component";
 import { ContestShow } from "./components/contests/contestshow";
 import { ContestCategoryAdd } from "./components/contests/category";
 import { ContestContentAdd } from "./components/contests/contestcontent";
@@ -15,36 +23,11 @@ import { useState } from "react";
 import { Home } from "./components/Home";
 import { About } from "./components/About";
 import { UploadedContentsShow } from "./components/contents/uploadedcontentsshow";
+import { ProtectedRoutes } from "./components/protectedRoutes.component";
 // hooks
 // import { useContestContext } from "./hooks/useContestContext";
 
 function App() {
-  let id;
-
-  const [userID, setuserID] = useState("");
-
-  const onLogin = (user) => {
-    console.log("I am on Login", user);
-
-    // setuserID({
-    //   userID: user._id,
-    // });
-    setuserID(user._id);
-    localStorage.setItem("id", userID);
-
-    console.log("hello this is logged in person userid: ", userID);
-    alert("Loged in Successfully in appjs", userID);
-
-    id = localStorage.getItem("id");
-    console.log("from local sto ", id, " fj");
-
-    // window.location = "/profileview";
-  };
-
-  // useEffect(() => {
-  //   setuserID(localStorage.getItem('id'));
-  // }, []);
-
   return (
     <>
       {
@@ -56,26 +39,51 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/search" element={<Search />} />
-              <Route
-                path="/profile"
-                element={<Profileview id={localStorage.getItem("id")} />}
-              />
-              <Route path="/profileedit" element={<EditProfile />} />
-              <Route path="/login" element={<Login onLogin={onLogin} />} />
+              <Route path="/profile">
+                <Route path=":userID" element={<Profileview />} />
+                <Route
+                  path="edit"
+                  element={
+                    <ProtectedRoutes redirectPath="/login">
+                      <EditProfile />
+                    </ProtectedRoutes>
+                  }
+                />
+              </Route>
+
+              <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
-              <Route
-                path="/contests/*"
-                element={<Contest id={localStorage.getItem("id")} />}
-              />
-              <Route path="/createcontest" element={<CreateContest />} />
-              <Route path="/contestshow" element={<ContestShow />} />
+              <Route path="/contests" element={<Contest />}>
+                <Route
+                  path=""
+                  element={<ContestHome id={localStorage.getItem("id")} />}
+                />
+                <Route path="search" element={<ContestSearch />} />
+                <Route
+                  path="create"
+                  element={
+                    <ProtectedRoutes redirectPath="/login">
+                      <CreateContest />
+                    </ProtectedRoutes>
+                  }
+                />
+                <Route path=":contestID" element={<ContestShow />} />
+              </Route>
               <Route
                 path="/contestaddcategory"
-                element={<ContestCategoryAdd />}
+                element={
+                  <ProtectedRoutes redirectPath="/login">
+                    <ContestCategoryAdd />
+                  </ProtectedRoutes>
+                }
               />
               <Route
                 path="/contestcontentadd"
-                element={<ContestContentAdd />}
+                element={
+                  <ProtectedRoutes redirectPath="/login">
+                    <ContestContentAdd />
+                  </ProtectedRoutes>
+                }
               />
               <Route
                 path="/uploadcontentshow"

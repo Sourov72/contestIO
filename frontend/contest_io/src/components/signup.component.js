@@ -36,20 +36,19 @@ export const Signup = () => {
 
   const signup = (e) => {
     e.preventDefault();
-
     const { username, password, rePassword, email, bio } = user;
-
     if (username && email && bio && password === rePassword) {
+      
       alert("Signup form posted");
-      axios.post("http://localhost:5000/api/user/add", user).then((res) => {
-        alert(res.data);
-        if(res.data === "User added!")
-        {
-          alert("signup successfull");
-          window.location = "/";
-        }
-      });
-      //window.location = "/";
+      axios.post("http://localhost:5000/api/user/add", user)
+      .then((res) => {
+          alert("signup successful");
+          window.location = "/login";
+      })
+      .catch((err) => {
+        // signup failure, send an alert
+        alert(err.response.data.message);
+      })
     } else {
       alert(
         "Make sure you have provided proper username, email, password and bio"

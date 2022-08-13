@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const ContestContentAdd = (props) => {
   let contestid = "0";
+  const token = cookies.get("TOKEN");
   let navigate = useNavigate();
 
   const location = useLocation();
@@ -60,7 +63,11 @@ export const ContestContentAdd = (props) => {
     //path to be corrected
     console.log("contestid", contestid);
     axios
-      .get("http://localhost:5000/api/contests/getcatogory/" + contestid)
+      .get("http://localhost:5000/api/contests/getcatogory/" + contestid, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         console.log(res);
         setcontestattr({
@@ -123,10 +130,18 @@ export const ContestContentAdd = (props) => {
 
     alert("content add form posted");
     axios
-      .post("http://localhost:5000/api/contents/create", {
-        content: content,
-        choice: choice,
-      })
+      .post(
+        "http://localhost:5000/api/contents/create",
+        {
+          content: content,
+          choice: choice,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
         alert(res.data);
         console.log(res.data);

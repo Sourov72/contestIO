@@ -1,13 +1,18 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { ContestBox } from "./contests/contestBox";
 import { obj2str } from "./helperFunctions";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-// import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
-export const Profileview = (props) => {
+export const Profileview = () => {
+  const { userID } = useParams();
+  const token = cookies.get("TOKEN");
   const location = useLocation();
   const [myContests, setMyContests] = useState([]);
   const [user, setuser] = useState({
@@ -20,11 +25,9 @@ export const Profileview = (props) => {
   });
 
   useEffect(() => {
-    // here id is send simpliflically not as a object
-    const uid = location.state.id;
-    const myContestsQuery = obj2str([{ userID: ["eq", uid] }]);
+    const myContestsQuery = obj2str([{ userID: ["eq", userID] }]);
 
-    axios.get("http://localhost:5000/api/user/" + uid).then((res) => {
+    axios.get("http://localhost:5000/api/user/" + userID).then((res) => {
       // console.log(res.data.user.socialhandles.facebookhandle);
       setuser({
         username: res.data.user.username,
@@ -38,24 +41,24 @@ export const Profileview = (props) => {
 
     const fetchContests = async (query, func) => {
       // console.log('the query:', query)
-      const response = await fetch(`/api/participants/queryContests?${query}`);
-      const json = await response.json();
-
-      if (response.ok) {
-        var contests = [];
-        // console.log("received:", json.contests)
-        for (let i = 0; i < json.contests.length; i++) {
-          contests.push(json.contests[i]["contestID"]);
-        }
-        // console.log('contests:', contests)
-        func(contests);
-      }
+      axios
+        .get(`http://localhost:5000/api/participants/queryContests?${query}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          var contests = [];
+          for (let i = 0; i < res.data.contests.length; i++) {
+            contests.push(res.data.contests[i]["contestID"]);
+          }
+          func(contests);
+        });
     };
     fetchContests(myContestsQuery, setMyContests);
   }, [location]);
 
   let source = "../images/" + user.img;
-  // console.log("hello vro", source);
 
   var stylingObject = {
     image: {
@@ -85,10 +88,15 @@ export const Profileview = (props) => {
             <p className="fs-4 fw-bold my-0">{user.username}</p>
             <p>@username</p>
             <p>{user.bio}</p>
-            <button type="button" className="btn w-100 btn-outline-dark">
-              Edit Profile
-            </button>
-            {/* <p className="mb-0 mt-2">
+
+            {userID === localStorage.getItem("id") && (
+              <Link to="/profile/edit/">
+                <button type="button" className="btn w-100 btn-outline-dark">
+                  Edit Profile
+                </button>
+              </Link>
+            )}
+            <p className="mb-0 mt-2">
               <FontAwesomeIcon icon={faEnvelope} /> &nbsp;
               {user.email}
             </p>
@@ -104,7 +112,8 @@ export const Profileview = (props) => {
         </div>
 
         <div className="col-9">
-          <ContestBox contests={myContests} boxTitle="Your Contests" col={6} />
+          {console.log(myContests)}
+          <ContestBox contests={myContests} boxTitle={(userID === localStorage.getItem("id") ? "Your" : (user.username + "'s")) + " Contests"} col={6} />
         </div>
       </form>
     </div>

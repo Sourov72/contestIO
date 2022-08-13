@@ -52,11 +52,10 @@ const aptype = ["BLOCKED", "FOLLOWER", "VOTER", "JURY", "CONTESTANT", "HOST"];
 // input : a list of str which are types you want this user to be
 // output : the value which should be stored in the db
 export function participantTypeToValue() {
-  let retval = 0;
-  for (let i = 0; i < arguments.length; i++) {
-    console.log("argumets", arguments[i].toUpperCase());
-    retval |= ptype[arguments[i].toUpperCase()];
-    // console.log("ret value", retval)
+  let retval = 0
+  for(let i = 0; i < arguments.length; i++) {
+    // console.log(arguments[i])
+    retval ^= ptype[arguments[i].toUpperCase()];
   }
 
   return retval;
