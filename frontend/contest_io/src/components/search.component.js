@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
+
+import {
+  obj2str,
+  participantTypeToValue,
+  participantValueToType,
+} from "./helperFunctions";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 // const SearchList = (props) => {
 //   <tr>
@@ -10,6 +19,7 @@ import axios from "axios";
 // };
 
 export const Search = (props) => {
+  const token = cookies.get("TOKEN");
   const [searchField, setsearchField] = useState("");
   const [searchShow, setSearchShow] = useState(false);
   const [allUsers, setallUsers] = useState("");
@@ -17,7 +27,7 @@ export const Search = (props) => {
   const [newvoters, setnewvoters] = useState([]);
 
   useEffect(() => {
-    getallUser();
+    getallUser("");
   }, []);
 
   const handleChange = (e) => {
@@ -28,17 +38,48 @@ export const Search = (props) => {
     } else {
       setSearchShow(true);
     }
-    getallUser();
+    getallUser(e.target.value);
   };
 
-  const filteredPersons = Array.from(allUsers);
-  // const filteredPersons = searchResultsList.filter((person) => {
-  //     // console.log(person.username);
-  //     return (
-  //         person.username.toLowerCase().includes(searchField.toLowerCase()) ||
-  //         person.email.toLowerCase().includes(searchField.toLowerCase())
-  //     );
-  // });
+  const addhandler = (param) => async (e) => {
+    console.log("clicked", param.userID, param.contestID);
+
+    var participant = "";
+    if (props.type === "voteradd") {
+      participant = {
+        userID: param.userID,
+        contestID: param.contestID,
+        type: participantTypeToValue("voter"),
+      };
+    } else if (props.type === "juryadd") {
+      participant = {
+        userID: param.userID,
+        contestID: param.contestID,
+        type: participantTypeToValue("jury"),
+      };
+    } else {
+      participant = {
+        userID: param.userID,
+        contestID: param.contestID,
+        type: participantTypeToValue("contestant"),
+      };
+    }
+
+    console.log("participant", participant);
+
+    await axios
+      .post("http://localhost:5000/api/participants/create", participant, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("res body in participant creation", res.data);
+      });
+
+    console.log("SEWRCH FF", searchField);
+    await getallUser(searchField);
+  };
 
   var stylingObject = {
     scrollbar: {
@@ -50,9 +91,10 @@ export const Search = (props) => {
     },
   };
 
-  function getallUser() {
+  function getallUser(name) {
     const user = {
-      username: searchField,
+      username: name,
+      contestID: props.contestID,
     };
     console.log(user);
     axios.post("http://localhost:5000/api/user/users", user).then((res) => {
@@ -64,83 +106,104 @@ export const Search = (props) => {
   function voteradd(a, b) {
     console.log("voter add", a, "fjsdkf", b);
     newvoters.push(b);
-    console.log("newvoters", newvoters, "heloo", props.contestvoteaddID);
-  }
-
-  function add() {
-    // e.preventDefault();
-
-    // console.log(b);
-
-    // axios.post()
-
-    axios
-      .post(
-        "http://localhost:5000/api/contests/voteradd/" + props.contestvoteaddID,
-        newvoters
-      )
-      .then((res) => {
-        if (res.data.msg === "Voter Updated!") {
-          alert("updated successfully");
-          // window.location = "/profile";
-        }
-        window.location = "/";
-      });
+    console.log("newvoters", newvoters, "heloo", props.contestID);
   }
 
   function searchList() {
     // if (searchShow) {
 
-    return filteredPersons.map((currentPerson) => {
-      return (
-        //   <SearchList key={currentPerson.email} person={currentPerson} />
-        <tr
-          key={currentPerson.email}
-          onClick={() => voteradd(currentPerson.email, currentPerson._id)}
-        >
-          <td>{currentPerson.email}</td>
-          <td>{currentPerson.username}</td>
-          {/* <td><button
-                        type="submit"
-                        className="btn btn-primary my-2"
-                        onClick={voteradd(currentPerson.email)}
-                    >
-                        Add
-                    </button></td> */}
+    return allUsers.length > 0 ? (
+      <>
+        {" "}
+        <tr key="1">
+          <td className="fw-bold">Email</td>
+          <td className="fw-bold">User Name</td>
         </tr>
-      );
-    });
+        {allUsers.map((currentPerson) => {
+          return (
+            <tr key={currentPerson.email}>
+              <td>
+                <Link
+                  to={"/profile/" + currentPerson.userID}
+                  state={{ id: currentPerson.userID }}
+                >
+                  {currentPerson.email}
+                </Link>
+              </td>
+              <td>
+                <Link
+                  to={"/profile/" + currentPerson.userID}
+                  state={{ id: currentPerson.userID }}
+                >
+                  {currentPerson.username}
+                </Link>
+              </td>
+              <td>{participantValueToType(currentPerson.type)}</td>
+              <td>
+                {/* <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-x"
+                  viewBox="0 0 16 16"
+                  // onClick={deletehandler({
+                  //   userID: currentPerson.userID,
+                  //   contestID: props.contestID,
+                  // })}
+                >
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+                <i className="bi bi-file-plus-fill">bb</i> */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-plus-lg"
+                  viewBox="0 0 16 16"
+                  onClick={addhandler({
+                    userID: currentPerson._id,
+                    contestID: props.contestID,
+                  })}
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                  />
+                </svg>
+              </td>
+            </tr>
+          );
+        })}
+      </>
+    ) : (
+      <tr>
+        <td className="text-center fw-light fst-italic text-muted">
+          No Users to show
+        </td>
+      </tr>
+    );
     // }
   }
 
   return (
-    <div>
-      helo terjkfjkdsajflkds
-      {console.log("in consoleasjf", allUsers)}
-      <div className="">
+    <div className="container row mt-4 mb-3 px-0">
+      <div className="col-1"></div>
+      <div className="col-9 search-div">
         <input
-          className="pa3 bb br3 grow b--none bg-lightest-blue ma3"
+          className="form-control me-2 text-center search-bar"
           type="search"
           placeholder="Search People"
+          onBlur={(e) => {
+            e.target.value = "";
+            handleChange(e);
+          }}
           onChange={handleChange}
         />
-      </div>
-      <div className="container" style={stylingObject.scrollbar}>
-        <table className="table table-dark  mb-0">
-          <tbody>
-            {searchList()}
-            <tr>
-              <td>
-                <button
-                  type="submit"
-                  className="btn btn-primary my-2"
-                  onClick={add}
-                >
-                  Voters add
-                </button>
-              </td>
-            </tr>
-          </tbody>
+
+        <table className="table table-borderless table-hover search-table mb-2">
+          <tbody>{searchList()}</tbody>
         </table>
       </div>
     </div>

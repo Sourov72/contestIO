@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 export const ContestCategoryAdd = (props) => {
-  let contestid = "0";
+  var contestID = "";
   const token = cookies.get("TOKEN");
   const location = useLocation();
 
@@ -18,15 +18,16 @@ export const ContestCategoryAdd = (props) => {
   });
 
   useEffect(() => {
-    contestid = location.state.catcontestID;
+    contestID = location.state.contestID;
+    console.log("contestID in useeffect", contestID);
 
     setcategory({
       ...category,
-      contestID: contestid,
+      contestID: contestID,
     });
 
-    console.log("contestid in useeffect", category.contestID);
-  },[]);
+    console.log("contestID in useeffect", category.contestID);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,8 +45,7 @@ export const ContestCategoryAdd = (props) => {
 
     // alert("Category add form posted");
     axios
-      .post("http://localhost:5000/api/contests/category", category,
-      {
+      .post("http://localhost:5000/api/contests/category", category, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -54,20 +54,17 @@ export const ContestCategoryAdd = (props) => {
         // alert(res.data);
         console.log(res.data);
         if (res.data.msg === "added successfully") {
-
           console.log("category added successfully");
-            // window.location = "/contestshow";
+          // window.location = "/contestshow";
 
-            setcategory({
-              ...category,
-              title: "",
-              description: "",
-              maxvoteperUser: "",
-              maxchoices: "",
-            });
+          setcategory({
+            ...category,
+            title: "",
+            description: "",
+            maxvoteperUser: "",
+            maxchoices: "",
+          });
         }
-
-        
       });
     //window.location = "/";
   };

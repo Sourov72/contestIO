@@ -30,7 +30,9 @@ export const ContestContentAdd = (props) => {
   });
 
   useEffect(() => {
-    contestid = location.state.contentcontestID;
+    contestid = location.state.contestID;
+
+    console.log("contekjskjf", contestid)
 
     const type = location.state.contesttype;
 
@@ -53,7 +55,7 @@ export const ContestContentAdd = (props) => {
     //   contestID: contestid,
     // });
 
-    console.log("contestid in useeffect", choice.contestID);
+    console.log("contestid in useeffect", contestid);
 
     getallcategories();
   }, []);
@@ -61,7 +63,7 @@ export const ContestContentAdd = (props) => {
   function getallcategories() {
     // console.log(user);
     //path to be corrected
-    console.log("contestid", contestid);
+    console.log("contestid in get categoryies", contestid);
     axios
       .get("http://localhost:5000/api/contests/getcatogory/" + contestid, {
         headers: {
@@ -148,7 +150,7 @@ export const ContestContentAdd = (props) => {
         if (res.data.msg === "added successfully") {
           console.log("added successfully");
           //   window.location = "/";
-          navigate("/contestshow", { state: { contestID: content.contestID } });
+          navigate("/contests/" + content.contestID, { state: { contestID: content.contestID } });
         }
       });
     //window.location = "/";

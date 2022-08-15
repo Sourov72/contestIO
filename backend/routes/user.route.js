@@ -28,6 +28,7 @@ router.get("/:id", Users.profilecheck);
 
 router.post("/users", Users.getSpecificUsers);
 
+
 router.post("/update/:id", selfAuth, Users.updateUser);
 
 module.exports = router;

@@ -25,6 +25,8 @@ export const ContestShow = () => {
     jurylist: false,
     categoryadd: false,
     newvoteradd: false,
+    newparticipantadd: false,
+    newjuryadd: false,
   });
 
   const [contest, setcontest] = useState({
@@ -85,6 +87,14 @@ export const ContestShow = () => {
     setcomp({ newvoteradd: true });
   }
 
+  function contestantadd() {
+    setcomp({ newparticipantadd: true });
+  }
+
+  function juryadd() {
+    setcomp({ newjuryadd: true });
+  }
+
   useEffect(() => {
     const uid = localStorage.getItem("id");
 
@@ -115,6 +125,7 @@ export const ContestShow = () => {
       });
     var q = [{ userID: ["eq", uid] }, { contestID: ["eq", contestID] }];
     const query = obj2str(q);
+    console.log("qure", query);
     axios
       .get(`http://localhost:5000/api/participants/query?${query}`, {
         headers: {
@@ -122,8 +133,9 @@ export const ContestShow = () => {
         },
       })
       .then((res) => {
-        if (res.data.participants === []) {
+        if (res.data.participants !== []) {
           let types = participantValueToType(res.data.participants[0]["type"]);
+          // console.log("tpe", res.data.participants)
           setUserType(types);
         } else {
           setUserType("");
@@ -205,65 +217,12 @@ export const ContestShow = () => {
                 Contest Media
               </button>
 
-              <button
-                type="submit"
-                className="btn btn-primary my-2"
-                onClick={contestvoter}
-              >
-                Voter List
-              </button>
-
-              <button
-                type="submit"
-                className="btn btn-primary my-2"
-                onClick={contestparticipant}
-              >
-                Participant List
-              </button>
-
-              <button
-                type="submit"
-                className="btn btn-primary my-2"
-                onClick={contestjury}
-              >
-                Jury List
-              </button>
-
-              <button
-                type="submit"
-                className="btn btn-primary my-2"
-                onClick={voteradd}
-              >
-                New Voter Add
-              </button>
-
-              {/* {(() => {
-                if (userid !== "0") {
- 
-
-                    <>
-                      {
-
-                        <button
-                          type="submit"
-                          className="btn btn-primary my-2"
-                          onClick={addcontestcategory}
-                        >
-                          Add Category
-                        </button>
-                      }
-                    </>
-
-                  
-                }
-              })} */}
-              {/* {console.log("jhjhjkhjhjh", userType)} */}
-
               {userType.includes("HOST") ? (
                 <>
+                  {console.log("contestidd ", contestID)}
                   <Link
                     to="/contestaddcategory"
-                    state={{ catcontestID: location.state.contestID }}
+                    state={{ contestID: contestID }}
                   >
                     <button className="btn btn-danger px-4 my-2">
                       Add Category
@@ -278,21 +237,61 @@ export const ContestShow = () => {
                   <button
                     type="submit"
                     className="btn btn-primary my-2"
+                    onClick={contestvoter}
+                  >
+                    Voter List
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary my-2"
+                    onClick={contestparticipant}
+                  >
+                    Participant List
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary my-2"
+                    onClick={contestjury}
+                  >
+                    Jury List
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary my-2"
                     onClick={voteradd}
                   >
                     New Voter Add
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary my-2"
+                    onClick={contestantadd}
+                  >
+                    New Contestant Add
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary my-2"
+                    onClick={juryadd}
+                  >
+                    New Jury Member Add
                   </button>
                 </>
               ) : (
                 <div> </div>
               )}
 
-              {userType.length === 0 && (
+              {!userType.includes("FOLLOWER") && !userType.includes("BLOCKED") && (
                 <>
                   <Link
                     to="/"
                     state={{
-                      contentcontestID: contestID,
+                      contestID: contestID,
                       contesttype: contest.objective,
                     }}
                   >
@@ -302,6 +301,7 @@ export const ContestShow = () => {
                   </Link>
                 </>
               )}
+              {console.log("user tyep", userType)}
               {userType.includes("FOLLOWER") && (
                 <>
                   <Link
@@ -319,7 +319,7 @@ export const ContestShow = () => {
                   <Link
                     to="/contestcontentadd"
                     state={{
-                      contentcontestID: location.state.contestID,
+                      contestID: contestID,
                       contesttype: contest.objective,
                     }}
                   >
@@ -519,7 +519,7 @@ export const ContestShow = () => {
                   return (
                     <ContestParticipantSearch
                       type="voterlist"
-                      contestID={location.state.contestID}
+                      contestID={contestID}
                     />
                   );
                 }
@@ -528,7 +528,7 @@ export const ContestShow = () => {
                   return (
                     <ContestParticipantSearch
                       type="participantlist"
-                      contestID={location.state.contestID}
+                      contestID={contestID}
                     />
                   );
                 }
@@ -537,7 +537,7 @@ export const ContestShow = () => {
                   return (
                     <ContestParticipantSearch
                       type="jurylist"
-                      contestID={location.state.contestID}
+                      contestID={contestID}
                     />
                   );
                 }
@@ -545,7 +545,19 @@ export const ContestShow = () => {
                 if (comp.newvoteradd === true) {
                   console.log("helo there new voter add");
 
-                  return <Search contestvoteaddID={location.state.contestID} />;
+                  return <Search contestID={contestID} type={"voteradd"} />;
+                }
+                if (comp.newparticipantadd === true) {
+                  console.log("helo there new voter add");
+
+                  return (
+                    <Search contestID={contestID} type={"contestantadd"} />
+                  );
+                }
+                if (comp.newjuryadd === true) {
+                  console.log("helo there new voter add");
+
+                  return <Search contestID={contestID} type={"juryadd"} />;
                 }
               })()}
             </form>

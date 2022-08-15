@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { obj2str, participantTypeToValue, participantValueToType } from "../helperFunctions";
+import {
+  obj2str,
+  participantTypeToValue,
+  participantValueToType,
+} from "../helperFunctions";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
@@ -35,6 +39,10 @@ export const ContestParticipantSearch = (props) => {
 
     await axios
       .delete("http://localhost:5000/api/participants/delete", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+
         data: participant,
       })
       .then((res) => {
@@ -68,8 +76,7 @@ export const ContestParticipantSearch = (props) => {
     // console.log("query", query);
 
     axios
-      .get(`http://localhost:5000/api/participants/query?${query}`,
-      {
+      .get(`http://localhost:5000/api/participants/query?${query}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

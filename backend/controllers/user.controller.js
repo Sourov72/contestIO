@@ -1,7 +1,9 @@
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const participantModel = require("../models/participant.model");
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 // router.route("/").get((req, res) => {
 //   User.find()
 //     .then((users) => res.json(users))
@@ -71,27 +73,73 @@ const getUser = (req, res) => {
     });
 };
 
-const getSpecificUsers = (req, res) => {
-  var word = req.body.username;
-  console.log("hello", word);
-  User.find({
-    $or: [
-      {
-        username: {
-          $regex: word,
-          $options: "i",
-        },
+const getSpecificUsers = async (req, res) => {
+  // var word = req.body.username;
+  console.log("hello", req.body);
+  const { username, contestID } = req.body;
+  
+  // User.find({
+  //   $or: [
+  //     {
+  //       username: {
+  //         $regex: word,
+  //         $options: "i",
+  //       },
+  //     },
+  //     {
+  //       email: {
+  //         $regex: word,
+  //         $options: "i",
+  //       },
+  //     },
+  //   ],
+  // });
+  // .then((users) => res.status(200).json(users))
+  // .catch((err) => res.status(400).json("Error :" + err));
+
+  const userss = await User.aggregate([
+    {
+      $lookup: {
+        from: "participants",
+        localField: "_id",
+        foreignField: "userID",
+
+        pipeline: [
+          {
+            $match: {
+              contestID: { $eq: ObjectId(contestID) },
+            },
+          },
+        ],
+
+        as: "userData",
       },
-      {
-        email: {
-          $regex: word,
-          $options: "i",
-        },
+    },
+
+    {
+      $match: {
+        userData: { $exists: true, $size: 0 },
+
+        $or: [
+          {
+            username: {
+              $regex: username,
+              $options: "i",
+            },
+          },
+          {
+            email: {
+              $regex: username,
+              $options: "i",
+            },
+          },
+        ],
       },
-    ],
-  })
-    .then((users) => res.status(200).json(users))
-    .catch((err) => res.status(400).json("Error :" + err));
+    },
+  ]);
+
+  res.json(userss);
+  console.log("users", userss)
 };
 
 const profilecheck = (req, res) => {
@@ -143,9 +191,8 @@ const createUser = (req, res) => {
             .then(() => {
               return res.status(200).json({
                 message: "User added successfully",
-              })
-            }
-            )
+              });
+            })
             .catch((err) => {
               console.log(err);
               return res.status(400).json({
@@ -158,9 +205,8 @@ const createUser = (req, res) => {
           return res.status(400).json({
             message: "Password was not hashed successfully",
             error: err,
-          })
-        }
-        );
+          });
+        });
     }
   });
 };
@@ -173,7 +219,7 @@ const updateUser = async (req, res) => {
   const pass = req.body.reoldpassword;
   // console.log("req id", id);
   // console.log("req body pass", pass);
-  const prevUser = await User.findById(id); 
+  const prevUser = await User.findById(id);
   // console.log("prevuser", prevUser)
 
   bcrypt
@@ -202,15 +248,14 @@ const updateUser = async (req, res) => {
       instagramhandle: req.body.instagramhandle,
     },
     img: req.body.img,
-  }); 
+  });
 
   if (!user) {
     return res.status(400).json({ message: "Could not update" });
   }
-  console.log("user update success")
+  console.log("user update success");
   return res.status(200).json({ message: "User Updated!" });
 };
-
 
 module.exports = {
   createUser,
@@ -219,5 +264,4 @@ module.exports = {
   profilecheck,
   getSpecificUsers,
   updateUser,
-  
 };

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { participantValueToType, obj2str } from "../helperFunctions";
-
+import Cookies from "universal-cookie";
 import axios from "axios";
+const cookies = new Cookies();
+
+
 
 function ImageView(props) {
   return (
@@ -20,6 +23,7 @@ function ImageView(props) {
 
 export const Contentcard = (props) => {
   var hov = false;
+  const token = cookies.get("TOKEN");
 
   // var imagename = "";
 
@@ -52,6 +56,9 @@ export const Contentcard = (props) => {
       axios
         .get("http://localhost:5000/api/participants/getparticipant", {
           params: vote,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((res) => {
           console.log("res body in participant get", res.data.type);
@@ -62,6 +69,9 @@ export const Contentcard = (props) => {
       axios
         .get("http://localhost:5000/api/votes/vote", {
           params: vote,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         .then((res) => {
           console.log("res body in vote get", res.data);
@@ -122,9 +132,15 @@ export const Contentcard = (props) => {
         categoryID: props.categoryID,
       };
 
-      axios.post("http://localhost:5000/api/votes/create", vote).then((res) => {
-        console.log("res body in vote create", res.data);
-      });
+      axios
+        .post("http://localhost:5000/api/votes/create", vote, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          console.log("res body in vote create", res.data);
+        });
       setcheck(true);
     } else {
       setcheck(false);

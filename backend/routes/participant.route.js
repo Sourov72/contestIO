@@ -20,7 +20,7 @@ router.get('/query', optionalAuth, queryParticipants);
 router.get('/queryContests', optionalAuth, queryContests);
 
 // GET a single participant
-router.get('/participant/:id', optionalAuth, getParticipant)
+router.get('/getparticipant', optionalAuth, getParticipant)
 
 // POST a new participant
 router.post('/create', basicAuth, createParticipant)
@@ -29,7 +29,7 @@ router.post('/create', basicAuth, createParticipant)
 router.post('/createAll', basicAuth, createParticipantsAll)
 
 // DELETE a new participant
-router.delete('/delete/:id', basicAuth, deleteParticipant)
+router.delete('/delete', basicAuth, deleteParticipant)
 
 // UPDATE a new participant
 router.patch('/update/:id', basicAuth, updateParticipant)

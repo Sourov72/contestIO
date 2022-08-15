@@ -114,14 +114,14 @@ const queryContests = async (req, res) => {
   }
   // convert keys with trailing 'ID' to ObjectID
   for (let key in query) {
-    if(key.includes('ID')) {
+    if (key.includes("ID")) {
       for (let key2 in query[key]) {
-        query[key][key2] = mongoose.Types.ObjectId(query[key][key2])
+        query[key][key2] = mongoose.Types.ObjectId(query[key][key2]);
       }
     }
   }
   // console.log(query)
-  const contests = await ParticipantModel.find(query).populate('contestID')
+  const contests = await ParticipantModel.find(query).populate("contestID");
   // const contests = await ParticipantModel.aggregate([
   //   {
   //     $addFields: {
@@ -141,7 +141,7 @@ const queryContests = async (req, res) => {
   //   },
 
   // ]);
-  console.log("contests: ", contests)
+  console.log("contests: ", contests);
   res.status(200).json({
     contests: contests,
     count: contests.length,
@@ -210,13 +210,13 @@ const queryParticipants = async (req, res) => {
   }
   // convert keys with trailing 'ID' to ObjectID
   for (let key in query) {
-    if(key.includes('ID')) {
+    if (key.includes("ID")) {
       for (let key2 in query[key]) {
-        query[key][key2] = mongoose.Types.ObjectId(query[key][key2])
+        query[key][key2] = mongoose.Types.ObjectId(query[key][key2]);
       }
     }
   }
-  // console.log("query: ", query);
+  console.log("query: ", query);
   const participants = await ParticipantModel.aggregate([
     {
       $lookup: {
@@ -228,12 +228,14 @@ const queryParticipants = async (req, res) => {
     },
     {
       $project: {
-        userID: {
-          $toString: "$userID",
-        },
-        contestID: {
-          $toString: "$contestID",
-        },
+        // userID: {
+        //   $toString: "$userID",
+        // },
+        // contestID: {
+        //   $toString: "$contestID",
+        // },
+        userID: 1,
+        contestID: 1,
         type: 1,
         username: "$userData.username",
         email: "$userData.email",
@@ -243,8 +245,8 @@ const queryParticipants = async (req, res) => {
       $match: query,
     },
   ]);
-  //   const cnt = await ParticipantModel.count(query);
-  // console.log("participants, ", participants)
+  // const cnt = await ParticipantModel.count(query);
+  console.log("participants, ", participants);
   res.status(200).json({
     participants: participants,
     count: participants.length,
@@ -263,6 +265,7 @@ const createParticipant = async (req, res) => {
       type,
     });
     res.status(200).json(participant);
+    console.log("participant ------------->", participant);
   } catch (error) {
     // if failed, return error
     console.log("create participant error!", error);
@@ -377,7 +380,6 @@ const deleteParticipant = async (req, res) => {
 
   // await contentmod.deletecontentfunc(participant._id);
   // await votemod.deletevotefunc(participant._id)
-
 
   res.status(200).json(participantdeleted);
 };

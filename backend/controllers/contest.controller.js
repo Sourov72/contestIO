@@ -238,6 +238,8 @@ const updateContest = async (req, res) => {
 };
 
 const createCategory = async (req, res) => {
+
+  console.log("req bodh", req.body)
   const { contestID, title, description, maxvoteperUser, maxchoices } =
     req.body;
     if(! isHost(req.user.userID, contestID)) {
@@ -246,6 +248,7 @@ const createCategory = async (req, res) => {
         message: "don't have sufficient permissions to create contest category"
       });
     }
+    // console.log("heheeeeeeeeeeee")
   try {
     const category = await CategoryModel.create({
       contestID,
@@ -254,6 +257,7 @@ const createCategory = async (req, res) => {
       maxvoteperUser,
       maxchoices,
     });
+    console.log("created cateog", category)
     res.status(200).json({ category, msg: "added successfully" });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -263,8 +267,8 @@ const createCategory = async (req, res) => {
 const getContestCategories = async (req, res) => {
   const { id } = req.params;
 
-  if(!isParticipant(req.user.userID, id)) {
-    console.log("user [", req.user.email, '] cannot access categories of contest:', id)
+  if(!req.user || !isParticipant(req.user.userID, id)) {
+    console.log("user [", (req.user ? req.user.email : ""), '] cannot access categories of contest:', id)
     return res.status(400).json({
       message: "don't have sufficient permissions to view contest contents"
     });

@@ -23,7 +23,7 @@ router.get('/vote', getVote)
 router.post('/create', basicAuth, createVote)
 
 // DELETE a new vote
-router.delete('/delete/:id',basicAuth,  deleteVote)
+router.delete('/delete',basicAuth,  deleteVote)
 
 // UPDATE a new vote
 router.patch('/update/:id', basicAuth, updateVote)

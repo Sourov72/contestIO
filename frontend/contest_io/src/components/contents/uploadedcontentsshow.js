@@ -3,8 +3,11 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { Contentcard } from "./contentcard";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const UploadedContentsShow = () => {
+  const token = cookies.get("TOKEN");
   var contestid = "0";
   var categoryid = "0";
   // var check = false;
@@ -56,10 +59,14 @@ export const UploadedContentsShow = () => {
     //path to be corrected
     console.log("contestid", contestid);
     axios
-      .get("http://localhost:5000/api/contests/getcatogory/" + contestid)
+      .get("http://localhost:5000/api/contests/getcatogory/" + contestid, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         // console.log(res);
-        
+
         console.log("categories", res.data);
         if (res.data.length > 0) categoryid = res.data[0]._id;
 
@@ -68,23 +75,23 @@ export const UploadedContentsShow = () => {
           contestcategories: res.data,
         });
 
-        if(res.data.length > 0) {
-
+        if (res.data.length > 0) {
           setcategoryid({
             ...category,
             categoryID: res.data[0]._id,
           });
-
         }
-
-       
       });
   }
 
   function getcategorycontent() {
     console.log("category id in get category  content", categoryid);
     axios
-      .get("http://localhost:5000/api/contents/getallcontent/" + categoryid)
+      .get("http://localhost:5000/api/contents/getallcontent/" + categoryid, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         // console.log(res);
         setcontents({
@@ -104,6 +111,9 @@ export const UploadedContentsShow = () => {
       .post("http://localhost:5000/api/contents/getusercontent", {
         contest: contestattr,
         category: categorytemp,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then((res) => {
         // console.log(res);
