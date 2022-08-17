@@ -133,9 +133,10 @@ export const ContestShow = () => {
         },
       })
       .then((res) => {
-        if (res.data.participants !== []) {
+        if (res.data.participants.length !== 0) {
+          console.log("participants", res.data.participants);
           let types = participantValueToType(res.data.participants[0]["type"]);
-          // console.log("tpe", res.data.participants)
+          
           setUserType(types);
         } else {
           setUserType("");
@@ -306,7 +307,7 @@ export const ContestShow = () => {
                 <>
                   <Link
                     to="/uploadcontentshow"
-                    state={{ contestID: contestID }}
+                    state={{ contestID: contestID, userType: userType }}
                   >
                     <button className="btn btn-danger px-4 my-2">
                       See Contents

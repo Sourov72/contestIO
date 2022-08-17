@@ -19,7 +19,7 @@ const getVote = async (req, res) => {
   //   return res.status(404).json({ error: "No such vote" });
   // }
 
-  console.log("get vote res body", req.query);
+  // console.log("get vote res body", req.query);
 
   //  get the values from the request's body
   const { userID, contestID, choiceID, categoryID } = req.query;

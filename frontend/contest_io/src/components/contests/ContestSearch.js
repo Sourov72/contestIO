@@ -29,6 +29,8 @@ export const ContestSearch = () => {
   });
 
   const fetchContests = async (q, func) => {
+
+    console.log("query", q);
     axios
       .get(`http://localhost:5000/api/contests/query?${q}`, {
         headers: {

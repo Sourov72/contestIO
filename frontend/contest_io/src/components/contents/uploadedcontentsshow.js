@@ -13,13 +13,14 @@ export const UploadedContentsShow = () => {
   // var check = false;
   var col = 12;
 
-  var participant_type = "uploader";
 
   const userid = localStorage.getItem("id");
 
   const location = useLocation();
 
   const [check, setcheck] = useState(false);
+
+  const[userType, setUserType] = useState("");
 
   const [contestattr, setcontestattr] = useState({
     userID: "",
@@ -49,6 +50,8 @@ export const UploadedContentsShow = () => {
       userID: localStorage.getItem("id"),
       contestID: contestid,
     });
+
+    setUserType(location.state.userType);
 
     getallcategories();
     //getcategorycontent();
@@ -111,9 +114,9 @@ export const UploadedContentsShow = () => {
       .post("http://localhost:5000/api/contents/getusercontent", {
         contest: contestattr,
         category: categorytemp,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
       })
       .then((res) => {
         // console.log(res);
@@ -211,7 +214,9 @@ export const UploadedContentsShow = () => {
         )}
       </select>
 
-      {participant_type === "uploader" ? (
+      {console.log("partici", userType)}
+
+      {userType.includes("CONTESTANT") ? (
         <>
           <div className="form-check">
             <input

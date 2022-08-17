@@ -145,7 +145,7 @@ export const ContestContentAdd = (props) => {
         }
       )
       .then((res) => {
-        alert(res.data);
+        // alert(res.data);
         console.log(res.data);
         if (res.data.msg === "added successfully") {
           console.log("added successfully");

@@ -145,7 +145,7 @@ const queryContests = async (req, res) => {
       }
     }
   }
-  // console.log(query)
+  console.log("query", query)
   const contests = await ContestModel.find(query).limit(limit).skip(skip);
   const cnt = await ContestModel.count(query);
   // console.log('contests', contests)

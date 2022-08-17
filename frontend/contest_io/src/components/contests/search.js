@@ -21,9 +21,9 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
         {queryOn : ["regex", e.target.value]},
         {limit : ["limit", 3]},
       ]);
-      // console.log('query: ', obj)
+      console.log('query: ', obj)
       const q = obj2str(obj);
-      // console.log('cq: ', q)
+      console.log('cq: ', q)
       axios
       .get('http://localhost:5000' + apiURI + q, {
         headers: {
@@ -31,6 +31,7 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
         },
       })
       .then((response) => {
+        console.log("response: ", response.data);
         setsearchField(response.data.contests)
       })
     }

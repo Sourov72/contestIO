@@ -107,13 +107,21 @@ export const Profileview = () => {
             <p className="mb-0">
               <FontAwesomeIcon icon={faInstagram} /> &nbsp;
               {user.instagramhandle}
-            </p> */}
+            </p>
           </div>
         </div>
 
         <div className="col-9">
           {console.log(myContests)}
-          <ContestBox contests={myContests} boxTitle={(userID === localStorage.getItem("id") ? "Your" : (user.username + "'s")) + " Contests"} col={6} />
+          <ContestBox
+            contests={myContests}
+            boxTitle={
+              (userID === localStorage.getItem("id")
+                ? "Your"
+                : user.username + "'s") + " Contests"
+            }
+            col={6}
+          />
         </div>
       </form>
     </div>

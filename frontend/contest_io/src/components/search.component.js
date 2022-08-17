@@ -49,19 +49,19 @@ export const Search = (props) => {
       participant = {
         userID: param.userID,
         contestID: param.contestID,
-        type: participantTypeToValue("voter"),
+        type: participantTypeToValue("voter", "follower"),
       };
     } else if (props.type === "juryadd") {
       participant = {
         userID: param.userID,
         contestID: param.contestID,
-        type: participantTypeToValue("jury"),
+        type: participantTypeToValue("jury", "follower"),
       };
     } else {
       participant = {
         userID: param.userID,
         contestID: param.contestID,
-        type: participantTypeToValue("contestant"),
+        type: participantTypeToValue("contestant", "voter", "follower"),
       };
     }
 

@@ -73,14 +73,14 @@ const getallContent = async (req, res) => {
       },
     },
   ]);
-
+ 
   res.json(contents);
 };
 
 const getuserContent = async (req, res) => {
   console.log("reqbody", req.body);
-  const userID = req.user.userID;
-  const { contestID } = req.body.contest.contestID;
+  // const userID = req.body.contest.userID;
+  const { userID, contestID } = req.body.contest;
   const { categoryID } = req.body.category;
   console.log(userID, " ff", contestID, "ttt ", categoryID);
 

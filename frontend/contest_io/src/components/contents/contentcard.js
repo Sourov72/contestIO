@@ -4,11 +4,10 @@ import Cookies from "universal-cookie";
 import axios from "axios";
 const cookies = new Cookies();
 
-
-
 function ImageView(props) {
   return (
     <div className="modal-body">
+      {console.log("img anem" + props.img)}
       <img
         src={"../images/" + props.img}
         className="img-thumbnail"
@@ -27,9 +26,7 @@ export const Contentcard = (props) => {
 
   // var imagename = "";
 
-  const [image, setimage] = useState({
-    imagename: "",
-  });
+  const [image, setimage] = useState("");
   const [check, setcheck] = useState(false);
   const [userType, setUserType] = useState("");
 
@@ -95,9 +92,7 @@ export const Contentcard = (props) => {
   const imageClick = (e) => {
     console.log("Click", e.target.name);
 
-    setimage({
-      imagename: e.target.name,
-    });
+    setimage(e.target.name);
   };
 
   const toggleHover = () => {
@@ -163,7 +158,13 @@ export const Contentcard = (props) => {
       };
 
       axios
-        .delete("http://localhost:5000/api/votes/delete", { data: vote })
+        .delete("http://localhost:5000/api/votes/delete", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+
+          data: vote,
+        })
         .then((res) => {
           console.log("res body in vote delete", res.data);
         });
@@ -219,7 +220,7 @@ export const Contentcard = (props) => {
             onClick={imageClick}
             name={props.link}
             data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
+            data-bs-target={"#" + props.title[0]}
             onMouseEnter={toggleHover}
             onMouseLeave={toggleHover}
 
@@ -232,7 +233,7 @@ export const Contentcard = (props) => {
           <p className="card-text">{props.description}</p>
         </div>
 
-        {userType.includes("VOTER") ? (
+        {userType.includes("VOTER") || userType.includes("JURY") ? (
           <>
             {check === true ? (
               <>
@@ -286,7 +287,7 @@ export const Contentcard = (props) => {
 
       <div
         className="modal fade"
-        id="exampleModal"
+        id={props.title[0]}
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -305,21 +306,18 @@ export const Contentcard = (props) => {
               ></button>
             </div>
 
-            {/* <div className="modal-body">
-                            
-                            <img
-                                src={"../images/" + props.link}
-                                className="img-thumbnail"
-                                style={linkStyle.image}
-                               
+            <div className="modal-body">
+              <img
+                src={"../images/" + image}
+                className="img-thumbnail"
+                style={linkStyle.image}
 
-                            // alt={user.username}
-                            />  */}
+                // alt={user.username}
+              />
+            </div>
+            {console.log("image name props", image)}
 
-            {/* </div> */}
-            {/* {console.log("image name props", props.link)} */}
-
-            <ImageView img={props.link} />
+            {/* <ImageView img={image} /> */}
             <div className="modal-footer">
               <button
                 type="button"

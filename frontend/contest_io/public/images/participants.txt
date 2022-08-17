@@ -1,5 +1,3 @@
-zaman@gmail.com
-kamrul@xy.com
-random1@gmail.com
-random2@gmail.com
-hu@gmail.com
+c1@gmail.com
+c2@gmail.com
+c3@gmail.com

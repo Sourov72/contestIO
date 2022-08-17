@@ -307,6 +307,9 @@ const createParticipants = async (list, contestID, type) => {
     success: 0,
     duplicate: 0,
   };
+
+  // console.log("list", list)
+
   for (let i = 0; i < list.length; i++) {
     res.total += 1;
     const user = await userModel.find({ email: list[i].toLowerCase() });
@@ -314,9 +317,9 @@ const createParticipants = async (list, contestID, type) => {
       // console.log("no user found for", list[i]);
       continue;
     }
-    // console.log(user)
+    // console.log("USEREERERER",user)
     // console.log(user[0]._id)
-    let userID = user[0]._id.valueOf();
+    let userID = user[0]._id;
     const participant = await ParticipantModel.find({
       userID: userID,
       contestID: contestID,
