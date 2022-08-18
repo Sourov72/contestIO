@@ -1,9 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import img1 from "../../images/follow.png";
-import img2 from "../../images/unfollow.png";
-
-export const ContestCard = ({ contest, col,fol }) => {
+export const ContestCard = ({ contest, col }) => {
   const redStyle = {
     color: "red",
     fontWeight: "bold",
@@ -88,12 +85,7 @@ export const ContestCard = ({ contest, col,fol }) => {
               Registration: {formatReg()}
             </p>
             <div className="badges">{getBadges()}</div>
-            {fol > 0 ? 
-              <>
-               <div><img src={img2} class="card-img-left float-right"></img></div>
-              </>
-
-              : <div><img src={img1} class="card-img-left float-right"></img></div>}
+            
             
           </div>
         </div>
