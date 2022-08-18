@@ -310,8 +310,8 @@ export const ContestShow = () => {
               ) : (
                 <div> </div>
               )}
-{/* 
-              {!userType.includes("FOLLOWER") && !userType.includes("BLOCKED") && (
+
+              {/* {!userType.includes("FOLLOWER") && !userType.includes("BLOCKED") && (
                 <>
                   <button className="btn btn-warning my-2">
                     <Link
@@ -326,11 +326,11 @@ export const ContestShow = () => {
                     </Link>
                   </button>
                 </>
-              )}
+              )} */}
 
               {userType.includes("CONTESTANT") && (
                 <>
-                  <button className="btn btn-danger my-2">
+                  <button className="btn btn-theme my-2">
                     <Link
                       to="/contestcontentadd"
                       className="text-light"
