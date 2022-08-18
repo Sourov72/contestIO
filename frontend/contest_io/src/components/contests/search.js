@@ -17,13 +17,14 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
       setSearchShow(false);
     } else {
       setSearchShow(true);
-      var obj = obj2str([
-        {queryOn : ["regex", e.target.value]},
+      var q = obj2str([
+        {[queryOn] : ["regex", e.target.value]},
         {limit : ["limit", 3]},
       ]);
-      console.log('query: ', obj)
-      const q = obj2str(obj);
-      console.log('cq: ', q)
+      // console.log(e.target.value)
+      // console.log('query: ', obj)
+      // const q = obj2str(obj);
+      // console.log('cq: ', q)
       axios
       .get('http://localhost:5000' + apiURI + q, {
         headers: {
@@ -93,7 +94,9 @@ export const Search = ({ apiURI, searchPlaceHolder, queryOn, keyval }) => {
           type="search"
           placeholder={searchPlaceHolder}
           onBlur={(e) => {
-            e.target.value = "";
+            // setSearchShow(false);
+            // e.target.value = "";
+            // handleChange(e);
           }}
           onChange={handleChange}
         />

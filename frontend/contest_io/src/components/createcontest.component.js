@@ -169,12 +169,13 @@ export const CreateContest = () => {
   return (
     <>
       <div className="container">
-        <div className="row gx-3 gy-2 mt-2">
-          <div className="col-2 my-5">
-            <div className="btn-group-vertical" role="group">
+      <h1 className=" text-center my-2">Create a New Contest</h1>
+        <div className="row mt-2">
+          <div className="col-2 ">
+            <div className="d-flex flex-column justify-content-center">
               <button
                 type="radio"
-                className="btn btn-outline-primary my-2"
+                className="btn btn-theme text-white my-2"
                 onClick={general}
               >
                 General
@@ -182,7 +183,7 @@ export const CreateContest = () => {
 
               <button
                 type="radio"
-                className="btn btn-outline-primary my-2"
+                className="btn btn-theme text-white my-2"
                 onClick={timeschedule}
               >
                 Time schedule
@@ -190,7 +191,7 @@ export const CreateContest = () => {
 
               <button
                 type="radio"
-                className="btn btn-outline-primary my-2"
+                className="btn btn-theme text-white my-2"
                 onClick={contesttype}
               >
                 Contest type
@@ -198,7 +199,7 @@ export const CreateContest = () => {
 
               <button
                 type="radio"
-                className="btn btn-outline-primary my-2"
+                className="btn btn-theme text-white my-2"
                 onClick={contestmedia}
               >
                 Contest Media
@@ -207,7 +208,6 @@ export const CreateContest = () => {
           </div>
 
           <div className="col-7">
-            <h1 className=" text-center my-2">Create a New Contest</h1>
             <form>
               {(() => {
                 if (comp.generalcom === true) {
@@ -469,14 +469,16 @@ export const CreateContest = () => {
                         </select>
                       </div>
 
+                      <div className="d-flex flex-column justify-content-center mt-4">
                       <button
                         type="button"
-                        className="btn btn-primary"
+                        className="btn btn-theme mx-auto"
                         data-bs-toggle="modal"
                         data-bs-target="#exampleModal"
                       >
                         Create Contest
                       </button>
+                      </div>
 
                       <div
                         className="modal fade"
@@ -513,7 +515,7 @@ export const CreateContest = () => {
                               <button
                                 type="submit"
                                 onClick={createNewContest}
-                                className="btn btn-primary"
+                                className="btn btn-theme"
                               >
                                 Submit
                               </button>

@@ -22,7 +22,7 @@ export const Logout = (props) => {
       <form>
         <div className="mb-3">Are you sure you want to logout?</div>
 
-        <button type="submit" className="btn btn-primary" onClick={login}>
+        <button type="submit" className="btn btn-theme" onClick={login}>
           Logout
         </button>
       </form>

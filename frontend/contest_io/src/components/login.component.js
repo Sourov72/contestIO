@@ -79,7 +79,7 @@ export const Login = () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary" onClick={login}>
+        <button type="submit" className="btn btn-theme" onClick={login}>
           Login
         </button>
        

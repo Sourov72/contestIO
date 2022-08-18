@@ -25,6 +25,18 @@ body {
   color: #8344CA;
 }
 
+.btn-theme {
+  background-color: #5e0fb8 !important;
+  color: white !important;
+  border-width: 0px !important;
+}
+.btn-theme:hover {
+  background-color: #340768 !important;
+  color: white !important;
+  /* border-color: #8344CA !important; */
+  border-width: 0px !important;
+}
+
 .navbar-brand {
   color: #8344CA !important;
 }

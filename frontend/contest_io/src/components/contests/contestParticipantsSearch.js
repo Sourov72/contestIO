@@ -119,7 +119,7 @@ export const ContestParticipantSearch = (props) => {
                   {currentPerson.username}
                 </Link>
               </td>
-              <td>{participantValueToType(currentPerson.type)}</td>
+              {/* <td>{participantValueToType(currentPerson.type)}</td> */}
               <td>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

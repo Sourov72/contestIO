@@ -136,7 +136,7 @@ export const ContestShow = () => {
         if (res.data.participants.length !== 0) {
           console.log("participants", res.data.participants);
           let types = participantValueToType(res.data.participants[0]["type"]);
-          
+
           setUserType(types);
         } else {
           setUserType("");
@@ -185,10 +185,11 @@ export const ContestShow = () => {
       <div className="container">
         <div className="row gx-3 gy-2 mt-2">
           <div className="col-2">
-            <div className="btn-group-vertical " role="group">
+            <p className="text-center fw-bold mb-0">Information</p>
+            <div className="d-flex flex-column justify-content-center">
               <button
                 type="submit"
-                className="btn btn-primary my-2"
+                className="btn btn-theme my-2"
                 onClick={general}
               >
                 General
@@ -196,7 +197,7 @@ export const ContestShow = () => {
 
               <button
                 type="submit"
-                className="btn btn-primary my-2"
+                className="btn btn-theme my-2"
                 onClick={timeschedule}
               >
                 Time schedule
@@ -204,7 +205,7 @@ export const ContestShow = () => {
 
               <button
                 type="submit"
-                className="btn btn-primary my-2"
+                className="btn btn-theme my-2"
                 onClick={contesttype}
               >
                 Contest type
@@ -212,75 +213,98 @@ export const ContestShow = () => {
 
               <button
                 type="submit"
-                className="btn btn-primary my-2"
+                className="btn btn-theme my-2"
                 onClick={contestmedia}
               >
                 Contest Media
               </button>
+              {userType.includes("FOLLOWER") && (
+                <>
+                  <button className="btn btn-theme px-4 my-2">
+                    <Link
+                      to="/uploadcontentshow"
+                      className="text-light"
+                      state={{ contestID: contestID, userType: userType }}
+                    >
+                      See Contents
+                    </Link>
+                  </button>
+                </>
+              )}
+            </div>
+            {/* {console.log("usertype ", userType)} */}
+            {userType.includes("HOST") && (
+              <div className="d-flex flex-column justify-content-center">
+                <p className="text-center fw-bold mb-0 mt-2">
+                  Contestant Lists
+                </p>
+                <button
+                  type="submit"
+                  className="btn btn-theme my-2"
+                  onClick={contestvoter}
+                >
+                  Voter List
+                </button>
 
+                <button
+                  type="submit"
+                  className="btn btn-theme my-2"
+                  onClick={contestparticipant}
+                >
+                  Participant List
+                </button>
+
+                <button
+                  type="submit"
+                  className="btn btn-theme my-2"
+                  onClick={contestjury}
+                >
+                  Jury List
+                </button>
+              </div>
+            )}
+
+            <div className="d-flex flex-column justify-content-center">
+              <p className="text-center fw-bold mb-0 mt-2">Options</p>
               {userType.includes("HOST") ? (
                 <>
-                  {console.log("contestidd ", contestID)}
-                  <Link
-                    to="/contestaddcategory"
-                    state={{ contestID: contestID }}
-                  >
-                    <button className="btn btn-danger px-4 my-2">
+                  <button className="btn btn-theme my-2">
+                    <Link
+                      to="/contestaddcategory"
+                      className="text-light"
+                      state={{ contestID: contestID }}
+                    >
                       Add Category
-                    </button>
-                  </Link>
-                  <Link to="" state={{}}>
-                    <button className="btn btn-danger px-4 my-2">
+                    </Link>
+                  </button>
+                  <button className="btn btn-theme my-2">
+                    <Link to="" state={{}} className="text-light">
                       Edit Contest
-                    </button>
-                  </Link>
-
-                  <button
-                    type="submit"
-                    className="btn btn-primary my-2"
-                    onClick={contestvoter}
-                  >
-                    Voter List
+                    </Link>
                   </button>
 
                   <button
                     type="submit"
-                    className="btn btn-primary my-2"
-                    onClick={contestparticipant}
-                  >
-                    Participant List
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="btn btn-primary my-2"
-                    onClick={contestjury}
-                  >
-                    Jury List
-                  </button>
-
-                  <button
-                    type="submit"
-                    className="btn btn-primary my-2"
+                    className="btn btn-theme my-2"
                     onClick={voteradd}
                   >
-                    New Voter Add
+                    Add Voters
                   </button>
 
                   <button
                     type="submit"
-                    className="btn btn-primary my-2"
+                    className="btn btn-theme my-2"
                     onClick={contestantadd}
                   >
-                    New Contestant Add
+                    Add Contestants
                   </button>
 
                   <button
                     type="submit"
-                    className="btn btn-primary my-2"
+                    className="btn btn-theme my-2"
                     onClick={juryadd}
                   >
-                    New Jury Member Add
+                    Add Jury
                   </button>
                 </>
               ) : (
@@ -289,45 +313,35 @@ export const ContestShow = () => {
 
               {!userType.includes("FOLLOWER") && !userType.includes("BLOCKED") && (
                 <>
-                  <Link
-                    to="/"
-                    state={{
-                      contestID: contestID,
-                      contesttype: contest.objective,
-                    }}
-                  >
-                    <button className="btn btn-danger px-4 my-2">
+                  <button className="btn btn-warning my-2">
+                    <Link
+                      to="/"
+                      
+                      state={{
+                        contestID: contestID,
+                        contesttype: contest.objective,
+                      }}
+                    >
                       Participate
-                    </button>
-                  </Link>
+                    </Link>
+                  </button>
                 </>
               )}
-              {console.log("user tyep", userType)}
-              {userType.includes("FOLLOWER") && (
-                <>
-                  <Link
-                    to="/uploadcontentshow"
-                    state={{ contestID: contestID, userType: userType }}
-                  >
-                    <button className="btn btn-danger px-4 my-2">
-                      See Contents
-                    </button>
-                  </Link>
-                </>
-              )}
+
               {userType.includes("CONTESTANT") && (
                 <>
-                  <Link
-                    to="/contestcontentadd"
-                    state={{
-                      contestID: contestID,
-                      contesttype: contest.objective,
-                    }}
-                  >
-                    <button className="btn btn-danger px-4 my-2">
+                  <button className="btn btn-danger my-2">
+                    <Link
+                      to="/contestcontentadd"
+                      className="text-light"
+                      state={{
+                        contestID: contestID,
+                        contesttype: contest.objective,
+                      }}
+                    >
                       Add Contents
-                    </button>
-                  </Link>
+                    </Link>
+                  </button>
                 </>
               )}
             </div>
@@ -341,8 +355,8 @@ export const ContestShow = () => {
                     <>
                       <div className="row">
                         <div className="mb-3 col-8">
-                          <label htmlFor="inputEmail4" className="form-label">
-                            Contest Title
+                          <label htmlFor="inputEmail4" className="form-label fw-bold">
+                            Title
                           </label>
                           <div className="form-control form-control-sm">
                             {contest.title}
@@ -350,9 +364,9 @@ export const ContestShow = () => {
 
                           <label
                             htmlFor="inputEmail4"
-                            className="form-label my-3"
+                            className="form-label my-3 fw-bold"
                           >
-                            About Contest
+                            About
                           </label>
                           <div className="form-control form-control-sm">
                             {contest.description}
@@ -360,7 +374,7 @@ export const ContestShow = () => {
 
                           <label
                             htmlFor="inputEmail4"
-                            className="form-label my-3"
+                            className="form-label my-3 fw-bold"
                           >
                             Vote weight
                           </label>
@@ -370,7 +384,7 @@ export const ContestShow = () => {
 
                           <label
                             htmlFor="inputEmail4"
-                            className="form-label my-3"
+                            className="form-label my-3 fw-bold"
                           >
                             Jury Vote Weight
                           </label>
@@ -379,7 +393,7 @@ export const ContestShow = () => {
                           </div>
                           <div className="my-3">
                             <label
-                              className="form-check-label "
+                              className="form-check-label fw-bold"
                               htmlFor="voterAnonymity"
                             >
                               Anonymous
@@ -433,7 +447,7 @@ export const ContestShow = () => {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label">
+                        <label htmlFor="inputEmail4" className="form-label fw-bold">
                           Registration Start time
                         </label>
                         <div className="form-control form-control-sm">
@@ -442,7 +456,7 @@ export const ContestShow = () => {
 
                         <label
                           htmlFor="inputEmail4"
-                          className="form-label my-3"
+                          className="form-label my-3 fw-bold"
                         >
                           Registration End time
                         </label>
@@ -452,7 +466,7 @@ export const ContestShow = () => {
 
                         <label
                           htmlFor="inputEmail4"
-                          className="form-label my-3"
+                          className="form-label my-3 fw-bold"
                         >
                           Contest Start time
                         </label>
@@ -467,7 +481,7 @@ export const ContestShow = () => {
 
                         <label
                           htmlFor="inputEmail4"
-                          className="form-label my-3"
+                          className="form-label my-3 fw-bold"
                         >
                           Contest End time
                         </label>
@@ -483,7 +497,7 @@ export const ContestShow = () => {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label">
+                        <label htmlFor="inputEmail4" className="form-label fw-bold">
                           Contest Type
                         </label>
                         <div className="form-control form-control-sm">
@@ -498,7 +512,7 @@ export const ContestShow = () => {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label">
+                        <label htmlFor="inputEmail4" className="form-label fw-bold">
                           Contest Objective
                         </label>
                         <div className="form-control form-control-sm">
@@ -508,7 +522,7 @@ export const ContestShow = () => {
                       <button
                         type="submit"
                         onClick={EditContest}
-                        className="btn btn-primary"
+                        className="btn btn-theme"
                       >
                         Edit Contest
                       </button>

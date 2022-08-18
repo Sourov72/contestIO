@@ -174,7 +174,7 @@ export const Signup = () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary mb-3" onClick={signup}>
+        <button type="submit" className="btn btn-theme mb-3" onClick={signup}>
           Signup
         </button>
       </form>

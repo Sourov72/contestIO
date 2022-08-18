@@ -94,6 +94,7 @@ const queryContests = async (req, res) => {
   var query = {}; 
   var limit = 20;
   var skip = 0;
+  // console.log('req query', req.query)
   for (var key in req.query) {
     if (req.query[key] == "" || req.query[key] == {}) {
       continue;
@@ -104,7 +105,7 @@ const queryContests = async (req, res) => {
     } else {
       req.query[key] = [req.query[key]]; 
     }
-    // console.log(req.query[key]);
+    // console.log(key, req.query[key]);
     if(key != 'limit' && key != 'skip') query[key] = {};
     for (let i = 0; i < len; i++) {
       const arr = req.query[key][i].split(",");
