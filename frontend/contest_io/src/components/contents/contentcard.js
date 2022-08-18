@@ -4,22 +4,6 @@ import Cookies from "universal-cookie";
 import axios from "axios";
 const cookies = new Cookies();
 
-function ImageView(props) {
-  return (
-    <div className="modal-body">
-      {console.log("img anem" + props.img)}
-      <img
-        src={"../images/" + props.img}
-        className="img-thumbnail"
-        // style={linkStyle.image}
-
-        // alt={user.username}
-      />{" "}
-      {/* {console.log("image name props in functionsssss", props.img)} */}
-    </div>
-  );
-}
-
 export const Contentcard = (props) => {
   var hov = false;
   const token = cookies.get("TOKEN");
@@ -202,16 +186,56 @@ export const Contentcard = (props) => {
     // console.log("hello there brooooo")
     linkStyle = {
       image: {
-        borderColor: "red",
+        width: "50%",
+        height: "50%",
+        transform: "translate(0px, 2%)",
+        borderColor: "purple",
         borderWidth: 3,
         borderRadius: "50%",
       },
+
+      modalimage: {
+        width: "80%",
+        height: "80%",
+        borderColor: "black",
+        borderWidth: 2,
+        borderRadius: "5%",
+      },
+
+      card: {
+        borderWidth: 3,
+      },
+
+      checkbox: {
+        width: "4%",
+        height: "17px",
+        transform: "translate(0px, -20%)",
+        borderColor: "black",
+        borderWidth: 2,
+        color: "black",
+        borderRadius: "50%",
+        
+        
+      },
+
+      votedcheckbox: {
+        width: "4%",
+        height: "17px",
+        transform: "translate(0px, -20%)",
+        borderColor: "black",
+        borderWidth: 2,
+        color: "red",
+        backgroundColor: "black",
+        borderRadius: "50%",
+        
+       
+      }
     };
   }
 
   const cardBody = () => {
     return (
-      <div className="card ">
+      <div className="card border-success mb-3 my-2" style={linkStyle.card}>
         <div className="view">
           <img
             src={"../images/" + props.link}
@@ -228,42 +252,46 @@ export const Contentcard = (props) => {
           ></img>
         </div>
 
-        <div className="card-body">
-          <h5 className="card-title">{props.title}</h5>
-          <p className="card-text">{props.description}</p>
+        <div className="card-body  text-bg-info my-2">
+          <h5 className="card-title text-uppercase fw-bold fs-2 ">
+            {props.title}
+          </h5>
+          <p className="card-text fw-semibold">{props.description}</p>
         </div>
 
         {userType.includes("VOTER") || userType.includes("JURY") ? (
           <>
             {check === true ? (
               <>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="ownuploads"
-                  onChange={handleChange}
-                  id="ownuploads"
-                  checked
-                  // {...1===1? {"checked"}:<>bla</>}
-                />
-                <div className="form-check">
-                  <label className="form-check-label" htmlFor="ownuploads">
+                <div className="form-check fw-bold text-uppercase">
+                  <input
+                    className="form-check-input "
+                    type="checkbox"
+                    name="voted"
+                    onChange={handleChange}
+                    style = {linkStyle.votedcheckbox}
+                    id="ownuploads"
+                    checked
+                    // {...1===1? {"checked"}:<>bla</>}
+                  />
+                  <label className="form-check-label" htmlFor="voted">
                     vote
                   </label>
                 </div>
               </>
             ) : (
               <>
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  name="ownuploads"
-                  onChange={handleChange}
-                  id="ownuploads"
-                  // {...1===1? {"checked"}:<>bla</>}
-                />
-                <div className="form-check">
-                  <label className="form-check-label" htmlFor="ownuploads">
+                <div className="form-check fw-bold  text-uppercase">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    name="unvoted"
+                    style = {linkStyle.checkbox}
+                    onChange={handleChange}
+                    id="ownuploads"
+                    // {...1===1? {"checked"}:<>bla</>}
+                  />
+                  <label className="form-check-label" htmlFor="unvoted">
                     vote
                   </label>
                 </div>
@@ -310,14 +338,13 @@ export const Contentcard = (props) => {
               <img
                 src={"../images/" + image}
                 className="img-thumbnail"
-                style={linkStyle.image}
+                style={linkStyle.modalimage}
 
                 // alt={user.username}
               />
             </div>
             {console.log("image name props", image)}
 
-            {/* <ImageView img={image} /> */}
             <div className="modal-footer">
               <button
                 type="button"
@@ -326,13 +353,6 @@ export const Contentcard = (props) => {
               >
                 Close
               </button>
-              {/* <button
-                                type="submit"
-                                onClick={createNewContest}
-                                className="btn btn-primary"
-                              >
-                                Submit
-                              </button> */}
             </div>
           </div>
         </div>

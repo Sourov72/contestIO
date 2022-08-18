@@ -286,7 +286,7 @@ export const ContestShow = () => {
               ) : (
                 <div> </div>
               )}
-
+{/* 
               {!userType.includes("FOLLOWER") && !userType.includes("BLOCKED") && (
                 <>
                   <Link
@@ -301,7 +301,7 @@ export const ContestShow = () => {
                     </button>
                   </Link>
                 </>
-              )}
+              )} */}
               {console.log("user tyep", userType)}
               {userType.includes("FOLLOWER") && (
                 <>
@@ -505,13 +505,13 @@ export const ContestShow = () => {
                           {contest.objective}
                         </div>
                       </div>
-                      <button
+                      {/* <button
                         type="submit"
                         onClick={EditContest}
                         className="btn btn-primary"
                       >
                         Edit Contest
-                      </button>
+                      </button> */}
                     </>
                   );
                 }
