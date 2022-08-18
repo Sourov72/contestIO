@@ -310,7 +310,7 @@ export const ContestShow = () => {
               ) : (
                 <div> </div>
               )}
-
+{/* 
               {!userType.includes("FOLLOWER") && !userType.includes("BLOCKED") && (
                 <>
                   <button className="btn btn-warning my-2">
@@ -519,13 +519,13 @@ export const ContestShow = () => {
                           {contest.objective}
                         </div>
                       </div>
-                      <button
+                      {/* <button
                         type="submit"
                         onClick={EditContest}
                         className="btn btn-theme"
                       >
                         Edit Contest
-                      </button>
+                      </button> */}
                     </>
                   );
                 }

@@ -186,6 +186,18 @@ export const UploadedContentsShow = () => {
       borderWidth: 3,
       borderRadius: "50%",
     },
+    checkbox: {
+      width: "1.3%",
+      height: "15px",
+      transform: "translate(0px, -20%)",
+      borderColor: "black",
+      borderWidth: 2,
+      color: "black",
+      borderRadius: "50%",
+      
+      
+      
+    },
   };
 
   return (
@@ -194,7 +206,7 @@ export const UploadedContentsShow = () => {
         Choose Category
       </label>
       <select
-        className="form-select"
+        className="form-select "
         name="category"
         onChange={categoryChange}
         // value={contest.objective}
@@ -218,12 +230,13 @@ export const UploadedContentsShow = () => {
 
       {userType.includes("CONTESTANT") ? (
         <>
-          <div className="form-check">
+          <div className="form-check my-2 text-uppercase fw-bold">
             <input
               className="form-check-input"
               type="checkbox"
               name="ownuploads"
               onChange={handleChange}
+              style = {stylingObject.checkbox}
               id="ownuploads"
             />
             <label className="form-check-label" htmlFor="ownuploads">
@@ -236,7 +249,7 @@ export const UploadedContentsShow = () => {
       )}
 
       <div className="text-center">
-        <div className="container text-center">
+        <div className="container ">
           <div className="row justify-content-center">
             {console.log("contentssss", contents.categorycontents)}
             {contents.categorycontents.length > 0 ? (
