@@ -186,17 +186,17 @@ export const Contentcard = (props) => {
     // console.log("hello there brooooo")
     linkStyle = {
       image: {
-        width: "50%",
-        height: "50%",
+        width: "60%",
+        height: "60%",
         transform: "translate(0px, 2%)",
         borderColor: "purple",
         borderWidth: 3,
-        borderRadius: "50%",
+        borderRadius: "20%",
       },
 
       modalimage: {
-        width: "80%",
-        height: "80%",
+        width: "90%",
+        height: "90%",
         borderColor: "black",
         borderWidth: 2,
         borderRadius: "5%",
