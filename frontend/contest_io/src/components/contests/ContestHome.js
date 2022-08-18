@@ -25,7 +25,7 @@ export const ContestHome = ({ id }) => {
     { limit: ["limit", 4] },
   ]);
   const myContestsQuery = obj2str([
-    { hostID: ["eq", id] },
+    { userID: ["eq", id] },
     { limit: ["limit", 2] },
   ]);
   const pastQuery = obj2str([

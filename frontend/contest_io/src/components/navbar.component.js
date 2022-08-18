@@ -30,7 +30,7 @@ export const Navbar = (props) => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="nav navbar-nav mx-auto mb-2">
             <li className="nav-item">
-              <Link to="/" className="nav-link active fw-bold">
+              <Link to="/" className="nav-link fw-bold">
                 Home
               </Link>
             </li>
