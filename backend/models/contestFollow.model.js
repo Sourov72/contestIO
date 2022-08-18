@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const contestFollow = new mongoose.Schema(
+const contestFollowSchema = new mongoose.Schema(
     {
         userID : {
             type : String,
@@ -16,4 +16,4 @@ const contestFollow = new mongoose.Schema(
     }
 )
 
-module.exports = mongoose.model('Participant', contestFollow)
+module.exports = mongoose.model('ContestFollow', contestFollowSchema)
