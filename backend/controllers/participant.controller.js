@@ -1,16 +1,20 @@
 const ParticipantModel = require("../models/participant.model");
 const userModel = require("../models/user.model");
+// const votemod = require("../controllers/vote.controller");
+// const contentmod = require("../controllers/content.controller")
+const deletemod = require("../controllers/delete.controller");
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 // participant types
-const ptype = { 
-    'BLOCKED' : 1 << 1,
-    'FOLLOWER' : 1 << 2,
-    'VOTER' : 1 << 3,
-    'JURY' : 1 << 4,
-    'CONTESTANT' : 1 << 5,
-    'HOST' : 1<<6,
-  }
+const ptype = {
+  BLOCKED: 1 << 1,
+  FOLLOWER: 1 << 2,
+  VOTER: 1 << 3,
+  JURY: 1 << 4,
+  CONTESTANT: 1 << 5,
+  HOST: 1 << 6,
+};
 
 function pt2v() {
   let retval = 0;
@@ -29,12 +33,18 @@ const getParticipants = async (req, res) => {
 
 // get single participant
 const getParticipant = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No such participant" });
-  }
+  // const { id } = req.params;
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return res.status(404).json({ error: "No such participant" });
+  // }
+  console.log("req query", req.query);
+  const { userID, contestID } = req.query;
 
-  const participant = await ParticipantModel.find(id);
+  console.log("userid", userID, "contestid", contestID);
+  const participant = await ParticipantModel.findOne({
+    userID: ObjectId(userID),
+    contestID: ObjectId(contestID),
+  });
 
   if (!participant) {
     return res.status(404).json({ error: "No such participant" });
@@ -42,96 +52,201 @@ const getParticipant = async (req, res) => {
   res.status(200).json(participant);
 };
 
+// get all contests for this user
+const queryContests = async (req, res) => {
+  var query = {};
+  var limit = 20;
+  var skip = 0;
+  //   console.log('req. query:', req.query)
+  for (var key in req.query) {
+    if (req.query[key] == "") {
+      continue;
+    }
+    var len = 1;
+    if (typeof req.query[key] === "object") {
+      len = req.query[key].length;
+    } else {
+      req.query[key] = [req.query[key]];
+    }
+    console.log(req.query[key]);
+    query[key] = {};
+    for (let i = 0; i < len; i++) {
+      const arr = req.query[key][i].split(",");
+      if (arr[1] === "") {
+        continue;
+      }
+      switch (arr[0]) {
+        case "eq":
+          query[key]["$eq"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lt":
+          query[key]["$lt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lte":
+          query[key]["$lte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gt":
+          query[key]["$gt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gte":
+          query[key]["$gte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "bitsAnySet":
+          query[key]["$bitsAnySet"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "regex":
+          query[key] = {
+            $regex: isNaN(arr[1]) ? arr[1] : parseInt(arr[1]),
+            $options: "i",
+          };
+          break;
+        case "limit":
+          limit = parseInt(arr[1]);
+          break;
+        case "skip":
+          skip = parseInt(arr[1]);
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
+  // convert keys with trailing 'ID' to ObjectID
+  for (let key in query) {
+    if (key.includes("ID")) {
+      for (let key2 in query[key]) {
+        query[key][key2] = mongoose.Types.ObjectId(query[key][key2]);
+      }
+    }
+  }
+  // console.log(query)
+  const contests = await ParticipantModel.find(query).populate("contestID");
+  // const contests = await ParticipantModel.aggregate([
+  //   {
+  //     $addFields: {
+  //       contestObjID: { $toObjectId: "$contestID" },
+  //     },
+  //   },
+  //   {
+  //     $match: query,
+  //   },
+  //   {
+  //     $lookup: {
+  //       from: "contests",
+  //       localField: "contestObjID",
+  //       foreignField: "_id",
+  //       as: "contestData",
+  //     },
+  //   },
+
+  // ]);
+  console.log("contests: ", contests);
+  res.status(200).json({
+    contests: contests,
+    count: contests.length,
+  });
+};
+
 // get queried list of participants
 const queryParticipants = async (req, res) => {
   var query = {};
   var limit = 20;
   var skip = 0;
-//   console.log('req. query:', req.query)
+  //   console.log('req. query:', req.query)
   for (var key in req.query) {
     if (req.query[key] == "") {
       continue;
     }
-    var len = 1
-    if( typeof(req.query[key]) === "object") {
-        len = req.query[key].length
+    var len = 1;
+    if (typeof req.query[key] === "object") {
+      len = req.query[key].length;
+    } else {
+      req.query[key] = [req.query[key]];
     }
-    else {
-        req.query[key] = [req.query[key]]
-    }
-    console.log(req.query[key]);
-    query[key] = {}
-    for(let i = 0; i < len; i++) {
-        const arr = req.query[key][i].split(",");
-        if(arr[1] === '') {
-            continue;
-        }
-        switch (arr[0]) {
-          case "eq":
-            query[key]['$eq'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "lt":
-            query[key]['$lt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "lte":
-            query[key]['$lte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "gt":
-            query[key]['$gt'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "gte":
-            query[key]['$gte'] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1])
-            break;
-          case "regex":
-            query[key] = {'$regex' : isNaN(arr[1]) ? arr[1] : parseInt(arr[1]), '$options' : 'i'}
-            break;
-          case "limit":
-            limit = parseInt(arr[1]);
-            break;
-          case "skip":
-            skip = parseInt(arr[1]);
-            break;
-    
-          default:
-            break;
-        }
+    // console.log(req.query[key]);
+    query[key] = {};
+    for (let i = 0; i < len; i++) {
+      const arr = req.query[key][i].split(",");
+      if (arr[1] === "") {
+        continue;
+      }
+      switch (arr[0]) {
+        case "eq":
+          query[key]["$eq"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lt":
+          query[key]["$lt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "lte":
+          query[key]["$lte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gt":
+          query[key]["$gt"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "gte":
+          query[key]["$gte"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "bitsAnySet":
+          query[key]["$bitsAnySet"] = isNaN(arr[1]) ? arr[1] : parseInt(arr[1]);
+          break;
+        case "regex":
+          query[key] = {
+            $regex: isNaN(arr[1]) ? arr[1] : parseInt(arr[1]),
+            $options: "i",
+          };
+          break;
+        case "limit":
+          limit = parseInt(arr[1]);
+          break;
+        case "skip":
+          skip = parseInt(arr[1]);
+          break;
+
+        default:
+          break;
+      }
     }
   }
-   
-  console.log('query: ',query);
-//   const finalq = { $and: query };
-//   console.log('final query:', finalq)
-//   const participants = await ParticipantModel.find(finalq).skip(skip);
-//   console.log(participants)
-const participants = await ParticipantModel.aggregate([
-    { 
-        "$addFields": 
-        { 
-            "participantObjID": { "$toObjectId": "$userID" },
-        }
-    },
+  // convert keys with trailing 'ID' to ObjectID
+  for (let key in query) {
+    if (key.includes("ID")) {
+      for (let key2 in query[key]) {
+        query[key][key2] = mongoose.Types.ObjectId(query[key][key2]);
+      }
+    }
+  }
+  console.log("query: ", query);
+  const participants = await ParticipantModel.aggregate([
     {
       $lookup: {
         from: "users",
-        localField: "participantObjID",
+        localField: "userID",
         foreignField: "_id",
         as: "userData",
       },
     },
-    { 
-        $project: {
-            userID : 1,
-            contestID : 1,
-            type : 1,
-            username : '$userData.username',
-            email : '$userData.email'
-        }
+    {
+      $project: {
+        // userID: {
+        //   $toString: "$userID",
+        // },
+        // contestID: {
+        //   $toString: "$contestID",
+        // },
+        userID: 1,
+        contestID: 1,
+        type: 1,
+        username: "$userData.username",
+        email: "$userData.email",
+      },
     },
     {
-        "$match" : query
+      $match: query,
     },
   ]);
-//   const cnt = await ParticipantModel.count(query);
+  // const cnt = await ParticipantModel.count(query);
+  console.log("participants, ", participants);
   res.status(200).json({
     participants: participants,
     count: participants.length,
@@ -150,6 +265,7 @@ const createParticipant = async (req, res) => {
       type,
     });
     res.status(200).json(participant);
+    console.log("participant ------------->", participant);
   } catch (error) {
     // if failed, return error
     console.log("create participant error!", error);
@@ -191,16 +307,19 @@ const createParticipants = async (list, contestID, type) => {
     success: 0,
     duplicate: 0,
   };
+
+  // console.log("list", list)
+
   for (let i = 0; i < list.length; i++) {
     res.total += 1;
     const user = await userModel.find({ email: list[i].toLowerCase() });
     if (!user) {
-      console.log("no user found for", list[i]);
+      // console.log("no user found for", list[i]);
       continue;
     }
-    // console.log(user)
+    // console.log("USEREERERER",user)
     // console.log(user[0]._id)
-    let userID = user[0]._id.valueOf();
+    let userID = user[0]._id;
     const participant = await ParticipantModel.find({
       userID: userID,
       contestID: contestID,
@@ -239,16 +358,33 @@ const createParticipants = async (list, contestID, type) => {
 
 // delete a participant
 const deleteParticipant = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  // const { id } = req.params;
+  // if (!mongoose.Types.ObjectId.isValid(id)) {
+  //   return res.status(404).json({ error: "No such participant" });
+  // }
+  console.log("req body in delete parti", req.body);
+  const { userID, contestID } = req.body;
+
+  const participant = await ParticipantModel.find({
+    userID: ObjectId(userID),
+    contestID: ObjectId(contestID),
+  });
+
+  console.log("participant delete", participant);
+  if (participant) await deletemod.deletecontentfunc(participant[0]._id);
+
+  const participantdeleted = await ParticipantModel.deleteOne({
+    userID: ObjectId(userID),
+    contestID: ObjectId(contestID),
+  });
+  if (!participantdeleted) {
     return res.status(404).json({ error: "No such participant" });
   }
 
-  const participant = await ParticipantModel.findByIdAndDelete(id);
-  if (!participant) {
-    return res.status(404).json({ error: "No such participant" });
-  }
-  res.status(200).json(participant);
+  // await contentmod.deletecontentfunc(participant._id);
+  // await votemod.deletevotefunc(participant._id)
+
+  res.status(200).json(participantdeleted);
 };
 
 // update a participant
@@ -268,13 +404,25 @@ const updateParticipant = async (req, res) => {
   res.status(200).json(participant);
 };
 
+const getParticipantfunc = async (userID, contestID) => {
+  var participant = "";
+  // console.log("in participant func", req, res);
+  participant = ParticipantModel.findOne({
+    userID: ObjectId(userID),
+    contestID: ObjectId(contestID),
+  });
+
+  return participant;
+};
 // export
 module.exports = {
   getParticipant,
   getParticipants,
   queryParticipants,
+  queryContests,
   createParticipant,
   createParticipantsAll,
   deleteParticipant,
   updateParticipant,
+  getParticipantfunc,
 };

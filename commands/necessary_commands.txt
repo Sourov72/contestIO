@@ -1,26 +1,35 @@
-to create react/frontend->
+to create react/frontend (cd to frontend)
+npx create-react-app contest_io
+cd contest_io
+npm install react-router-dom@6
+npm install react-datepicker
+npm install axios
 
+#for icons (cd to frontend and then run these commands)
+npm i --save @fortawesome/fontawesome-svg-core
+npm install --save @fortawesome/free-solid-svg-icons
+npm install --save @fortawesome/react-fontawesome
+npm install --save @fortawesome/free-brands-svg-icons
 
-1. cd frontend
-2. npx create-react-app contest_io
-3. cd contest_io
-4. npm install react-router-dom@6
-5. npm install react-datepicker (place basis e mayb, apatoto install na dileo cholbe)
-6. npm install axios
-
-
+#for cookies
+npm i universal-cookie -s
+ 
 
 to create backend ->
 
-1.npm init -y
-2.npm install express cors mongoose dotenv
-3.npm install -g nodemon
-4.Set-ExecutionPolicy RemoteSigned(in terminal as administrator)
-5.npm install multer
-6.npm install nanoid
-7.npm install path
+npm init -y
+npm install express cors mongoose dotenv
+npm install -g nodemon
+Set-ExecutionPolicy RemoteSigned(in terminal as administrator)
+npm install multer
+npm install nanoid
+npm install path
 
-to run -> npm run start
+# for authentication (cd to backend and then run these commands)
+npm install --save bcrypt
+npm i jsonwebtoken -s
+
+to run -> npm start
 
 
 to connect database ->

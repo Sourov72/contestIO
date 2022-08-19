@@ -1,12 +1,19 @@
-// import { Link } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { ContestBox } from "./contests/contestBox";
 import { obj2str } from "./helperFunctions";
-import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
-export const Profileview = (props) => {
-  let id = "12";
+export const Profileview = () => {
+  const { userID } = useParams();
+  const token = cookies.get("TOKEN");
+  const location = useLocation();
   const [myContests, setMyContests] = useState([]);
   const [user, setuser] = useState({
     username: "",
@@ -18,15 +25,10 @@ export const Profileview = (props) => {
   });
 
   useEffect(() => {
-    // here id is send simpliflically not as a object
-    id = localStorage.getItem("id");
-    const myContestsQuery = obj2str([
-      {hostID: ["eq", id]},
-      {limit: ["limit", 2]},
-    ])
+    const myContestsQuery = obj2str([{ userID: ["eq", userID] }]);
 
-    axios.get("http://localhost:5000/api/user/" + id).then((res) => {
-      console.log(res.data.user.socialhandles.facebookhandle);
+    axios.get("http://localhost:5000/api/user/" + userID).then((res) => {
+      // console.log(res.data.user.socialhandles.facebookhandle);
       setuser({
         username: res.data.user.username,
         email: res.data.user.email,
@@ -38,18 +40,25 @@ export const Profileview = (props) => {
     });
 
     const fetchContests = async (query, func) => {
-      const response = await fetch(`/api/contests/query?${query}`);
-      const json = await response.json();
-
-      if (response.ok) {
-        func(json.contests);
-      }
+      // console.log('the query:', query)
+      axios
+        .get(`http://localhost:5000/api/participants/queryContests?${query}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          var contests = [];
+          for (let i = 0; i < res.data.contests.length; i++) {
+            contests.push(res.data.contests[i]["contestID"]);
+          }
+          func(contests);
+        });
     };
     fetchContests(myContestsQuery, setMyContests);
-  }, []);
+  }, [location]);
 
   let source = "../images/" + user.img;
-  console.log("hello vro", source);
 
   var stylingObject = {
     image: {
@@ -80,21 +89,39 @@ export const Profileview = (props) => {
             <p>@username</p>
             <p>{user.bio}</p>
 
-            <Link to="/profileedit">
-            <button type="button" className="btn w-100 btn-outline-dark">
-              Edit Profile
-            </button>
-                    </Link>
-
-            
-            <p className="mb-0 mt-2">Mail: {user.email}</p>
-            <p className="mb-0">FB: {user.facebookhandle}</p>
-            <p className="mb-0">Insta: {user.instagramhandle}</p>
+            {userID === localStorage.getItem("id") && (
+              <Link to="/profile/edit/">
+                <button type="button" className="btn w-100 btn-outline-dark">
+                  Edit Profile
+                </button>
+              </Link>
+            )}
+            <p className="mb-0 mt-2">
+              <FontAwesomeIcon icon={faEnvelope} /> &nbsp;
+              {user.email}
+            </p>
+            <p className="mb-0">
+              <FontAwesomeIcon icon={faFacebook} /> &nbsp;
+              {user.facebookhandle}
+            </p>
+            <p className="mb-0">
+              <FontAwesomeIcon icon={faInstagram} /> &nbsp;
+              {user.instagramhandle}
+            </p>
           </div>
         </div>
 
         <div className="col-9">
-          <ContestBox contests={myContests} boxTitle="Your Contests" col={6} />
+          {console.log(myContests)}
+          <ContestBox
+            contests={myContests}
+            boxTitle={
+              (userID === localStorage.getItem("id")
+                ? "Your"
+                : user.username + "'s") + " Contests"
+            }
+            col={6}
+          />
         </div>
       </form>
     </div>

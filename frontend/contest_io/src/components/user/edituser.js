@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const EditProfile = () => {
+  const token = cookies.get("TOKEN");
   const [user, setuser] = useState({
     username: "",
     oldpassword: "",
@@ -16,17 +19,23 @@ export const EditProfile = () => {
     // here id is send simpliflically not as a object
     const id = localStorage.getItem("id");
 
-    axios.get("http://localhost:5000/api/user/" + id).then((res) => {
-      console.log(res.data.user.socialhandles.facebookhandle);
-      setuser({
-        username: res.data.user.username,
-        oldpassword: res.data.user.password,
-        bio: res.data.user.bio,
-        facebookhandle: res.data.user.socialhandles.facebookhandle,
-        instagramhandle: res.data.user.socialhandles.instagramhandle,
-        img: decodeURIComponent(res.data.user.img),
+    axios
+      .get("http://localhost:5000/api/user/" + id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data.user.socialhandles.facebookhandle);
+        setuser({
+          username: res.data.user.username,
+          oldpassword: res.data.user.password,
+          bio: res.data.user.bio,
+          facebookhandle: res.data.user.socialhandles.facebookhandle,
+          instagramhandle: res.data.user.socialhandles.instagramhandle,
+          img: decodeURIComponent(res.data.user.img),
+        });
       });
-    });
   }, []);
 
   const handleChange = (e) => {
@@ -53,35 +62,33 @@ export const EditProfile = () => {
   const update = (e) => {
     e.preventDefault();
 
-    
-
-    console.log("pass", user.oldpassword)
-    console.log("repass", user.reoldpassword)
-
-    if (user.oldpassword === user.reoldpassword) {
-      axios
-        .post(
-          "http://localhost:5000/api/user/update/" + localStorage.getItem("id"),
-          user
-        )
-        .then((res) => {
-          if (res.data === "User Updated!") {
-            alert("updated successfully");
-            window.location = "/profile";
-          }
-        });
-      //window.location = "/";
-    } else {
-      alert("wrong password");
-    }
+    console.log("pass", user.oldpassword);
+    console.log("repass", user.reoldpassword);
+    axios
+      .post(
+        "http://localhost:5000/api/user/update/" + localStorage.getItem("id"),
+        user,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        alert(res.data.message);
+        window.location = "/profile/" + localStorage.getItem("id");
+      })
+      .catch((error) => {
+        alert(error.response.data.message);
+      });
 
     setuser({
-        ...user,
-        reoldpassword: "",
-    })
+      ...user,
+      reoldpassword: "",
+    });
   };
 
-  let source = "../images/" + user.img;
+  let source = "../../images/" + user.img;
 
   return (
     <div className="signup container">
@@ -191,7 +198,6 @@ export const EditProfile = () => {
                     type="button"
                     className="btn-close"
                     data-bs-dismiss="modal"
-                    
                     aria-label="Close"
                   ></button>
                 </div>

@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const ContestContentAdd = (props) => {
   let contestid = "0";
+  const token = cookies.get("TOKEN");
+  let navigate = useNavigate();
 
   const location = useLocation();
 
@@ -13,32 +17,31 @@ export const ContestContentAdd = (props) => {
   });
 
   const [choice, setchoice] = useState({
-    contestID: "",
     categoryID: "",
-    contentID: "",
   });
 
   const [content, setcontent] = useState({
-    participantID: "",
+    userID: "",
+    contestID: "",
     type: "",
     title: "",
     description: "",
     link: "",
-    
   });
 
   useEffect(() => {
-    contestid = location.state.contentcontestID;
+    contestid = location.state.contestID;
+
+    console.log("contekjskjf", contestid)
 
     const type = location.state.contesttype;
-
-    
 
     const userid = localStorage.getItem("id");
 
     setcontent({
       ...content,
-      participantID: userid,
+      userID: userid,
+      contestID:contestid,
       type: type,
     });
 
@@ -47,12 +50,12 @@ export const ContestContentAdd = (props) => {
       contesttype: type,
     });
 
-    setchoice({
-      ...choice,
-      contestID: contestid,
-    });
+    // setchoice({
+    //   ...choice,
+    //   contestID: contestid,
+    // });
 
-    console.log("contestid in useeffect", content.contestID);
+    console.log("contestid in useeffect", contestid);
 
     getallcategories();
   }, []);
@@ -60,14 +63,23 @@ export const ContestContentAdd = (props) => {
   function getallcategories() {
     // console.log(user);
     //path to be corrected
-    console.log("contestid", contestid)
+    console.log("contestid in get categoryies", contestid);
     axios
-      .get("http://localhost:5000/api/contests/getcatogory/" + contestid)
+      .get("http://localhost:5000/api/contests/getcatogory/" + contestid, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         console.log(res);
         setcontestattr({
           ...contestattr,
           contestcategories: res.data,
+        });
+
+        setchoice({
+          ...choice,
+          categoryID: res.data[0]._id,
         });
       });
   }
@@ -80,25 +92,27 @@ export const ContestContentAdd = (props) => {
       [name]: value,
     });
 
-    console.log("contestID ", content.contestID);
+    console.log("contestID in handlechange ", content.contestID);
   };
 
   const categoryChange = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
 
-    console.log("value", value)
+    console.log("value", value);
 
-    var foundValue = contestattr.contestcategories.filter((obj) => obj.title === value);
+    var foundValue = contestattr.contestcategories.filter(
+      (obj) => obj.title === value
+    );
 
-    console.log("category id", foundValue)
+    console.log("category id", foundValue[0]._id);
 
     setchoice({
       ...choice,
-      categoryID: foundValue._id,
+      categoryID: foundValue[0]._id,
     });
 
-    console.log("contestID ", content.contestID);
+    console.log("categoryID ", choice.categoryID);
   };
 
   const fileHandle = (e) => {
@@ -110,22 +124,33 @@ export const ContestContentAdd = (props) => {
       link: upload_file.name,
     });
 
-    console.log("setted file", content.img);
+    console.log("setted file", content.link);
   };
 
-  const createNewCategory = (e) => {
+  const createNewContent = (e) => {
     e.preventDefault();
 
     alert("content add form posted");
     axios
-      .post("http://localhost:5000/api/contents/create", content)
+      .post(
+        "http://localhost:5000/api/contents/create",
+        {
+          content: content,
+          choice: choice,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
-        alert(res.data);
+        // alert(res.data);
         console.log(res.data);
         if (res.data.msg === "added successfully") {
-          alert("signup successfull");
           console.log("added successfully");
           //   window.location = "/";
+          navigate("/contests/" + content.contestID, { state: { contestID: content.contestID } });
         }
       });
     //window.location = "/";
@@ -251,7 +276,8 @@ export const ContestContentAdd = (props) => {
                 <button
                   type="submit"
                   className="btn btn-primary mb-3"
-                  onClick={createNewCategory}
+                  data-bs-dismiss="modal"
+                  onClick={createNewContent}
                 >
                   Submit
                 </button>

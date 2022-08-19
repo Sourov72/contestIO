@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const contestSchema = new mongoose.Schema(
     {
         hostID : {
-            type : String,
+            type : mongoose.Schema.Types.ObjectId,
+            ref : "User",
             required : true
         },
         title : {

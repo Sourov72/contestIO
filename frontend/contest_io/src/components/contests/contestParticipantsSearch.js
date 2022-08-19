@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { obj2str } from "../helperFunctions";
-
+import {
+  obj2str,
+  participantTypeToValue,
+  participantValueToType,
+} from "../helperFunctions";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 
 export const ContestParticipantSearch = (props) => {
+  const token = cookies.get("TOKEN");
   const [searchShow, setSearchShow] = useState(false);
   const [allUsers, setallUsers] = useState([]);
+  const [searchfield, setsearchfield] = useState("");
 
   const type = props.type;
   const contestID = props.contestID;
@@ -18,40 +26,67 @@ export const ContestParticipantSearch = (props) => {
     console.log("searchfield:", e.target.value); // but not here
 
     await getallUser(e.target.value);
+    setsearchfield(e.target.value);
+  };
+
+  const deletehandler = (param) => async (e) => {
+    console.log("clicked", param.userID, param.contestID);
+
+    const participant = {
+      userID: param.userID,
+      contestID: param.contestID,
+    };
+
+    await axios
+      .delete("http://localhost:5000/api/participants/delete", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+
+        data: participant,
+      })
+      .then((res) => {
+        console.log("res body in participant delete", res.data);
+      });
+
+    console.log("SEWRCH FF", searchfield);
+    await getallUser(searchfield);
   };
 
   async function getallUser(name) {
-    var lte = 0;
-    var gt = 0;
+    var bitmask = 0;
     if (type === "voterlist") {
-      lte = 15;
-      gt = 2;
+      bitmask = participantTypeToValue("voter");
     }
     if (type === "participantlist") {
-      lte = 44;
-      gt = 32;
+      bitmask = participantTypeToValue("contestant");
     }
     if (type == "jurylist") {
-      lte = 20;
-      gt = 16;
+      bitmask = participantTypeToValue("jury");
     }
 
     var q = [
-      { type: ["lte", lte] },
-      { type: ["gt", gt] },
+      { type: ["bitsAnySet", bitmask] },
       { contestID: ["eq", contestID] },
     ];
     if (name) {
       q.push({ username: ["regex", name] });
     }
     const query = obj2str(q);
-    console.log("query", query);
+    // console.log("query", query);
 
     axios
-      .get(`http://localhost:5000/api/participants/query?${query}`)
+      .get(`http://localhost:5000/api/participants/query?${query}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
-        console.log("response:", res);
+        // console.log("response:", res);
+        // setallUsers([])
+        // console.log("allusers before:", allUsers)
         setallUsers(res.data.participants);
+        // console.log("allusers after:", allUsers)
       });
   }
 
@@ -68,11 +103,42 @@ export const ContestParticipantSearch = (props) => {
         {allUsers.map((currentPerson) => {
           return (
             <tr key={currentPerson.email}>
-              <td>{currentPerson.email}</td>
-              <td>{currentPerson.username}</td>
+              <td>
+                <Link
+                  to={"/profile/" + currentPerson.userID}
+                  state={{ id: currentPerson.userID }}
+                >
+                  {currentPerson.email}
+                </Link>
+              </td>
+              <td>
+                <Link
+                  to={"/profile/" + currentPerson.userID}
+                  state={{ id: currentPerson.userID }}
+                >
+                  {currentPerson.username}
+                </Link>
+              </td>
+              {/* <td>{participantValueToType(currentPerson.type)}</td> */}
+              <td>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-x"
+                  viewBox="0 0 16 16"
+                  onClick={deletehandler({
+                    userID: currentPerson.userID,
+                    contestID: props.contestID,
+                  })}
+                >
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+              </td>
             </tr>
           );
-        })}{" "}
+        })}
       </>
     ) : (
       <tr>

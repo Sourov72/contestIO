@@ -1,24 +1,17 @@
-import React from 'react'
-import {Routes, Route } from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
 import { Search } from "./search";
-import {ContestHome} from './ContestHome'
-import {ContestSearch} from './ContestSearch'
+import { ContestHome } from "./ContestHome";
+import { ContestSearch } from "./ContestSearch";
 
-export const Contest = ({id}) => {
+export const Contest = () => {
   return (
     <>
-        <div className="container py-3">
-          <Search
-            apiURI={`/api/contests/query?`}
-            searchPlaceHolder="Search for Contests..."
-            queryOn="title"
-            keyval="_id"
-          />
-          <Routes>
+      {/* <Routes>
             <Route path="" element={<ContestHome id={id} />} />
             <Route path="search" element={<ContestSearch />} />
-          </Routes>
-        </div>
+          </Routes> */}
+      <Outlet />
     </>
-  )
-}
+  );
+};

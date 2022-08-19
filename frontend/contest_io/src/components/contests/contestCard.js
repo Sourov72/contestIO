@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 export const ContestCard = ({ contest, col }) => {
+  console.log("blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
   const redStyle = {
     color: "red",
     fontWeight: "bold",
@@ -73,7 +74,8 @@ export const ContestCard = ({ contest, col }) => {
 
   const cardBody = () => {
     return (
-      <Link to="/contestshow" state={{contestID : contest._id}}>
+      
+      <Link to={"/contests/" + contest._id} state={{contestID : contest._id}}>
         <div className="card h-100 contest-card">
           <div className="card-body">
             <h5 className="card-title fw-bold">{contest.title}</h5>

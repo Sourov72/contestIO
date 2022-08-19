@@ -9,30 +9,30 @@ const {
     createCategory,
     getContestCategories,
 } = require('../controllers/contest.controller')
-
-
 const router = express.Router()
+const { basicAuth, selfAuth, optionalAuth } = require("../controllers/auth.controller")
 
 // GET all contests
-router.get('/', getContests)
+router.get('/', optionalAuth, getContests)
 
 // GET a queried list of contests
-router.get('/query', queryContests);
+router.get('/query', optionalAuth, queryContests);
 
 // GET a single contest
-router.get('/contest/:id', getContest)
+router.get('/contest/:id', optionalAuth, getContest)
 
 // POST a new contest
-router.post('/create', createContest)
+router.post('/create', basicAuth, createContest)
 
-router.post('/category', createCategory)
+router.post('/category', basicAuth, createCategory)
 
-router.get('/getcatogory/:id', getContestCategories)
+router.get('/getcatogory/:id', optionalAuth, getContestCategories)
 
 // DELETE a new contest
-router.delete('/delete/:id', deleteContest)
+router.delete('/delete/:id', basicAuth, deleteContest)
 
 // UPDATE a new contest
-router.patch('/update/:id', updateContest)
+router.patch('/update/:id', basicAuth, updateContest)
+
 
 module.exports = router
