@@ -2,6 +2,7 @@ const VoteModel = require("../models/vote.model");
 const contestmod = require("../controllers/contest.controller");
 const participantmod = require("../controllers/participant.controller");
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 const aptype = ["BLOCKED", "FOLLOWER", "VOTER", "JURY", "CONTESTANT", "HOST"];
 
@@ -29,7 +30,7 @@ const getVote = async (req, res) => {
 
   participant = await participantmod.getParticipantfunc(userID, contestID);
   if (!participant) {
-    return res.send({ message: "No such participant found" });
+    return res.send({ message: "No such paraaaaaaaaaaticipant found" });
   }
   // console.log("from participant func", participant);
 
@@ -63,7 +64,7 @@ const queryVotes = async (req, res) => {
     } else {
       req.query[key] = [req.query[key]];
     }
-    console.log(req.query[key]);
+    // console.log(req.query[key]);
     query[key] = {};
     for (let i = 0; i < len; i++) {
       const arr = req.query[key][i].split(",");
@@ -108,7 +109,7 @@ const queryVotes = async (req, res) => {
     }
   }
 
-  console.log("query: ", query);
+  // console.log("query: ", query);
 
   const votes = await VoteModel.find(query).limit(limit).skip(skip);
 
@@ -132,8 +133,7 @@ const createVote = async (req, res) => {
     participant;
 
   participant = await participantmod.getParticipantfunc(userID, contestID);
-  console.log("from participant func", participant._id);
-
+  // console.log("from participant func", participant._id);
 
   participantID = participant._id;
   value = participant.type;
@@ -163,7 +163,7 @@ const createVote = async (req, res) => {
     res.status(200).json(vote);
   } catch (error) {
     // if failed, return error
-    console.log("create vote error!", error);
+    // console.log("create vote error!", error);
     res.status(400).json({ error: error.message });
   }
 };
@@ -175,7 +175,7 @@ const deleteVote = async (req, res) => {
   //   return res.status(404).json({ error: "No such vote" });
   // }
 
-  console.log("delete vote res body", req.body);
+  // console.log("delete vote res body", req.body);
 
   // get the values from the request's body
   const { userID, contestID, choiceID, categoryID } = req.body;
@@ -216,31 +216,156 @@ const updateVote = async (req, res) => {
   res.status(200).json(vote);
 };
 
-// function deletevotefunc(participantID){
+const getContentVoters = async (req, res) => {
+  // console.log("req", req)
+  const { choiceID } = req.query;
 
-//   const votes =  VoteModel.deleteMany({
-//     participantID: participantID,
-//   });
-//   if (!votes) {
-//     console.log("no vote found for deletion")
-//   }
-//   else{
-//     console.log("succuessfully deleted the votes", votes)
-//   }
+  // console.log("choiceID in content", choiceID);
 
-// }
+  const participants = await VoteModel.aggregate([
+    {
+      $lookup: {
+        from: "participants",
+        localField: "participantID",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "userID",
+              foreignField: "_id",
+              as: "userData",
+            },
+          },
+          {
+            $project: {
+              username: "$userData.username",
+              userID: "$userData._id",
+              img: "$userData.img",
+            },
+          },
+        ],
+        as: "participantData",
+      },
+    },
+    {
+      $match: {
+        choiceID: ObjectId(choiceID),
+      },
+    },
+    {
+      $project: {
+        username: "$participantData.username",
+        id: "$participantData.userID",
+        img: "$participantData.img",
+      },
+    },
+  ]);
 
-// function deletevotechoicefunc(choiceID){
-//   const votes =  VoteModel.deleteMany({
-//     choiceID: choiceID,
-//   });
-//   if (!votes) {
-//     console.log("no vote found for deletion")
-//   }
-//   else{
-//     console.log("succuessfully deleted the votes", votes)
-//   }
-// }
+  // console.log("participants", participants[0].username[0][0]);
+
+  // console.log("Length", Object.keys(participants).length)
+
+  res.json(participants);
+};
+
+const getResults = async (req, res) => {
+  const { id } = req.params;
+
+  console.log("Category Id", id);
+
+  const voters = await VoteModel.aggregate([
+    {
+      $lookup: {
+        from: "choices",
+        localField: "choiceID",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $match: {
+              categoryID: ObjectId(id),
+            },
+          },
+          {
+            $lookup: {
+              from: "contents",
+              localField: "contentID",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "participants",
+                    localField: "participantID",
+                    foreignField: "_id",
+                    pipeline: [
+                      {
+                        $lookup: {
+                          from: "users",
+                          localField: "userID",
+                          foreignField: "_id",
+                          as: "userData",
+                        },
+                      },
+                      {
+                        $project: {
+                          username: "$userData.username",
+                          userID: "$userData._id",
+                          img: "$userData.img",
+                        },
+                      },
+                    ],
+                    as: "participantData",
+                  },
+                },
+                {
+                  $project: {
+                    username: "$participantData.username",
+                    userid: "$participantData.userID",
+                    userimg: "$participantData.img",
+                    link: "$link",
+                  },
+                },
+              ],
+              as: "contentData",
+            },
+          },
+          {
+            $project: {
+              link: "$contentData.link",
+              username: "$contentData.username",
+              userid: "$contentData.userid",
+              userimg: "$contentData.userimg",
+            },
+          },
+        ],
+        as: "VoterData",
+      },
+    },
+
+    {
+      $group: {
+        _id: "$choiceID",
+        link: { $addToSet: "$VoterData.link" },
+        username: { $addToSet: "$VoterData.username" },
+        userid: { $addToSet: "$VoterData.userid" },
+        userimg: { $addToSet: "$VoterData.userimg" },
+        count: {
+          $sum: 1,
+        },
+      },
+    },
+
+    {
+      $sort: {
+        count: -1,
+      },
+    },
+  ]);
+
+  console.log("voters");
+
+  res.json(voters);
+};
 
 // export
 module.exports = {
@@ -250,6 +375,8 @@ module.exports = {
   createVote,
   deleteVote,
   updateVote,
+  getContentVoters,
+  getResults,
   // deletevotefunc,
   // deletevotechoicefunc,
 };

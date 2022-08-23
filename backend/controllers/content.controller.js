@@ -1,7 +1,7 @@
 const ContentModel = require("../models/content.model");
 const ChoiceModel = require("../models/choice.model");
 const participantmod = require("../controllers/participant.controller");
-const choicemod = require("../controllers/choice.controller")
+const choicemod = require("../controllers/choice.controller");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 // get all contents
@@ -32,17 +32,19 @@ const getContent = async (req, res) => {
 
 // get all contents under one category
 const getallContent = async (req, res) => {
-  const { id } = req.params;
-  console.log("id ", id);
+  console.log("req query", req.query);
+  const { type, id } = req.query;
+  console.log("type ", type);
 
-  // ChoiceModel.find({ categoryID: id })
-  //   .select("contentID")
-  //   .populate("contentID")
-  //   .then((contents) => {
-  //     console.log("categories" + contents);
-  //     res.json(contents);
-  //   })
-  //   .catch((err) => res.status(400).json("Error: " + err));
+  var match = {};
+
+  if (type != "all") {
+    match["categoryID"] = ObjectId(id);
+  } else {
+    match["contestID"] = ObjectId(id);
+  }
+
+  console.log("matchhhhhhhhhhhhhhhhhhhhh", match);
 
   const contents = await ChoiceModel.aggregate([
     {
@@ -57,9 +59,7 @@ const getallContent = async (req, res) => {
     //
 
     {
-      $match: {
-        categoryID: ObjectId(id),
-      },
+      $match: match,
     },
 
     {
@@ -73,7 +73,7 @@ const getallContent = async (req, res) => {
       },
     },
   ]);
- 
+
   res.json(contents);
 };
 
@@ -81,11 +81,23 @@ const getuserContent = async (req, res) => {
   console.log("reqbody", req.body);
   // const userID = req.body.contest.userID;
   const { userID, contestID } = req.body.contest;
-  const { categoryID } = req.body.category;
-  console.log(userID, " ff", contestID, "ttt ", categoryID);
+  const { type, id } = req.body.category;
+  console.log(userID, " ff", contestID, "ttt ", id);
 
   var participantID = "",
     participant = "";
+
+  var match = {};
+
+  if (type != "all") {
+    match["categoryID"] = ObjectId(id);
+    match["contentData"] = { $exists: true, $not: { $size: 0 } };
+  } else {
+    match["contestID"] = ObjectId(id);
+    match["contentData"] = { $exists: true, $not: { $size: 0 } };
+  }
+
+  console.log("matchhhhhhhhhhhhhhhhhhhhh in user", match);
 
   // for participant id search
 
@@ -97,33 +109,7 @@ const getuserContent = async (req, res) => {
 
   participantID = participant._id;
 
-  // for participant id search
-
-  // ParticipantModel.find({ userID: userID, contestID: contestID })
-  //   .then((participant) => {
-  //     // participantid = participant._id;
-  //     console.log("query successfull $ id ", participant);
-  //     // console.log("participant", participant._id)
-  //   })
-  //   .catch((err) => console.log("query unsuccessfull"));
-
-  // ChoiceModel.find({ categoryID: categoryID, 'contentID' : { $exists: true, $ne: null } })
-  //   .select("contentID")
-
-  //   .populate({
-  //     path: "contentID",
-  //     match: {
-  //       participantID: {
-  //         $eq: userID,
-  //       },
-  //     },
-  //   })
-
-  //   .then((contents) => {
-  //     console.log("contents" + contents);
-  //     res.json(contents);
-  //   })
-  //   .catch((err) => res.status(400).json("Error: " + err));
+  console.log("participant", participantID);
 
   const contents = await ChoiceModel.aggregate([
     {
@@ -144,10 +130,7 @@ const getuserContent = async (req, res) => {
     //
 
     {
-      $match: {
-        categoryID: ObjectId(categoryID),
-        contentData: { $exists: true, $not: { $size: 0 } },
-      },
+      $match: match,
     },
 
     {
@@ -314,15 +297,19 @@ const updateContent = async (req, res) => {
     return res.status(404).json({ error: "No such content" });
   }
 
-  const cntnt = await ContentModel.findById(id)
-  if(! cntnt) {
+  const cntnt = await ContentModel.findById(id);
+  if (!cntnt) {
     return res.status(404).json({ error: "No such content" });
   }
 
-  const participant = await ParticipantModel.find({participantID: cntnt.participantID})
+  const participant = await ParticipantModel.find({
+    participantID: cntnt.participantID,
+  });
 
-  if(participant.userID != req.user.userID) {
-    return res.status(400).json({ error: "Don't have sufficient permissions to edit this content" });
+  if (participant.userID != req.user.userID) {
+    return res.status(400).json({
+      error: "Don't have sufficient permissions to edit this content",
+    });
   }
 
   const content = await ContentModel.findByIdAndUpdate(id, {
@@ -335,20 +322,16 @@ const updateContent = async (req, res) => {
   res.status(200).json(content);
 };
 
-
-function deletecontentfunc(participantID){
-
-  const contents =  ContentModel.deleteMany({
+function deletecontentfunc(participantID) {
+  const contents = ContentModel.deleteMany({
     participantID: participantID,
   });
   if (!contents) {
-    console.log("no content found for deletion")
+    console.log("no content found for deletion");
+  } else {
+    console.log("succuessfully deleted the contents", contents);
+    choicemod.deletechoicefunc(contents);
   }
-  else{
-    console.log("succuessfully deleted the contents", contents)
-    choicemod.deletechoicefunc(contents)
-  }
-
 }
 
 // export

@@ -8,19 +8,22 @@ const cookies = new Cookies();
 
 export const UploadedContentsShow = () => {
   const token = cookies.get("TOKEN");
-  var contestid = "0";
-  var categoryid = "0";
+  var contestid = "";
+  var categoryid = "";
   // var check = false;
+  var allcontent = "";
+ 
   var col = 12;
 
-
   const userid = localStorage.getItem("id");
+
+  const [select, setselect] = useState("all");
 
   const location = useLocation();
 
   const [check, setcheck] = useState(false);
 
-  const[userType, setUserType] = useState("");
+  const [userType, setUserType] = useState("");
 
   const [contestattr, setcontestattr] = useState({
     userID: "",
@@ -53,8 +56,12 @@ export const UploadedContentsShow = () => {
 
     setUserType(location.state.userType);
 
-    getallcategories();
-    //getcategorycontent();
+    allcontent = "all";
+    setselect("all");
+
+
+    getallcategories(allcontent);
+    getcategorycontent(allcontent);
   }, []);
 
   function getallcategories() {
@@ -87,10 +94,24 @@ export const UploadedContentsShow = () => {
       });
   }
 
-  function getcategorycontent() {
+  function getcategorycontent(sel_type) {
+    var tempcontentdata = "";
+    if (sel_type === "all") {
+      tempcontentdata = {
+        type: "all",
+        id: location.state.contestID,
+      };
+    } else {
+      tempcontentdata = {
+        type: "category",
+        id: categoryid,
+      };
+    }
+
     console.log("category id in get category  content", categoryid);
     axios
-      .get("http://localhost:5000/api/contents/getallcontent/" + categoryid, {
+      .get("http://localhost:5000/api/contents/getallcontent", {
+        params: tempcontentdata,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -104,7 +125,20 @@ export const UploadedContentsShow = () => {
       });
   }
 
-  function getusercategorycontent() {
+  function getusercategorycontent(sel_type) {
+
+    var tempcontentdata = "";
+    if (sel_type === "all") {
+      tempcontentdata = {
+        type: "all",
+        id: location.state.contestID,
+      };
+    } else {
+      tempcontentdata = {
+        type: "category",
+        id: categoryid,
+      };
+    }
     const categorytemp = {
       categoryID: categoryid,
     };
@@ -113,7 +147,7 @@ export const UploadedContentsShow = () => {
     axios
       .post("http://localhost:5000/api/contents/getusercontent", {
         contest: contestattr,
-        category: categorytemp,
+        category: tempcontentdata,
         // headers: {
         //   Authorization: `Bearer ${token}`,
         // },
@@ -129,10 +163,22 @@ export const UploadedContentsShow = () => {
   }
 
   const categoryChange = (e) => {
-    const { name, value } = e.target;
-    console.log(name, value);
+    allcontent = "category";
 
-    console.log("value", value);
+    setselect("category");
+    const { name, value } = e.target;
+    console.log(
+      "name, valueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      name,
+      value
+    );
+
+    if (value == "all") {
+      allcontent = "all";
+      setselect("all");
+    }
+
+    console.log("allcontent", allcontent);
 
     console.log("user", contestattr.userID);
 
@@ -140,24 +186,26 @@ export const UploadedContentsShow = () => {
       (obj) => obj.title === value
     );
 
-    console.log("category id", foundValue[0]._id);
+    if (allcontent != "all") {
+      console.log("category id", foundValue[0]._id);
 
-    setcategoryid({
-      ...category,
-      categoryID: foundValue[0]._id,
-    });
-    categoryid = foundValue[0]._id;
+      setcategoryid({
+        ...category,
+        categoryID: foundValue[0]._id,
+      });
+      categoryid = foundValue[0]._id;
+    }
 
-    console.log("categoryID from change ", category.categoryID);
-    console.log("user id from change", contestattr.userID);
-    console.log("contest id from change", contestattr.contestID);
-    console.log("check value", check);
-    if (check === false) getcategorycontent();
-    else getusercategorycontent();
+    // console.log("categoryID from change ", category.categoryID);
+    // console.log("user id from change", contestattr.userID);
+    // console.log("contest id from change", contestattr.contestID);
+    // console.log("check value", check);
+    if (check === false) getcategorycontent(allcontent);
+    else getusercategorycontent(allcontent);
   };
 
   const handleChange = async (e) => {
-    console.log("category id", category.categoryID);
+    // console.log("category id", category.categoryID);
     categoryid = category.categoryID;
     var { name, value } = e.target;
 
@@ -170,10 +218,10 @@ export const UploadedContentsShow = () => {
     }
     if (value === 1) {
       setcheck(true);
-      getusercategorycontent();
+      getusercategorycontent(select);
     } else {
       setcheck(false);
-      getcategorycontent();
+      getcategorycontent(select);
     }
   };
 
@@ -194,9 +242,6 @@ export const UploadedContentsShow = () => {
       borderWidth: 2,
       color: "black",
       borderRadius: "50%",
-      
-      
-      
     },
   };
 
@@ -215,6 +260,10 @@ export const UploadedContentsShow = () => {
         <option value="" selected disabled hidden>
           Please select category
         </option>
+        <option name="All" value="all">
+          {" "}
+          All
+        </option>
         {categories.contestcategories.length > 0 ? (
           <>
             {categories.contestcategories.map((contestcat) => (
@@ -226,7 +275,7 @@ export const UploadedContentsShow = () => {
         )}
       </select>
 
-      {console.log("partici", userType)}
+      {/* {console.log("partici", userType)} */}
 
       {userType.includes("CONTESTANT") ? (
         <>
@@ -236,7 +285,7 @@ export const UploadedContentsShow = () => {
               type="checkbox"
               name="ownuploads"
               onChange={handleChange}
-              style = {stylingObject.checkbox}
+              style={stylingObject.checkbox}
               id="ownuploads"
             />
             <label className="form-check-label" htmlFor="ownuploads">
@@ -251,7 +300,7 @@ export const UploadedContentsShow = () => {
       <div className="text-center">
         <div className="container ">
           <div className="row justify-content-center">
-            {console.log("contentssss", contents.categorycontents)}
+            {/* {console.log("contentssss", contents.categorycontents)} */}
             {contents.categorycontents.length > 0 ? (
               <>
                 {contents.categorycontents.map(

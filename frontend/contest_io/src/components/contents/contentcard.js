@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { participantValueToType, obj2str } from "../helperFunctions";
 import Cookies from "universal-cookie";
 import axios from "axios";
+import { Link } from "react-router-dom";
 const cookies = new Cookies();
 
 export const Contentcard = (props) => {
@@ -13,6 +14,10 @@ export const Contentcard = (props) => {
   const [image, setimage] = useState("");
   const [check, setcheck] = useState(false);
   const [userType, setUserType] = useState("");
+  const [voters, setvoters] = useState([]);
+  const [voteranonymity, setvoteranonymity] = useState(0);
+  const [voted, setvoted] = useState(false);
+  const [votedeleted, setvotedeleted] = useState(false);
 
   useEffect(
     () => {
@@ -26,6 +31,22 @@ export const Contentcard = (props) => {
       // console.log("categoryid", props.categoryID);
 
       console.log("contentid", props.contentID);
+
+      const contestid = {
+        contestID: props.contestID,
+      };
+      axios
+        .get("http://localhost:5000/api/contests/getvoteranonymity", {
+          params: contestid,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          console.log("res body in anonimity get", res.data);
+          setvoteranonymity(res.data);
+          // setvoteranonymity(res.data.voteranonymity);
+        });
 
       const vote = {
         userID: props.userID,
@@ -63,6 +84,22 @@ export const Contentcard = (props) => {
             setcheck(false);
           }
         });
+
+      const choiceid = {
+        choiceID: props.choiceID,
+      };
+
+      axios
+        .get("http://localhost:5000/api/votes/getContentVoters", {
+          params: choiceid,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          setvoters(res.data);
+          console.log("res body in content voters get", res.data);
+        });
     },
     [
       // props.contestID,
@@ -89,6 +126,22 @@ export const Contentcard = (props) => {
     }
   };
 
+  const alerthandle = async () => {
+
+    if (voted === true) {
+      console.log("voted alert closed");
+      setvoted(false);
+    }
+
+    if (votedeleted === true) {
+      console.log("deleted voted alert closed");
+      setvotedeleted(false);
+    }
+
+
+  }
+
+
   const handleChange = async (e) => {
     // e.preventDefault();
     if (e.target.checked) {
@@ -111,14 +164,31 @@ export const Contentcard = (props) => {
         categoryID: props.categoryID,
       };
 
-      axios
+      await axios
         .post("http://localhost:5000/api/votes/create", vote, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((res) => {
+          setvoted(true)
           console.log("res body in vote create", res.data);
+        });
+
+      const choiceid = {
+        choiceID: props.choiceID,
+      };
+
+      axios
+        .get("http://localhost:5000/api/votes/getContentVoters", {
+          params: choiceid,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          setvoters(res.data);
+          console.log("res body in content voters get", res.data);
         });
       setcheck(true);
     } else {
@@ -141,7 +211,7 @@ export const Contentcard = (props) => {
         categoryID: props.categoryID,
       };
 
-      axios
+      await axios
         .delete("http://localhost:5000/api/votes/delete", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -150,7 +220,24 @@ export const Contentcard = (props) => {
           data: vote,
         })
         .then((res) => {
+          setvotedeleted(true)
           console.log("res body in vote delete", res.data);
+        });
+
+      const choiceid = {
+        choiceID: props.choiceID,
+      };
+
+      axios
+        .get("http://localhost:5000/api/votes/getContentVoters", {
+          params: choiceid,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          setvoters(res.data);
+          console.log("res body in content voters get", res.data);
         });
     }
   };
@@ -172,66 +259,69 @@ export const Contentcard = (props) => {
     },
   };
 
-  var linkStyle;
-  if (hov === true) {
-    // console.log("hello there");
-    linkStyle = {
-      image: {
-        borderColor: "purple",
-        borderWidth: 3,
-        borderRadius: "50%",
-      },
-    };
-  } else {
-    // console.log("hello there brooooo")
-    linkStyle = {
-      image: {
-        width: "60%",
-        height: "60%",
-        transform: "translate(0px, 2%)",
-        borderColor: "purple",
-        borderWidth: 3,
-        borderRadius: "20%",
-      },
 
-      modalimage: {
-        width: "90%",
-        height: "90%",
-        borderColor: "black",
-        borderWidth: 2,
-        borderRadius: "5%",
-      },
+  // console.log("hello there brooooo")
+  const linkStyle = {
+    image: {
+      width: "60%",
+      height: "60%",
+      transform: "translate(0px, 2%)",
+      borderColor: "purple",
+      borderWidth: 3,
+      borderRadius: "20%",
+    },
 
-      card: {
-        borderWidth: 3,
-      },
+    modalimage: {
+      width: "90%",
+      height: "90%",
+      borderColor: "black",
+      borderWidth: 2,
+      borderRadius: "5%",
+    },
 
-      checkbox: {
-        width: "4%",
-        height: "17px",
-        transform: "translate(0px, -20%)",
-        borderColor: "black",
-        borderWidth: 2,
-        color: "black",
-        borderRadius: "50%",
-        
-        
-      },
+    card: {
+      borderWidth: 3,
+    },
 
-      votedcheckbox: {
-        width: "4%",
-        height: "17px",
-        transform: "translate(0px, -20%)",
-        borderColor: "black",
-        borderWidth: 2,
-        color: "red",
-        backgroundColor: "black",
-        borderRadius: "50%",
-        
-       
-      }
-    };
-  }
+    checkbox: {
+      width: "4%",
+      height: "17px",
+      transform: "translate(0px, -20%)",
+      borderColor: "black",
+      borderWidth: 2,
+      color: "black",
+      borderRadius: "50%",
+    },
+
+    votedcheckbox: {
+      width: "4%",
+      height: "17px",
+      transform: "translate(0px, -20%)",
+      borderColor: "black",
+      borderWidth: 2,
+      color: "red",
+      backgroundColor: "black",
+      borderRadius: "50%",
+    },
+
+    iconimage: {
+      width: "9%",
+      height: "9%",
+      borderRadius: "50%",
+    },
+
+    alert: {
+      // display: "inline-block",
+      // display: "inline-block",
+      position: "relative",
+      zindex: 1,
+      width: "20%",
+      height: "20%",
+      // transform: "translate(-80%, -20%)",
+      overflow: "hidden",
+
+    }
+  };
 
   const cardBody = () => {
     return (
@@ -244,11 +334,11 @@ export const Contentcard = (props) => {
             onClick={imageClick}
             name={props.link}
             data-bs-toggle="modal"
-            data-bs-target={"#" + props.title[0]}
+            data-bs-target={"#" + props.title[0] + props.key}
             onMouseEnter={toggleHover}
             onMouseLeave={toggleHover}
 
-            // alt={user.username}
+          // alt={user.username}
           ></img>
         </div>
 
@@ -257,6 +347,26 @@ export const Contentcard = (props) => {
             {props.title}
           </h5>
           <p className="card-text fw-semibold">{props.description}</p>
+
+        </div>
+
+        <div>
+          {voteranonymity === 1 ? (
+            <></>
+          ) : (
+            <>
+              {" "}
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-toggle="modal"
+                data-bs-target={"#" + props.title[0] + props.choiceID}
+              >
+                Voter List
+              </button>
+              <p>Number of Voters {voters.length}</p>
+            </>
+          )}
         </div>
 
         {userType.includes("VOTER") || userType.includes("JURY") ? (
@@ -269,10 +379,10 @@ export const Contentcard = (props) => {
                     type="checkbox"
                     name="voted"
                     onChange={handleChange}
-                    style = {linkStyle.votedcheckbox}
+                    style={linkStyle.votedcheckbox}
                     id="ownuploads"
                     checked
-                    // {...1===1? {"checked"}:<>bla</>}
+                  // {...1===1? {"checked"}:<>bla</>}
                   />
                   <label className="form-check-label" htmlFor="voted">
                     vote
@@ -286,10 +396,10 @@ export const Contentcard = (props) => {
                     className="form-check-input"
                     type="checkbox"
                     name="unvoted"
-                    style = {linkStyle.checkbox}
+                    style={linkStyle.checkbox}
                     onChange={handleChange}
                     id="ownuploads"
-                    // {...1===1? {"checked"}:<>bla</>}
+                  // {...1===1? {"checked"}:<>bla</>}
                   />
                   <label className="form-check-label" htmlFor="unvoted">
                     vote
@@ -305,6 +415,53 @@ export const Contentcard = (props) => {
     );
   };
 
+  function voterList() {
+    // if (searchShow) {
+
+    return voters.length > 0 ? (
+      <>
+        {" "}
+        <tr key="1">
+          {/* <td className="fw-bold">Email</td> */}
+          <td className="fw-bold">User Name</td>
+        </tr>
+        {voters.map((currentPerson) => {
+          return (
+            <tr key={currentPerson.id[0][0]}>
+              <td data-bs-dismiss="modal">
+                <Link
+                  to={"/profile/" + currentPerson.id[0][0]}
+                  state={{ id: currentPerson.id[0][0] }}
+                >
+                  {currentPerson.username[0][0]}
+                </Link>
+                <img
+                  src={"../images/" + currentPerson.img[0][0]}
+                  className="img-thumbnail "
+                  style={linkStyle.iconimage}
+                // onClick={imageClick}
+                // name={props.link}
+                // data-bs-toggle="modal"
+                // data-bs-target={"#" + props.title[0] + props.key}
+                // onMouseEnter={toggleHover}
+                // onMouseLeave={toggleHover}
+
+                // alt={user.username}
+                ></img>
+              </td>
+            </tr>
+          );
+        })}
+      </>
+    ) : (
+      <tr>
+        <td className="text-center fw-light fst-italic text-muted">
+          No Voters to show
+        </td>
+      </tr>
+    );
+  }
+
   return (
     <>
       {props.col === 12 ? (
@@ -313,9 +470,43 @@ export const Contentcard = (props) => {
         <div className="col-5 mb-3">{cardBody()}</div>
       )}
 
+      {voted === true ?
+        <>
+          <div className="alert alert-success alert-dismissible fade show "
+            style={linkStyle.alert}
+            role="alert">
+            <strong>Voted Successfully!</strong>
+            <button type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+              onClick={alerthandle}>
+
+            </button>
+          </div>
+        </> : <></>
+      }
+
+      {votedeleted === true ?
+        <>
+          <div className="alert alert-danger alert-dismissible fade show "
+            style={linkStyle.alert}
+            role="alert">
+            <strong>Vote Removed Successfully!</strong>
+            <button type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+              onClick={alerthandle}>
+
+            </button>
+          </div>
+        </> : <></>
+      }
+
       <div
         className="modal fade"
-        id={props.title[0]}
+        id={props.title[0] + props.key}
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -340,7 +531,7 @@ export const Contentcard = (props) => {
                 className="img-thumbnail"
                 style={linkStyle.modalimage}
 
-                // alt={user.username}
+              // alt={user.username}
               />
             </div>
             {console.log("image name props", image)}
@@ -357,6 +548,22 @@ export const Contentcard = (props) => {
           </div>
         </div>
         {console.log("types", userType)}
+      </div>
+
+      <div
+        className="modal fade"
+        id={props.title[0] + props.choiceID}
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <table className="table table-borderless table-hover search-table mb-2">
+              <tbody>{voterList()}</tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </>
   );

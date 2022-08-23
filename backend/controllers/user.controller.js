@@ -16,6 +16,78 @@ const getAllUser = (req, res) => {
     .catch((err) => res.status(400).json("Error :" + err));
 };
 
+const getBL_UNBL_users = async (req, res) => {
+  console.log("in block unblock users", req.body);
+
+  const { username, contestID } = req.body;
+
+  const userss = await User.aggregate([
+    {
+      $lookup: {
+        from: "participants",
+        localField: "_id",
+        foreignField: "userID",
+
+        pipeline: [
+          {
+            $match: {
+              contestID: { $eq: ObjectId(contestID) },
+              // type: { $ne: 2 },
+            },
+          },
+          {
+            $project: {
+              type: 1,
+            },
+          },
+        ],
+
+        as: "userData",
+      },
+    },
+
+    {
+      $project: {
+        type: "$userData.type",
+        username: 1,
+        email: 1,
+        _id: 1,
+      },
+    },
+
+    {
+      $match: {
+        // userData: { $exists: true, $not: { $size: 0 } },
+        // type: { $ne: 2 },
+
+        $or: [
+          {
+            username: {
+              $regex: username,
+              $options: "i",
+            },
+          },
+          {
+            email: {
+              $regex: username,
+              $options: "i",
+            },
+          },
+        ],
+      },
+    },
+
+    {
+      $sort: {
+        type: -1,
+      },
+    },
+  ]);
+
+  res.json(userss);
+  console.log("in block unblock", userss);
+};
+
 const getUser = (req, res) => {
   const { email, password } = req.body;
   console.log(email);
@@ -75,28 +147,7 @@ const getUser = (req, res) => {
 
 const getSpecificUsers = async (req, res) => {
   // var word = req.body.username;
-  console.log("hello", req.body);
   const { username, contestID } = req.body;
-  
-  // User.find({
-  //   $or: [
-  //     {
-  //       username: {
-  //         $regex: word,
-  //         $options: "i",
-  //       },
-  //     },
-  //     {
-  //       email: {
-  //         $regex: word,
-  //         $options: "i",
-  //       },
-  //     },
-  //   ],
-  // });
-  // .then((users) => res.status(200).json(users))
-  // .catch((err) => res.status(400).json("Error :" + err));
-
   const userss = await User.aggregate([
     {
       $lookup: {
@@ -108,6 +159,7 @@ const getSpecificUsers = async (req, res) => {
           {
             $match: {
               contestID: { $eq: ObjectId(contestID) },
+              // type: { $ne: 2 },
             },
           },
         ],
@@ -139,7 +191,7 @@ const getSpecificUsers = async (req, res) => {
   ]);
 
   res.json(userss);
-  console.log("users", userss)
+  console.log("users", userss);
 };
 
 const profilecheck = (req, res) => {
@@ -264,4 +316,5 @@ module.exports = {
   profilecheck,
   getSpecificUsers,
   updateUser,
+  getBL_UNBL_users,
 };

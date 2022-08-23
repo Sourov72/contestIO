@@ -8,6 +8,7 @@ const {
     updateContest,
     createCategory,
     getContestCategories,
+    getContestvoterAnonymity,
 } = require('../controllers/contest.controller')
 const router = express.Router()
 const { basicAuth, selfAuth, optionalAuth } = require("../controllers/auth.controller")
@@ -27,6 +28,8 @@ router.post('/create', basicAuth, createContest)
 router.post('/category', basicAuth, createCategory)
 
 router.get('/getcatogory/:id', optionalAuth, getContestCategories)
+
+router.get('/getvoteranonymity', basicAuth, getContestvoterAnonymity)
 
 // DELETE a new contest
 router.delete('/delete/:id', basicAuth, deleteContest)

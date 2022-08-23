@@ -28,6 +28,8 @@ router.get("/:id", Users.profilecheck);
 
 router.post("/users", Users.getSpecificUsers);
 
+router.post("/block", Users.getBL_UNBL_users);
+
 
 router.post("/update/:id", selfAuth, Users.updateUser);
 

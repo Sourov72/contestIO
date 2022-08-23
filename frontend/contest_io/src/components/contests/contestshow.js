@@ -3,8 +3,12 @@ import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { ContestParticipantSearch } from "./contestParticipantsSearch";
-import { participantValueToType, obj2str } from "../helperFunctions";
-import { Search } from "../search.component";
+import {
+  participantValueToType,
+  obj2str,
+  participantTypeToValue,
+} from "../helperFunctions";
+import { Search } from "../add_participant_search";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
@@ -27,6 +31,7 @@ export const ContestShow = () => {
     newvoteradd: false,
     newparticipantadd: false,
     newjuryadd: false,
+    blockuser: false,
   });
 
   const [contest, setcontest] = useState({
@@ -93,6 +98,10 @@ export const ContestShow = () => {
 
   function juryadd() {
     setcomp({ newjuryadd: true });
+  }
+
+  function blockuser(){
+    setcomp({ blockuser: true });
   }
 
   useEffect(() => {
@@ -168,6 +177,102 @@ export const ContestShow = () => {
     //   .post("http://localhost:5000/api/contests/create", contest)
     //   .then((res) => console.log(res));
     // window.location = "/";
+  };
+
+  const participateAsParticipant = async (e) => {
+    e.preventDefault();
+
+    console.log("participant add bro");
+
+    const participant = {
+      userID: localStorage.getItem("id"),
+      contestID: contestID,
+      type: participantTypeToValue("contestant", "voter", "follower"),
+    };
+    console.log("contest id", contestID);
+    console.log("participant", participant);
+
+    await axios
+      .post("http://localhost:5000/api/participants/create", participant, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("res body in participant creation", res.data);
+      });
+
+    var q = [
+      { userID: ["eq", localStorage.getItem("id")] },
+      { contestID: ["eq", contestID] },
+    ];
+    const query = obj2str(q);
+    console.log("qure in participant add", query);
+    axios
+      .get(`http://localhost:5000/api/participants/query?${query}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.participants.length !== 0) {
+          console.log("participants", res.data.participants);
+          let types = participantValueToType(res.data.participants[0]["type"]);
+
+          setUserType(types);
+        } else {
+          setUserType("");
+        }
+        // console.log("participant types:", types);
+      });
+  };
+
+  const participateAsVoter = async (e) => {
+    e.preventDefault();
+
+    console.log("voter add bro");
+
+    const participant = {
+      userID: localStorage.getItem("id"),
+      contestID: contestID,
+      type: participantTypeToValue("voter", "follower"),
+    };
+    console.log("contest id", contestID);
+    console.log("participant", participant);
+
+    await axios
+      .post("http://localhost:5000/api/participants/create", participant, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log("res body in participant creation", res.data);
+      });
+
+    var q = [
+      { userID: ["eq", localStorage.getItem("id")] },
+      { contestID: ["eq", contestID] },
+    ];
+    const query = obj2str(q);
+    console.log("qure in participant add", query);
+    axios
+      .get(`http://localhost:5000/api/participants/query?${query}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.data.participants.length !== 0) {
+          console.log("participants", res.data.participants);
+          let types = participantValueToType(res.data.participants[0]["type"]);
+
+          setUserType(types);
+        } else {
+          setUserType("");
+        }
+        // console.log("participant types:", types);
+      });
   };
 
   let source = "../images/" + "photo-contest-logo.png";
@@ -306,25 +411,60 @@ export const ContestShow = () => {
                   >
                     Add Jury
                   </button>
+
+                  <button
+                    type="submit"
+                    className="btn btn-danger my-2"
+                    onClick={blockuser}
+                  >
+                    Block Users
+                  </button>
                 </>
               ) : (
                 <div> </div>
               )}
 
-              {!userType.includes("FOLLOWER") && !userType.includes("BLOCKED") && (
+              {!userType.includes("BLOCKED") && (
                 <>
-                  <button className="btn btn-warning my-2">
-                    <Link
-                      to="/"
-                      
-                      state={{
-                        contestID: contestID,
-                        contesttype: contest.objective,
-                      }}
-                    >
-                      Participate
-                    </Link>
-                  </button>
+                {console.log("contest type", contest.type)}
+                  {contest.type.includes("Open") &&
+                    !userType.includes("CONTESTANT") && !userType.includes("HOST") &&(
+                      <>
+                        <button
+                          className="btn btn-warning my-2"
+                          data-bs-toggle="modal"
+                          data-bs-target="#asParticipant"
+                        >
+                          Participate as Contestant
+                        </button>
+                      </>
+                    )}
+
+                  {contest.type.includes("Open") &&
+                    !userType.includes("VOTER") && (
+                      <>
+                        <button
+                          className="btn btn-warning my-2"
+                          data-bs-toggle="modal"
+                          data-bs-target="#asVoter"
+                        >
+                          Participate as Voter
+                        </button>
+                      </>
+                    )}
+
+                  {contest.type.includes("Public") &&
+                    !userType.includes("VOTER") && (
+                      <>
+                        <button
+                          className="btn btn-warning my-2"
+                          data-bs-toggle="modal"
+                          data-bs-target="#asVoter"
+                        >
+                          Participate as Voter
+                        </button>
+                      </>
+                    )}
                 </>
               )}
 
@@ -355,7 +495,10 @@ export const ContestShow = () => {
                     <>
                       <div className="row">
                         <div className="mb-3 col-8">
-                          <label htmlFor="inputEmail4" className="form-label fw-bold">
+                          <label
+                            htmlFor="inputEmail4"
+                            className="form-label fw-bold"
+                          >
                             Title
                           </label>
                           <div className="form-control form-control-sm">
@@ -447,7 +590,10 @@ export const ContestShow = () => {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label fw-bold">
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label fw-bold"
+                        >
                           Registration Start time
                         </label>
                         <div className="form-control form-control-sm">
@@ -497,7 +643,10 @@ export const ContestShow = () => {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label fw-bold">
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label fw-bold"
+                        >
                           Contest Type
                         </label>
                         <div className="form-control form-control-sm">
@@ -512,7 +661,10 @@ export const ContestShow = () => {
                   return (
                     <>
                       <div className="mb-3">
-                        <label htmlFor="inputEmail4" className="form-label fw-bold">
+                        <label
+                          htmlFor="inputEmail4"
+                          className="form-label fw-bold"
+                        >
                           Contest Objective
                         </label>
                         <div className="form-control form-control-sm">
@@ -535,6 +687,7 @@ export const ContestShow = () => {
                     <ContestParticipantSearch
                       type="voterlist"
                       contestID={contestID}
+                      hostID = {contest.hostID}
                     />
                   );
                 }
@@ -560,22 +713,112 @@ export const ContestShow = () => {
                 if (comp.newvoteradd === true) {
                   console.log("helo there new voter add");
 
-                  return <Search contestID={contestID} type={"voteradd"} />;
+                  return <Search contestID={contestID} type={"voteradd"} hostID = {contest.hostID}/>;
                 }
                 if (comp.newparticipantadd === true) {
                   console.log("helo there new voter add");
 
                   return (
-                    <Search contestID={contestID} type={"contestantadd"} />
+                    <Search contestID={contestID} type={"contestantadd"} hostID = {contest.hostID}/>
                   );
                 }
                 if (comp.newjuryadd === true) {
                   console.log("helo there new voter add");
 
-                  return <Search contestID={contestID} type={"juryadd"} />;
+                  return <Search contestID={contestID} type={"juryadd"} hostID = {contest.hostID}/>;
+                }
+
+                if (comp.blockuser === true) {
+                  console.log("helo there new block user add");
+
+                  return <Search contestID={contestID} type={"blockuser"} hostID = {contest.hostID}/>;
                 }
               })()}
             </form>
+          </div>
+        </div>
+
+        <div
+          className="modal fade"
+          id="asParticipant"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Join as Participant
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">Are You Sure?</div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={participateAsParticipant}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="modal fade"
+          id="asVoter"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Join as Voter
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">Are You Sure?</div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={participateAsVoter}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

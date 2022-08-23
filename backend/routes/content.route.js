@@ -24,7 +24,7 @@ router.get('/content/:id', getContent)
 // POST a new content
 router.post('/create', basicAuth, createContent)
 
-router.get('/getallcontent/:id', getallContent)
+router.get('/getallcontent', getallContent)
 
 router.post('/getusercontent', getuserContent)
 

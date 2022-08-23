@@ -7,7 +7,8 @@ const {
     createParticipant,
     createParticipantsAll,
     deleteParticipant,
-    updateParticipant
+    updateParticipant,
+    blockuser,
 } = require('../controllers/participant.controller')
 const router = express.Router()
 const { basicAuth, selfAuth, optionalAuth } = require("../controllers/auth.controller")
@@ -24,6 +25,8 @@ router.get('/getparticipant', optionalAuth, getParticipant)
 
 // POST a new participant
 router.post('/create', basicAuth, createParticipant)
+
+router.post('/blockuser', basicAuth, blockuser)
 
 // POST a new participant
 router.post('/createAll', basicAuth, createParticipantsAll)
