@@ -2,6 +2,7 @@ const ContestModel = require("../models/contest.model");
 const CategoryModel = require("../models/category.model");
 const ParticipantModel = require("../models/participant.model");
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 // participant types
 const ptype = {
@@ -53,8 +54,55 @@ const isParticipant = async (userID, contestID) => {
 
 // get all contests
 const getContests = async (req, res) => {
-  const contests = await ContestModel.find({}).sort({ createdAt: -1 });
+  const nonPrivateQuery = {
+    $or: [{ type: ["eq", "Public"] }, { type: ["eq", "Open"] }],
+  };
+  const privateQuery = {
+    type: "Private",
+  };
+  let contests = "";
+  const publicContests = await ContestModel.find(nonPrivateQuery);
+  if (req.user) {
+    // console.log("user is, ", req.user);
+    const privateContests = await ContestModel.aggregate([
+      {
+        $match: privateQuery,
+      },
+      {
+        $lookup: {
+          from: "participants",
+          localField: "_id",
+          foreignField: "contestID",
+          pipeline: [
+            {
+              $match: {
+                userID: { $eq: ObjectId(req.user.userID) },
+              },
+            },
+          ],
+          as: "userData",
+        },
+      },
+      {
+        $match: {
+          userData: { $exists: true, $size: 1 },
+        },
+      },
+      {
+        $project: {
+          userData: 0,
+        },
+      },
+    ]);
+    contests = publicContests.concat(privateContests);
+  } else {
+    contests = publicContests;
+  }
 
+  // const contests = publicContests.concat(privateContests)
+  contests.sort(function (a, b) {
+    a["startTime"] > b["startTime"];
+  });
   res.status(200).json(contests);
 };
 
@@ -145,13 +193,93 @@ const queryContests = async (req, res) => {
       }
     }
   }
-  console.log("query", query);
-  const contests = await ContestModel.find(query).limit(limit).skip(skip);
-  const cnt = await ContestModel.count(query);
-  // console.log('contests', contests)
+  // console.log("query", query)
+  // const contests = await ContestModel.find(query)
+  //   .limit(limit)
+  //   .skip(skip)
+  //   .sort({ createdAt: -1 });
+  const nonPrivateQuery = {
+    $or: [{ type: ["eq", "Public"] }, { type: ["eq", "Open"] }],
+  };
+  const privateQuery = {
+    type: "Private",
+  };
+  let contests = "";
+  const publicContests = await ContestModel.find(nonPrivateQuery)
+    .find(query)
+    .skip(skip)
+    .limit(limit);
+  let count = await ContestModel.find(nonPrivateQuery).count(query);
+  // console.log("count before, ", count)
+  if (req.user) {
+    // console.log("user is, ", req.user);
+    const privateContests = await ContestModel.aggregate([
+      {
+        $match: privateQuery,
+      },
+      {
+        $match: query,
+      },
+      {
+        $lookup: {
+          from: "participants",
+          localField: "_id",
+          foreignField: "contestID",
+          pipeline: [
+            {
+              $match: {
+                userID: { $eq: ObjectId(req.user.userID) },
+              },
+            },
+          ],
+          as: "userData",
+        },
+      },
+      {
+        $match: {
+          userData: { $exists: true, $size: 1 },
+        },
+      },
+      {
+        $project: {
+          userData: 0,
+        },
+      },
+      {
+        $facet: {
+          stage1: [{ $group: { _id: null, count: { $sum: 1 } } }],
+          stage2: [{ $skip: skip }, { $limit: limit }],
+        },
+      },
+
+      
+      {
+        $project: {
+          count: "$stage1.count",
+          data: "$stage2",
+        },
+      },
+    ]);
+    // console.log("private contests, ", privateContests[0].data);
+    // contests = publicContests.concat(privateContests.data);
+    // console.log('count/ inside', privateContests[0].count, privateContests[0].count.length === 0)
+    contests = privateContests[0].data.concat(publicContests)
+    count = parseInt(count)
+    count += ((isNaN(privateContests[0].count) || privateContests[0].count.length === 0) ? 0 : parseInt(privateContests[0].count))
+    // count += ;
+  } else {
+    contests = publicContests;
+  }
+
+  // const contests = publicContests.concat(privateContests)
+  contests.sort(function (a, b) {
+    a["startTime"] > b["startTime"];
+  });
+
+  // console.log('count after', count)
   res.status(200).json({
     contests: contests,
-    count: cnt,
+    count: count,
   });
 };
 

@@ -8,6 +8,7 @@
 
 export function objarr2str(obj) {
   const keyValuePairs = [];
+  // console.log('the object is:', obj)
   for (let i = 0; i < Object.keys(obj).length; i += 1) {
     if (Object.values(obj)[i][1] != 0 || Object.values(obj)[i][1] != "") {
       keyValuePairs.push(
@@ -34,8 +35,27 @@ export function obj2str(obj) {
   return keyValuePairs.join("&");
 }
 
+export function str2obj(str) {
+  str = decodeURIComponent(str)
+  let keys = str.split("&");
+  
+  const keyValuePairs = {};
+  for (let i = 0; i < keys.length; i += 1) {
+    let [key, val] = keys[i].split("=", 2)
+    if (!(key === "" || typeof key === 'undefined' || val === "" || typeof val === 'undefined')) {
+      keyValuePairs[key] = str2arr(val)
+    }
+  }
+  return keyValuePairs;
+}
+
 export function arr2str(arr) {
+
   return arr.toString();
+}
+
+export function str2arr(str) {
+  return str.split(",")
 }
 
 const ptype = {

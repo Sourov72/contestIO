@@ -37,13 +37,24 @@ body {
   border-width: 0px !important;
 }
 
+.page-link {
+  color: rgba(155, 39, 176, 0.478) !important;
+  border-color: rgba(155, 39, 176, 0.478) !important;
+  border-width: 2px !important;
+}
+
+.nav-link.active {
+  color: #8344CA !important;
+  /* background-color: #beb504 !important; */
+}
+
 .navbar-brand {
   color: #8344CA !important;
 }
 
-.active {
+/* .active {
   color: #8344CA !important;
-}
+} */
 
 a {
   text-decoration: none;

@@ -3,7 +3,7 @@ import axios from "axios";
 import { Search } from "./search";
 import { useLocation } from "react-router-dom";
 import { ContestBox } from "./contestBox";
-import { objarr2str } from "../helperFunctions";
+import { obj2str, objarr2str, str2arr, str2obj } from "../helperFunctions";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
@@ -29,8 +29,7 @@ export const ContestSearch = () => {
   });
 
   const fetchContests = async (q, func) => {
-
-    console.log("query", q);
+    console.log("query: ", q)
     axios
       .get(`http://localhost:5000/api/contests/query?${q}`, {
         headers: {
@@ -49,8 +48,20 @@ export const ContestSearch = () => {
   };
 
   useEffect(() => {
-    const query =
-      location.state.query + objarr2str({ limit: ["limit", limit] });
+    // console.log("inside useEffect");
+    const obj = str2obj(location.state.query);
+
+    for (let i = 0; i < Object.keys(obj).length; i += 1) {
+      if (Object.keys(search).includes(Object.keys(obj)[i])) {
+        setSearch({
+          ...search,
+          [Object.keys(obj)[i]]: Object.values(obj)[i],
+        });
+      }
+    }
+    // console.log("returned obj: ", search);
+    const query = location.state.query + obj2str([{ limit: ["limit", limit] }]);
+    // console.log("q", query);
     fetchContests(query, setResult);
   }, [location]);
 
@@ -63,7 +74,17 @@ export const ContestSearch = () => {
         value = 0;
       }
     }
-    console.log("key:", name, "value:", value);
+    if (name !== "skip") {
+      // this is done because for a new query, skip needs to be reset
+      setskip(0);
+      // console.log('skip set to 0')
+      var arr = search["skip"];
+      arr[1] = 0;
+      setSearch({
+        ...search,
+        skip: arr,
+      });
+    }
     const today = new Date();
     if (!value || value === "None" || value === 0) {
       value = "";
@@ -80,11 +101,75 @@ export const ContestSearch = () => {
       ...search,
       [name]: arr,
     });
-    console.log(search);
-    const str = objarr2str(search);
+
+    // console.log(search);
+    const str = objarr2str(search) + obj2str({ limit: ["limit", limit] });
     console.log("q", str);
     fetchContests(str, setResult);
   };
+
+  function pagination() {
+    return (
+      <nav aria-label="Page navigation example">
+        <ul className="pagination justify-content-end">
+          {skip !== 0 && (
+            <>
+              <li className="page-item">
+                <button
+                  className="page-link"
+                  name="skip"
+                  value={(skip - 1) * limit}
+                  onClick={(e) => {
+                    setskip(skip - 1);
+                    handleChange(e);
+                  }}
+                >
+                  Previous
+                </button>
+              </li>
+            </>
+          )}
+          <li className="page-item">
+            <button
+              className="page-link"
+              name="skip"
+              value={skip * limit}
+              onClick={handleChange}
+            >
+              {skip + 1}
+            </button>
+          </li>
+          <li className="page-item">
+            <button
+              className="page-link"
+              name="skip"
+              value={(skip + 1) * limit}
+              onClick={handleChange}
+            >
+              {skip + 2}
+            </button>
+          </li>
+          {(skip + 2) * 8 < result.count && (
+            <>
+              <li className="page-item">
+                <button
+                  className="page-link"
+                  name="skip"
+                  value={(skip + 2) * limit}
+                  onClick={(e) => {
+                    setskip(skip + 1);
+                    handleChange(e);
+                  }}
+                >
+                  Next
+                </button>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
+    );
+  }
 
   return (
     <>
@@ -98,10 +183,7 @@ export const ContestSearch = () => {
       </div>
       <div className="row">
         <div className="col-3"></div>
-        <div className="col-6 fw-light fst-italic text-muted fs-6 mb-2">
-          Showing {result.count > limit ? limit : result.count} out of{" "}
-          {result.count} contests{" "}
-        </div>
+        Showing {result.contests.length} out of {result.count} contests{" "}
         <div className="col-3"></div>
       </div>
       <div className="row">
@@ -229,6 +311,7 @@ export const ContestSearch = () => {
         </div>
         <div className="col-9 ">
           <ContestBox contests={result.contests} boxTitle="" col={6} />
+          {result.count > limit && pagination()}
         </div>
       </div>
     </>
