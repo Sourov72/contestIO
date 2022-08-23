@@ -14,7 +14,12 @@ export const Profileview = () => {
   const { userID } = useParams();
   const token = cookies.get("TOKEN");
   const location = useLocation();
-  const [myContests, setMyContests] = useState([]);
+  const [result, setResult] = useState({
+    count: "",
+    contests: [],
+  });
+  const [skip, setskip] = useState(0);
+  var limit = 4;
   const [user, setuser] = useState({
     username: "",
     email: "",
@@ -23,10 +28,37 @@ export const Profileview = () => {
     instagramhandle: "",
     img: "",
   });
-
+  const handleChange = async (e) => {
+    e.preventDefault();
+    var { value } = e.target;
+    console.log("skip's value: ", value);
+    fetchContests(value);
+  }
+  const fetchContests = async (skip) => {
+    let query = obj2str([
+      { userID: ["eq", userID] },
+      { skip: ["skip", skip] },
+      { limit: ["limit", limit] }]);
+    // console.log("the query:", query);
+    axios
+      .get(`http://localhost:5000/api/participants/queryContests?${query}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        // console.log("res: ". res.data)
+        var contests = [];
+          for (let i = 0; i < res.data.contests.length; i++) {
+            contests.push(res.data.contests[i]["contestID"]);
+          }
+        setResult({
+          count: res.data.count,
+          contests : contests,
+        });
+      });
+  };
   useEffect(() => {
-    const myContestsQuery = obj2str([{ userID: ["eq", userID] }]);
-
     axios.get("http://localhost:5000/api/user/" + userID).then((res) => {
       // console.log(res.data.user.socialhandles.facebookhandle);
       setuser({
@@ -38,24 +70,7 @@ export const Profileview = () => {
         img: decodeURIComponent(res.data.user.img),
       });
     });
-
-    const fetchContests = async (query, func) => {
-      // console.log('the query:', query)
-      axios
-        .get(`http://localhost:5000/api/participants/queryContests?${query}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          var contests = [];
-          for (let i = 0; i < res.data.contests.length; i++) {
-            contests.push(res.data.contests[i]["contestID"]);
-          }
-          func(contests);
-        });
-    };
-    fetchContests(myContestsQuery, setMyContests);
+    fetchContests();
   }, [location]);
 
   let source = "../images/" + user.img;
@@ -70,6 +85,69 @@ export const Profileview = () => {
       borderRadius: "50%",
     },
   };
+
+  function pagination() {
+    return (
+      <nav aria-label="Page navigation example">
+        <ul className="pagination justify-content-end">
+          {skip !== 0 && (
+            <>
+              <li className="page-item">
+                <button
+                  className="page-link"
+                  name="skip"
+                  value={(skip - 1) * limit}
+                  onClick={(e) => {
+                    setskip(skip - 1);
+                    handleChange(e);
+                  }}
+                >
+                  Previous
+                </button>
+              </li>
+            </>
+          )}
+          <li className="page-item">
+            <button
+              className="page-link"
+              name="skip"
+              value={skip * limit}
+              onClick={handleChange}
+            >
+              {skip + 1}
+            </button>
+          </li>
+          <li className="page-item">
+            <button
+              className="page-link"
+              name="skip"
+              value={(skip + 1) * limit}
+              onClick={handleChange}
+            >
+              {skip + 2}
+            </button>
+          </li>
+          {(skip + 2) * limit < result.count && (
+            <>
+              <li className="page-item">
+                <button
+                  className="page-link"
+                  name="skip"
+                  value={(skip + 2) * limit}
+                  onClick={(e) => {
+                    setskip(skip + 1);
+                    handleChange(e);
+                  }}
+                >
+                  Next
+                </button>
+              </li>
+            </>
+          )}
+        </ul>
+      </nav>
+    );
+  }
 
   return (
     <div className="signup container">
@@ -112,9 +190,12 @@ export const Profileview = () => {
         </div>
 
         <div className="col-9">
-          {console.log(myContests)}
+        <div className="col-6 fw-light fst-italic text-muted fs-6 mb-2">
+          Showing {result.contests.length} out of{" "}
+          {result.count} contests{" "}
+        </div>
           <ContestBox
-            contests={myContests}
+            contests={result.contests}
             boxTitle={
               (userID === localStorage.getItem("id")
                 ? "Your"
@@ -122,6 +203,7 @@ export const Profileview = () => {
             }
             col={6}
           />
+          {result.count > limit && pagination()}
         </div>
       </form>
     </div>

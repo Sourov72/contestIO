@@ -8,13 +8,10 @@ export const ContestBox = ({ contests, boxTitle, q, col }) => {
       <h4 className="text-center fw-bold">{boxTitle}</h4>
       {contests.length > 0 ? (
         <>
-          {console.log("cotn", contests[0])}
+          {/* {console.log("cotn", contests[0])} */}
           {contests.map((contest) => {
             {
               if (contest !== null) {
-                {
-                  console.log("helooooooooo", contest);
-                }
                 return (
                   <ContestCard key={contest._id} contest={contest} col={col} />
                 );
