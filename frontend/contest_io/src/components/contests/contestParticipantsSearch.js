@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Alert } from "../alert.component";
 import axios from "axios";
 import {
   obj2str,
@@ -14,6 +15,13 @@ export const ContestParticipantSearch = (props) => {
   const [searchShow, setSearchShow] = useState(false);
   const [allUsers, setallUsers] = useState([]);
   const [searchfield, setsearchfield] = useState("");
+
+  const [deleteparticipant, setdeleteparticipant] = useState({
+    clicked: false,
+    voter: false,
+    contestant: false,
+    jury: false,
+  });
 
   const type = props.type;
   const contestID = props.contestID;
@@ -46,12 +54,35 @@ export const ContestParticipantSearch = (props) => {
         data: participant,
       })
       .then((res) => {
+        if (type === "voterlist") {
+          setdeleteparticipant({ clicked: true, voter: true });
+        }
+        if (type === "participantlist") {
+          setdeleteparticipant({ clicked: true, contestant: true });
+        }
+        if (type === "jurylist") {
+          setdeleteparticipant({ clicked: true, jury: true });
+        }
+        timeout();
         console.log("res body in participant delete", res.data);
       });
 
     console.log("SEWRCH FF", searchfield);
     await getallUser(searchfield);
   };
+
+  function timeout() {
+    console.log("in time out");
+    setTimeout(function () {
+      setdeleteparticipant({
+        clicked: false,
+        voter: false,
+        contestant: false,
+        jury: false,
+      });
+    }, 2000);
+    console.log("after timeout");
+  }
 
   async function getallUser(name) {
     var bitmask = 0;
@@ -61,7 +92,7 @@ export const ContestParticipantSearch = (props) => {
     if (type === "participantlist") {
       bitmask = participantTypeToValue("contestant");
     }
-    if (type == "jurylist") {
+    if (type === "jurylist") {
       bitmask = participantTypeToValue("jury");
     }
 
@@ -138,7 +169,9 @@ export const ContestParticipantSearch = (props) => {
                   </td>
                 </>
               ) : (
-                <><td>HOST</td></>
+                <>
+                  <td>HOST</td>
+                </>
               )}
             </tr>
           );
@@ -172,6 +205,26 @@ export const ContestParticipantSearch = (props) => {
           <tbody>{searchList()}</tbody>
         </table>
       </div>
+      {deleteparticipant.clicked === true ? (
+        <>
+          <Alert
+            alertclass="alert alert-danger alert-dismissible fade show"
+            {...(deleteparticipant.voter
+              ? { alerttext: "Voter Deleted Successfully" }
+              : {})}
+            {...(deleteparticipant.contestant
+              ? { alerttext: "Contestant Deleted Successfully" }
+              : {})}
+            {...(deleteparticipant.jury
+              ? { alerttext: "Jury Deleted Successfully" }
+              : {})}
+
+            // alerthandle={alerthandle}
+          />
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

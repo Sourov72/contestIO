@@ -80,6 +80,7 @@ const getBL_UNBL_users = async (req, res) => {
     {
       $sort: {
         type: -1,
+        username: 1,
       },
     },
   ]);

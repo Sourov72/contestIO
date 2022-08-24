@@ -3,6 +3,7 @@ import { participantValueToType, obj2str } from "../helperFunctions";
 import Cookies from "universal-cookie";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { Alert } from "../alert.component";
 const cookies = new Cookies();
 
 export const Contentcard = (props) => {
@@ -127,7 +128,6 @@ export const Contentcard = (props) => {
   };
 
   const alerthandle = async () => {
-
     if (voted === true) {
       console.log("voted alert closed");
       setvoted(false);
@@ -137,10 +137,7 @@ export const Contentcard = (props) => {
       console.log("deleted voted alert closed");
       setvotedeleted(false);
     }
-
-
-  }
-
+  };
 
   const handleChange = async (e) => {
     // e.preventDefault();
@@ -171,7 +168,9 @@ export const Contentcard = (props) => {
           },
         })
         .then((res) => {
-          setvoted(true)
+          setvoted(true);
+          setvotedeleted(false);
+          timeout();
           console.log("res body in vote create", res.data);
         });
 
@@ -220,7 +219,9 @@ export const Contentcard = (props) => {
           data: vote,
         })
         .then((res) => {
-          setvotedeleted(true)
+          setvotedeleted(true);
+          setvoted(false);
+          timeout();
           console.log("res body in vote delete", res.data);
         });
 
@@ -258,7 +259,6 @@ export const Contentcard = (props) => {
       height: "10%",
     },
   };
-
 
   // console.log("hello there brooooo")
   const linkStyle = {
@@ -309,19 +309,16 @@ export const Contentcard = (props) => {
       height: "9%",
       borderRadius: "50%",
     },
-
-    alert: {
-      // display: "inline-block",
-      // display: "inline-block",
-      position: "relative",
-      zindex: 1,
-      width: "20%",
-      height: "20%",
-      // transform: "translate(-80%, -20%)",
-      overflow: "hidden",
-
-    }
   };
+
+  function timeout() {
+    console.log("in time out");
+    setTimeout(function () {
+      setvoted(false);
+      setvotedeleted(false);
+    }, 2000);
+    console.log("after timeout");
+  }
 
   const cardBody = () => {
     return (
@@ -347,7 +344,6 @@ export const Contentcard = (props) => {
             {props.title}
           </h5>
           <p className="card-text fw-semibold">{props.description}</p>
-
         </div>
 
         <div>
@@ -470,39 +466,29 @@ export const Contentcard = (props) => {
         <div className="col-5 mb-3">{cardBody()}</div>
       )}
 
-      {voted === true ?
+      {voted === true ? (
         <>
-          <div className="alert alert-success alert-dismissible fade show "
-            style={linkStyle.alert}
-            role="alert">
-            <strong>Voted Successfully!</strong>
-            <button type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-              onClick={alerthandle}>
+          <Alert
+            alertclass="alert alert-success alert-dismissible fade show"
+            alerttext="Voted Successfully!"
+            alerthandle={alerthandle}
+          />
+        </>
+      ) : (
+        <></>
+      )}
 
-            </button>
-          </div>
-        </> : <></>
-      }
-
-      {votedeleted === true ?
+      {votedeleted === true ? (
         <>
-          <div className="alert alert-danger alert-dismissible fade show "
-            style={linkStyle.alert}
-            role="alert">
-            <strong>Vote Removed Successfully!</strong>
-            <button type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-              onClick={alerthandle}>
-
-            </button>
-          </div>
-        </> : <></>
-      }
+          <Alert
+            alertclass="alert alert-danger alert-dismissible fade show "
+            alerttext="Vote Removed Successfully!"
+            alerthandle={alerthandle}
+          />
+        </>
+      ) : (
+        <></>
+      )}
 
       <div
         className="modal fade"

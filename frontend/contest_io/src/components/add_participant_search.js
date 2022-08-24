@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
-
+import { Link } from "react-router-dom";
+import { Alert } from "./alert.component";
 import {
   obj2str,
   participantTypeToValue,
@@ -24,6 +24,15 @@ export const Search = (props) => {
   const [searchShow, setSearchShow] = useState(false);
   const [allUsers, setallUsers] = useState("");
 
+  const [addparticipant, setaddparticipant] = useState({
+    clicked: false,
+    voter: false,
+    contestant: false,
+    jury: false,
+    blocked: false,
+    unblocked: false,
+  });
+
   const [newvoters, setnewvoters] = useState([]);
 
   useEffect(() => {
@@ -41,7 +50,7 @@ export const Search = (props) => {
     getallUser(e.target.value);
   };
 
-  const blockuser = (param) => async (e) => {
+  const addhandler = (param) => async (e) => {
     e.preventDefault();
     console.log("clicked in block", param.userID, param.contestID);
 
@@ -52,18 +61,21 @@ export const Search = (props) => {
         contestID: param.contestID,
         type: participantTypeToValue("voter", "follower"),
       };
+      console.log("voter value", participant.type);
     } else if (props.type === "juryadd") {
       participant = {
         userID: param.userID,
         contestID: param.contestID,
         type: participantTypeToValue("jury", "follower"),
       };
+      console.log("jury value", participant.type);
     } else if (props.type === "contestantadd") {
       participant = {
         userID: param.userID,
         contestID: param.contestID,
         type: participantTypeToValue("contestant", "voter", "follower"),
       };
+      console.log("contestant value", participant.type);
     } else if (props.type === "blockuser") {
       participant = {
         userID: param.userID,
@@ -83,6 +95,8 @@ export const Search = (props) => {
           },
         })
         .then((res) => {
+          setaddparticipant({ clicked: true, blocked: true });
+          timeout();
           console.log("res body in block user creation", res.data);
         });
     } else {
@@ -93,6 +107,16 @@ export const Search = (props) => {
           },
         })
         .then((res) => {
+          if (props.type === "voteradd") {
+            setaddparticipant({ clicked: true, voter: true });
+          }
+          if (props.type === "contestantadd") {
+            setaddparticipant({ clicked: true, contestant: true });
+          }
+          if (props.type === "juryadd") {
+            setaddparticipant({ clicked: true, jury: true });
+          }
+          timeout();
           console.log("res body in participant creation", res.data);
         });
     }
@@ -119,6 +143,8 @@ export const Search = (props) => {
         data: participant,
       })
       .then((res) => {
+        setaddparticipant({ clicked: true, unblocked: true });
+        timeout();
         console.log("res body in participant delete", res.data);
       });
 
@@ -153,8 +179,8 @@ export const Search = (props) => {
           var list2 = [];
 
 
-          for(let i = 0; i < res.data.length; i++){
-            if(res.data[i].type.length !== 0 && participantValueToType(res.data[i].type[0]).includes("BLOCKED")){
+          for (let i = 0; i < res.data.length; i++) {
+            if (res.data[i].type.length !== 0 && participantValueToType(res.data[i].type[0]).includes("BLOCKED")) {
               // console.log("blocked participant", res.data[i])
               list2.push(res.data[i]);
             } else {
@@ -168,7 +194,7 @@ export const Search = (props) => {
         });
 
 
-      
+
     } else {
       await axios
         .post("http://localhost:5000/api/user/users", user)
@@ -179,11 +205,21 @@ export const Search = (props) => {
     }
   }
 
-  function voteradd(a, b) {
-    console.log("voter add", a, "fjsdkf", b);
-    newvoters.push(b);
-    console.log("newvoters", newvoters, "heloo", props.contestID);
+  function timeout() {
+    console.log("in time out");
+    setTimeout(function () {
+      setaddparticipant({
+        clicked: false,
+        voter: false,
+        contestant: false,
+        jury: false,
+        blocked: false,
+        unblocked: false,
+      });
+    }, 2000);
+    console.log("after timeout");
   }
+
 
   function searchList() {
     // if (searchShow) {
@@ -240,7 +276,7 @@ export const Search = (props) => {
                         <button
                           type="submit"
                           className="btn btn-danger"
-                          onClick={blockuser({
+                          onClick={addhandler({
                             userID: currentPerson._id,
                             contestID: props.contestID,
                           })}
@@ -250,7 +286,23 @@ export const Search = (props) => {
                       )}
                   </>
                 ) : (
-                  <></>
+                  <><svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi bi-plus-lg"
+                    viewBox="0 0 16 16"
+                    onClick={addhandler({
+                      userID: currentPerson._id,
+                      contestID: props.contestID,
+                    })}
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                    />
+                  </svg></>
                 )}
               </td>
             </tr>
@@ -288,6 +340,33 @@ export const Search = (props) => {
           </table>
         </div>
       </div>
+      {props.type !== "blockuser" && addparticipant.clicked === true ? (
+        <>
+          <Alert
+            alertclass="alert alert-success alert-dismissible fade show"
+            {...(addparticipant.voter ? { alerttext: "Voter Added Successfully" } : {})}
+            {...(addparticipant.contestant ? { alerttext: "Contestant Added Successfully" } : {})}
+            {...(addparticipant.jury ? { alerttext: "Jury Added Successfully" } : {})}
+
+          // alerthandle={alerthandle}
+          />
+        </>
+      ) : (
+        <></>
+      )}
+      {props.type === "blockuser" && addparticipant.clicked === true ? (
+        <>
+          <Alert
+
+            {...(addparticipant.blocked ? { alertclass: "alert alert-danger alert-dismissible fade show", alerttext: "User Blocked Successfully" } : {})}
+            {...(addparticipant.unblocked ? { alertclass: "alert alert-warning alert-dismissible fade show", alerttext: "User Unblocked Successfully" } : {})}
+
+          // alerthandle={alerthandle}
+          />
+        </>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

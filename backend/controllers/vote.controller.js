@@ -307,34 +307,68 @@ const getResults = async (req, res) => {
                         },
                       },
                       {
+                        $lookup: {
+                          from: "contests",
+                          localField: "contestID",
+                          foreignField: "_id",
+                          as: "contestData",
+                        },
+                      },
+                      {
+                        $unwind: "$userData",
+                      },
+                      {
+                        $unwind: "$contestData",
+                      },
+                      {
                         $project: {
                           username: "$userData.username",
                           userID: "$userData._id",
                           img: "$userData.img",
+                          voteWeight: "$contestData.voteWeight",
+                          juryVoteWeight: "$contestData.juryVoteWeight",
+                          type: 1,
                         },
                       },
                     ],
+
                     as: "participantData",
                   },
                 },
+
+                {
+                  $unwind: "$participantData",
+                },
+
                 {
                   $project: {
                     username: "$participantData.username",
                     userid: "$participantData.userID",
                     userimg: "$participantData.img",
+                    usertype: "$participantData.type",
                     link: "$link",
+                    voteWeight: "$participantData.voteWeight",
+                    juryVoteWeight: "$participantData.juryVoteWeight",
                   },
                 },
               ],
               as: "contentData",
             },
           },
+
+          {
+            $unwind: "$contentData",
+          },
+
           {
             $project: {
               link: "$contentData.link",
               username: "$contentData.username",
               userid: "$contentData.userid",
               userimg: "$contentData.userimg",
+              usertype: "$contentData.usertype",
+              voteWeight: "$contentData.voteWeight",
+              juryVoteWeight: "$contentData.juryVoteWeight",
             },
           },
         ],
@@ -343,10 +377,53 @@ const getResults = async (req, res) => {
     },
 
     {
+      $lookup: {
+        from: "participants",
+        localField: "participantID",
+        foreignField: "_id",
+        as: "blabla",
+      },
+    },
+
+    {
+      $match: {
+        categoryID: ObjectId(id),
+      },
+    },
+
+
+    {
+      $unwind: "$VoterData",
+    },
+    {
+      $unwind: "$blabla",
+    },
+
+    // {
+    //   $project: {
+    //     usertype: "$VoterData.usertype",
+    //     voteWeight: "$VoterData.voteWeight",
+    //     juryVoteWeight: "$VoterData.juryVoteWeight",
+    //     username: "$VoterData.username",
+    //     type: "$blabla.type",
+    //   },
+    // },
+
+    {
       $group: {
         _id: "$choiceID",
         link: { $addToSet: "$VoterData.link" },
         username: { $addToSet: "$VoterData.username" },
+        voteWeight: { $addToSet: "$VoterData.voteWeight" },
+        juryVoteWeight: { $addToSet: "$VoterData.juryVoteWeight" },
+        
+        totalVote: {
+          $sum: {
+            $cond: [{ $eq: ["$blabla.type", 20] }, "$VoterData.juryVoteWeight", "$VoterData.voteWeight"],
+          },
+        },
+        usertype: { $addToSet: "$VoterData.usertype" },
+        votertype: { $addToSet: "$blabla.type" },
         userid: { $addToSet: "$VoterData.userid" },
         userimg: { $addToSet: "$VoterData.userimg" },
         count: {
@@ -355,11 +432,11 @@ const getResults = async (req, res) => {
       },
     },
 
-    {
-      $sort: {
-        count: -1,
-      },
-    },
+    // {
+    //   $sort: {
+    //     count: -1,
+    //   },
+    // },
   ]);
 
   console.log("voters");

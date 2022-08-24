@@ -428,7 +428,7 @@ export const ContestShow = () => {
                 <>
                 {console.log("contest type", contest.type)}
                   {contest.type.includes("Open") &&
-                    !userType.includes("CONTESTANT") && !userType.includes("HOST") &&(
+                    !userType.includes("CONTESTANT") && !userType.includes("HOST") && !userType.includes("JURY") && (
                       <>
                         <button
                           className="btn btn-warning my-2"
@@ -441,7 +441,7 @@ export const ContestShow = () => {
                     )}
 
                   {contest.type.includes("Open") &&
-                    !userType.includes("VOTER") && (
+                    !userType.includes("VOTER") && !userType.includes("JURY") && (
                       <>
                         <button
                           className="btn btn-warning my-2"
@@ -454,7 +454,7 @@ export const ContestShow = () => {
                     )}
 
                   {contest.type.includes("Public") &&
-                    !userType.includes("VOTER") && (
+                    !userType.includes("VOTER") && !userType.includes("JURY") && (
                       <>
                         <button
                           className="btn btn-warning my-2"
