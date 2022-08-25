@@ -209,6 +209,7 @@ export const CreateContest = () => {
                           name="title"
                           onChange={handleChange}
                           value={contest.title}
+                          placeholder="My Amazing Contest"
                           className="form-control"
                           id="title"
                         />
@@ -224,6 +225,7 @@ export const CreateContest = () => {
                           name="description"
                           onChange={handleChange}
                           value={contest.description}
+                          placeholder="Some Amazing Description.."
                           className="form-control input-large"
                           id="description"
                         />

@@ -347,6 +347,9 @@ const getResults = async (req, res) => {
                     userimg: "$participantData.img",
                     usertype: "$participantData.type",
                     link: "$link",
+                    contentid : "$_id",
+                    title : "$title",
+                    description : "$description",
                     voteWeight: "$participantData.voteWeight",
                     juryVoteWeight: "$participantData.juryVoteWeight",
                   },
@@ -363,6 +366,9 @@ const getResults = async (req, res) => {
           {
             $project: {
               link: "$contentData.link",
+              contentid : "$contentData.contentid",
+              title : "$contentData.title",
+              description : "$contentData.description",
               username: "$contentData.username",
               userid: "$contentData.userid",
               userimg: "$contentData.userimg",
@@ -413,6 +419,9 @@ const getResults = async (req, res) => {
       $group: {
         _id: "$choiceID",
         link: { $addToSet: "$VoterData.link" },
+        contentid : {$addToSet: "$VoterData.contentid"},
+        title : {$addToSet: "$VoterData.title"},
+        description : {$addToSet: "$VoterData.description"},
         userid: { $addToSet: "$VoterData.userid" },
         username: { $addToSet: "$VoterData.username" },
         usertype: { $addToSet: "$VoterData.usertype" },
@@ -429,6 +438,11 @@ const getResults = async (req, res) => {
         votercount: {
           $sum: 1,
         },
+      },
+    },
+    {
+      $sort: {
+        totalVote: -1,
       },
     },
 

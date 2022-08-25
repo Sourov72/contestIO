@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { Contentcard } from "./contentcard";
 import Cookies from "universal-cookie";
@@ -12,8 +12,6 @@ export const UploadedContentsShow = (props) => {
   var categoryid = "";
   var allcontent = "";
  
-  var col = 12;
-
   const [select, setselect] = useState("all");
 
   const location = useLocation();
@@ -204,25 +202,6 @@ export const UploadedContentsShow = (props) => {
     }
   };
 
-  var stylingObject = {
-    image: {
-      width: "30%",
-      height: "30%",
-      transform: "translate(0px, 10%)",
-      borderColor: "purple",
-      borderWidth: 3,
-      borderRadius: "50%",
-    },
-    // checkbox: {
-    //   width: "1.3%",
-    //   height: "15px",
-    //   transform: "translate(0px, -20%)",
-    //   borderColor: "black",
-    //   borderWidth: 2,
-    //   color: "black",
-    //   borderRadius: "50%",
-    // },
-  };
 
   return (
     <div className="container my-3">
@@ -290,8 +269,8 @@ export const UploadedContentsShow = (props) => {
                         categoryID={content.categoryID}
                         contentID={content.contentID[0]}
                         link={content.link[0]}
-                        // category={}
-                        // col={col}
+                        isResult={false}
+                        col={6}
                         title={content.title[0]}
                         description={content.description[0]}
                       />

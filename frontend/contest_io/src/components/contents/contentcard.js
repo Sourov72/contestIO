@@ -290,10 +290,10 @@ export const Contentcard = (props) => {
         </div>
         <p>
           {" "}
-          <b>Total Votes:</b> {voters.length}
+          <b>Total Voters:</b> {voters.length}
         </p>
         <div className="d-flex flex-row justify-content-center">
-          {userType.includes("VOTER") || userType.includes("JURY") ? (
+          {(!props.isResult && (userType.includes("VOTER") || userType.includes("JURY"))) ? (
             <>
               {check === true ? (
                 <>
@@ -386,7 +386,7 @@ export const Contentcard = (props) => {
 
   return (
     <>
-      <div className="col-6 mb-3">{cardBody()}</div>
+      <div className={"col-"+ String(props.col) + " mb-3"}>{cardBody()}</div>
 
       {voted === true ? (
         <>
@@ -423,7 +423,7 @@ export const Contentcard = (props) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Image
+              {props.title}
               </h5>
               <button
                 type="button"
@@ -447,7 +447,7 @@ export const Contentcard = (props) => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn btn-theme"
                 data-bs-dismiss="modal"
               >
                 Close

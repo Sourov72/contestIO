@@ -6,6 +6,7 @@ import { ContestParticipantSearch } from "./contestParticipantsSearch";
 import { ContestContentAdd } from "./contestcontent";
 import { ContestCategoryAdd } from "./category";
 import { UploadedContentsShow } from "../contents/uploadedcontentsshow";
+import { ContestResult } from "./contestResult";
 import {
   participantValueToType,
   obj2str,
@@ -28,11 +29,12 @@ export const ContestShow = () => {
     jurylist: false,
     categoryadd: false,
     contentadd: false,
-    contentshow: false, 
+    contentshow: false,
     newvoteradd: false,
     newparticipantadd: false,
     newjuryadd: false,
     blockuser: false,
+    resultshow: false,
   });
 
   const [contest, setcontest] = useState({
@@ -83,8 +85,13 @@ export const ContestShow = () => {
   function contentadd() {
     setcomp({ contentadd: true });
   }
+
   function contentshow() {
     setcomp({ contentshow: true });
+  }
+
+  function resultshow() {
+    setcomp({ resultshow: true });
   }
 
   function juryadd() {
@@ -368,6 +375,13 @@ export const ContestShow = () => {
                           >
                             See Contents
                           </button>
+                          <button
+                            type="submit"
+                            className="btn btn-theme my-2"
+                            onClick={resultshow}
+                          >
+                            See Results
+                          </button>
                         </>
                       )}
                     </div>
@@ -563,6 +577,16 @@ export const ContestShow = () => {
                   </div>
                 )}
             </div>
+            {comp.resultshow === true && (
+              <img
+                src={"../images/party-popper.gif"}
+                className="img-thumbnail my-2"
+                style={{
+                  // height: "200px",
+                  border: "none",
+                }}
+              />
+            )}
           </div>
 
           <div className="col-9">
@@ -777,7 +801,16 @@ export const ContestShow = () => {
 
                 if (comp.contentshow === true) {
                   return (
-                    <UploadedContentsShow contestID={contestID} userType={userType} />
+                    <UploadedContentsShow
+                      contestID={contestID}
+                      userType={userType}
+                    />
+                  );
+                }
+
+                if (comp.resultshow === true) {
+                  return (
+                    <ContestResult contestID={contestID} userType={userType} />
                   );
                 }
 
