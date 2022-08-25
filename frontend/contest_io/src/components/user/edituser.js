@@ -93,7 +93,7 @@ export const EditProfile = () => {
   return (
     <div className="signup container">
       {console.log("user here", user)}
-      <h2 className="container text-center fw-bold my-3">
+      <h2 className="text-center fw-bold my-3">
         Update Your Profile
       </h2>
       <form className="needs-validation" noValidate>

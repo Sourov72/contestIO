@@ -20,9 +20,10 @@ export const Login = () => {
 
   const login = (e) => {
     e.preventDefault();
-    axios.post("http://localhost:5000/api/user/login", user).then((res) => {
-
-        localStorage.setItem('id',res.data.user._id);
+    axios
+      .post("http://localhost:5000/api/user/login", user)
+      .then((res) => {
+        localStorage.setItem("id", res.data.user._id);
         // console.log("hello this is logged in person userid: ", localStorage.getItem('id'));
 
         // set the cookie
@@ -32,58 +33,75 @@ export const Login = () => {
         });
         // redirect to home
         window.location = "/";
-    })
-    .catch((error) => {
-      // login failure, send an alert
-      alert(error.response.data.message);
-      setuser({
-        email: '',
-        password: ''
       })
-    });
+      .catch((error) => {
+        // login failure, send an alert
+        alert(error.response.data.message);
+        setuser({
+          email: "",
+          password: "",
+        });
+      });
   };
 
   return (
-    <div className="login container">
+    <div className="container">
       {console.log("User", user)}
-      <h1 className="container text-center">Login</h1>
-      <form>
-        <div className="mb-3">
-          <label htmlFor="exampleInputEmail1" className="form-label">
-            Email address
-          </label>
-          <input
-            type="email"
-            name="email"
-            onChange={handleChange}
-            value={user.email}
-            className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-          />
-          <div id="emailHelp" className="form-text">
-            We'll never share your email with anyone else.
-          </div>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            onChange={handleChange}
-            value={user.password}
-            className="form-control"
-            id="exampleInputPassword1"
-          />
-        </div>
+      <h2 className="text-center fw-bold my-3">Login</h2>
+      <div className="row">
+        <div className="col-4"></div>
+        <div className="col-4 my-5">
+          <form>
+            <div className="card text-center">
+              <div className="card-body">
+                <div className="mb-3">
+                  <label
+                    htmlFor="exampleInputEmail1"
+                    className="form-label fw-bold fs-5"
+                  >
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    onChange={handleChange}
+                    value={user.email}
+                    placeholder="user@contest.io"
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="emailHelp"
+                  />
+                  <div id="emailHelp" className="form-text">
+                    We'll never share your email with anyone else.
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label
+                    htmlFor="exampleInputPassword1"
+                    className="form-label fw-bold fs-5"
+                  >
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="top secret..."
+                    onChange={handleChange}
+                    value={user.password}
+                    className="form-control"
+                    id="exampleInputPassword1"
+                  />
+                </div>
 
-        <button type="submit" className="btn btn-theme" onClick={login}>
-          Login
-        </button>
-       
-      </form>
+                <button type="submit" className="btn btn-theme" onClick={login}>
+                  Login
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div className="col-4"></div>
+      </div>
     </div>
   );
 };
