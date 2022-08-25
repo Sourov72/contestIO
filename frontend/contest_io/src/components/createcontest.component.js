@@ -72,7 +72,7 @@ export const CreateContest = () => {
         value = 0;
       }
     }
-    console.log(name, value);
+    // console.log(name, value);
     setcontest({
       ...contest,
       [name]: value,
@@ -93,8 +93,8 @@ export const CreateContest = () => {
     e.preventDefault();
     id = localStorage.getItem("id");
 
-    console.log("hostid ", contest.hostID);
-    console.log('contest', contest)
+    // console.log("hostid ", contest.hostID);
+    // console.log('contest', contest)
 
     axios
       .post("http://localhost:5000/api/contests/create", contest, {
@@ -140,7 +140,7 @@ export const CreateContest = () => {
   const fileHandle = (e) => {
     const upload_file = e.target.files[0];
     var name = e.target.name;
-    console.log("name: ", name);
+    // console.log("name: ", name);
     const reader = new FileReader();
 
     reader.onloadend = (e) => {

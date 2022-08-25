@@ -68,7 +68,7 @@ const queryContests = async (req, res) => {
     } else {
       req.query[key] = [req.query[key]];
     }
-    console.log(req.query[key]);
+    // console.log(req.query[key]);
     query[key] = {};
     for (let i = 0; i < len; i++) {
       const arr = req.query[key][i].split(",");

@@ -5,7 +5,7 @@ const basicAuth = async (request, response, next) => {
   try {
     //   get the token from the authorization header
     const token = await request.headers.authorization.split(" ")[1];
-      console.log("token is:", token)
+      // console.log("token is:", token)
 
     //check if the token matches the supposed origin
     const decodedToken = await jwt.verify(token, "login-token");
@@ -19,7 +19,7 @@ const basicAuth = async (request, response, next) => {
     // pass down functionality to the endpoint
     next();
   } catch (error) {
-    console.log("no token fo??und")
+    // console.log("no token fo??und")
     response.status(400).json({
       error: "Invalid request!",
       message: "Don't have sufficient permissions to view this page",

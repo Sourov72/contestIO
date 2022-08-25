@@ -321,13 +321,13 @@ export const Search = (props) => {
 
   return (
     <>
-      <div className="container row mt-4 mb-3 px-0">
-        <div className="col-1"></div>
+      <div className="container row my-4 mb-3 px-0">
+        <div className="col-2"></div>
         <div className="col-9 search-div">
           <input
             className="form-control me-2 text-center search-bar"
             type="search"
-            placeholder="Search People"
+            placeholder={props.placeholder}
             onBlur={(e) => {
               e.target.value = "";
               handleChange(e);

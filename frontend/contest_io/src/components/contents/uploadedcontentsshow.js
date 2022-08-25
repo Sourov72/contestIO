@@ -6,16 +6,13 @@ import { Contentcard } from "./contentcard";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
-export const UploadedContentsShow = () => {
+export const UploadedContentsShow = (props) => {
   const token = cookies.get("TOKEN");
   var contestid = "";
   var categoryid = "";
-  // var check = false;
   var allcontent = "";
  
   var col = 12;
-
-  const userid = localStorage.getItem("id");
 
   const [select, setselect] = useState("all");
 
@@ -43,18 +40,13 @@ export const UploadedContentsShow = () => {
   });
 
   useEffect(() => {
-    contestid = location.state.contestID;
-    // contestid = "62d50baa66f2e7694652ff74";
-
-    console.log("userid", localStorage.getItem("id"));
-
+    contestid = props.contestID;
     setcontestattr({
       ...contestattr,
       userID: localStorage.getItem("id"),
       contestID: contestid,
     });
-
-    setUserType(location.state.userType);
+    setUserType(props.userType);
 
     allcontent = "all";
     setselect("all");
@@ -139,18 +131,15 @@ export const UploadedContentsShow = () => {
         id: categoryid,
       };
     }
-    const categorytemp = {
-      categoryID: categoryid,
-    };
 
-    console.log("category id in get category  content", categoryid);
+    // console.log("category id in get category  content", categoryid);
     axios
       .post("http://localhost:5000/api/contents/getusercontent", {
         contest: contestattr,
         category: tempcontentdata,
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then((res) => {
         // console.log(res);
@@ -167,27 +156,22 @@ export const UploadedContentsShow = () => {
 
     setselect("category");
     const { name, value } = e.target;
-    console.log(
-      "name, valueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-      name,
-      value
-    );
 
     if (value == "all") {
       allcontent = "all";
       setselect("all");
     }
 
-    console.log("allcontent", allcontent);
+    // console.log("allcontent", allcontent);
 
-    console.log("user", contestattr.userID);
+    // console.log("user", contestattr.userID);
 
     var foundValue = categories.contestcategories.filter(
       (obj) => obj.title === value
     );
 
     if (allcontent != "all") {
-      console.log("category id", foundValue[0]._id);
+      // console.log("category id", foundValue[0]._id);
 
       setcategoryid({
         ...category,
@@ -195,11 +179,6 @@ export const UploadedContentsShow = () => {
       });
       categoryid = foundValue[0]._id;
     }
-
-    // console.log("categoryID from change ", category.categoryID);
-    // console.log("user id from change", contestattr.userID);
-    // console.log("contest id from change", contestattr.contestID);
-    // console.log("check value", check);
     if (check === false) getcategorycontent(allcontent);
     else getusercategorycontent(allcontent);
   };
@@ -234,22 +213,22 @@ export const UploadedContentsShow = () => {
       borderWidth: 3,
       borderRadius: "50%",
     },
-    checkbox: {
-      width: "1.3%",
-      height: "15px",
-      transform: "translate(0px, -20%)",
-      borderColor: "black",
-      borderWidth: 2,
-      color: "black",
-      borderRadius: "50%",
-    },
+    // checkbox: {
+    //   width: "1.3%",
+    //   height: "15px",
+    //   transform: "translate(0px, -20%)",
+    //   borderColor: "black",
+    //   borderWidth: 2,
+    //   color: "black",
+    //   borderRadius: "50%",
+    // },
   };
 
   return (
-    <div className="container">
-      <label htmlFor="inputEmail4" className="form-label fw-bold">
+    <div className="container my-3">
+      <h4 className="fw-bold">
         Choose Category
-      </label>
+      </h4>
       <select
         className="form-select "
         name="category"
@@ -275,17 +254,15 @@ export const UploadedContentsShow = () => {
         )}
       </select>
 
-      {/* {console.log("partici", userType)} */}
 
       {userType.includes("CONTESTANT") ? (
         <>
-          <div className="form-check my-2 text-uppercase fw-bold">
+          <div className="form-check my-2">
             <input
               className="form-check-input"
               type="checkbox"
               name="ownuploads"
               onChange={handleChange}
-              style={stylingObject.checkbox}
               id="ownuploads"
             />
             <label className="form-check-label" htmlFor="ownuploads">
@@ -298,24 +275,13 @@ export const UploadedContentsShow = () => {
       )}
 
       <div className="text-center">
-        <div className="container ">
+        <div className="container-fluid my-3">
           <div className="row justify-content-center">
-            {/* {console.log("contentssss", contents.categorycontents)} */}
             {contents.categorycontents.length > 0 ? (
               <>
                 {contents.categorycontents.map(
                   (content) => (
-                    // <img
-                    //   key={content.contentID[0]}
-                    //   src={"../images/" + content.link[0]}
-                    //   className=" img-thumbnail"
-                    //   style={stylingObject.image}
-                    // // alt={user.username}
-                    // ></img>
-                    (col = 12 - col),
                     (
-                      // console.log("col", col),
-
                       <Contentcard
                         key={content.contentID[0]}
                         userID={contestattr.userID}
@@ -324,7 +290,8 @@ export const UploadedContentsShow = () => {
                         categoryID={content.categoryID}
                         contentID={content.contentID[0]}
                         link={content.link[0]}
-                        col={col}
+                        // category={}
+                        // col={col}
                         title={content.title[0]}
                         description={content.description[0]}
                       />

@@ -183,3 +183,14 @@ a:hover {
   /* overflow: hidden; */
 
 }
+
+.accordion-button {
+  background-color: #dec8f96e;
+  border-width: 0px !important;
+  box-shadow: none !important;
+}
+
+.content-card {
+  border-color: rgba(155, 39, 176, 0.478) !important;
+  border-width: 4px !important;
+}

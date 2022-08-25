@@ -4,116 +4,93 @@ import Cookies from "universal-cookie";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Alert } from "../alert.component";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faUserAlt } from "@fortawesome/free-solid-svg-icons";
 const cookies = new Cookies();
 
 export const Contentcard = (props) => {
   var hov = false;
   const token = cookies.get("TOKEN");
 
-  // var imagename = "";
-
   const [image, setimage] = useState("");
   const [check, setcheck] = useState(false);
-  const [userType, setUserType] = useState("");
+  const [userType, setUserType] = useState([]);
   const [voters, setvoters] = useState([]);
   const [voteranonymity, setvoteranonymity] = useState(0);
   const [voted, setvoted] = useState(false);
   const [votedeleted, setvotedeleted] = useState(false);
 
-  useEffect(
-    () => {
-      console.log("In content Use Effect");
-      // console.log("userid", props.userID);
+  useEffect(() => {
+    const contestid = {
+      contestID: props.contestID,
+    };
+    axios
+      .get("http://localhost:5000/api/contests/getvoteranonymity", {
+        params: contestid,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        // console.log("res body in anonimity get", res.data);
+        setvoteranonymity(res.data);
+      });
 
-      // console.log("contestid", props.contestID);
+    const vote = {
+      userID: props.userID,
+      contestID: props.contestID,
+      choiceID: props.choiceID,
+      categoryID: props.categoryID,
+    };
 
-      console.log("choiceid", props.choiceID);
+    axios
+      .get("http://localhost:5000/api/participants/getparticipant", {
+        params: vote,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        // console.log("res body in participant get", res.data.type);
+        let types = participantValueToType(res.data.type);
+        setUserType(types);
+      });
 
-      // console.log("categoryid", props.categoryID);
+    axios
+      .get("http://localhost:5000/api/votes/vote", {
+        params: vote,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        // console.log("res body in vote get", res.data);
+        if (res.data.message === "vote found") {
+          setcheck(true);
+        } else {
+          setcheck(false);
+        }
+      });
 
-      console.log("contentid", props.contentID);
+    const choiceid = {
+      choiceID: props.choiceID,
+    };
 
-      const contestid = {
-        contestID: props.contestID,
-      };
-      axios
-        .get("http://localhost:5000/api/contests/getvoteranonymity", {
-          params: contestid,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          console.log("res body in anonimity get", res.data);
-          setvoteranonymity(res.data);
-          // setvoteranonymity(res.data.voteranonymity);
-        });
-
-      const vote = {
-        userID: props.userID,
-        contestID: props.contestID,
-        choiceID: props.choiceID,
-        categoryID: props.categoryID,
-      };
-
-      axios
-        .get("http://localhost:5000/api/participants/getparticipant", {
-          params: vote,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          console.log("res body in participant get", res.data.type);
-          let types = participantValueToType(res.data.type);
-          setUserType(types);
-        });
-
-      axios
-        .get("http://localhost:5000/api/votes/vote", {
-          params: vote,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          console.log("res body in vote get", res.data);
-
-          if (res.data.message === "vote found") {
-            setcheck(true);
-          } else {
-            setcheck(false);
-          }
-        });
-
-      const choiceid = {
-        choiceID: props.choiceID,
-      };
-
-      axios
-        .get("http://localhost:5000/api/votes/getContentVoters", {
-          params: choiceid,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setvoters(res.data);
-          console.log("res body in content voters get", res.data);
-        });
-    },
-    [
-      // props.contestID,
-      // props.choiceID,
-      // props.categoryID,
-      // props.contentID,
-      // props.userID,
-    ]
-  );
+    axios
+      .get("http://localhost:5000/api/votes/getContentVoters", {
+        params: choiceid,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setvoters(res.data);
+        // console.log("res body in content voters get", res.data);
+      });
+  }, [props]);
 
   const imageClick = (e) => {
-    console.log("Click", e.target.name);
-
+    // console.log("Click", e.target.name);
     setimage(e.target.name);
   };
 
@@ -140,20 +117,9 @@ export const Contentcard = (props) => {
   };
 
   const handleChange = async (e) => {
-    // e.preventDefault();
-    if (e.target.checked) {
-      console.log("in check option");
-
-      // console.log("userid", props.userID);
-
-      // console.log("contestid", props.contestID);
-
-      console.log("choiceid", props.choiceID);
-
-      // console.log("categoryid", props.categoryID);
-
-      console.log("contentid", props.contentID);
-
+    e.preventDefault();
+    // console.log("button name: ", e.target.name)
+    if (e.target.name === "unvoted") {
       const vote = {
         userID: props.userID,
         contestID: props.contestID,
@@ -171,7 +137,7 @@ export const Contentcard = (props) => {
           setvoted(true);
           setvotedeleted(false);
           timeout();
-          console.log("res body in vote create", res.data);
+          // console.log("res body in vote create", res.data);
         });
 
       const choiceid = {
@@ -187,21 +153,12 @@ export const Contentcard = (props) => {
         })
         .then((res) => {
           setvoters(res.data);
-          console.log("res body in content voters get", res.data);
+          // console.log("res body in content voters get", res.data);
         });
       setcheck(true);
+      // console.log("set to true")
     } else {
       setcheck(false);
-      console.log("in uncheck option");
-      // console.log("userid", props.userID);
-
-      // console.log("contestid", props.contestID);
-
-      console.log("choiceid", props.choiceID);
-
-      // console.log("categoryid", props.categoryID);
-
-      console.log("contentid", props.contentID);
 
       const vote = {
         userID: props.userID,
@@ -222,7 +179,7 @@ export const Contentcard = (props) => {
           setvotedeleted(true);
           setvoted(false);
           timeout();
-          console.log("res body in vote delete", res.data);
+          // console.log("res body in vote delete", res.data);
         });
 
       const choiceid = {
@@ -238,41 +195,26 @@ export const Contentcard = (props) => {
         })
         .then((res) => {
           setvoters(res.data);
-          console.log("res body in content voters get", res.data);
+          // console.log("res body in content voters get", res.data);
         });
     }
-  };
-
-  var stylingObject = {
-    image: {
-      width: "18rem",
-
-      //   height: "10%",
-      //   transform: "translate(0px, 10%)",
-      borderColor: "purple",
-      borderWidth: 3,
-      borderRadius: "50%",
-    },
-
-    card: {
-      width: "10%",
-      height: "10%",
-    },
   };
 
   // console.log("hello there brooooo")
   const linkStyle = {
     image: {
-      width: "60%",
-      height: "60%",
-      transform: "translate(0px, 2%)",
-      borderColor: "purple",
+      width: "90%",
+      height: "200px",
+      objectFit: "cover",
+      // height: "60%",
+      // transform: "translate(0px, 2%)",
+      borderColor: "rgba(155, 39, 176, 0.478)",
       borderWidth: 3,
-      borderRadius: "20%",
+      borderRadius: "10%",
     },
 
     modalimage: {
-      width: "90%",
+      width: "auto",
       height: "90%",
       borderColor: "black",
       borderWidth: 2,
@@ -305,28 +247,31 @@ export const Contentcard = (props) => {
     },
 
     iconimage: {
-      width: "9%",
-      height: "9%",
+      width: "10%",
+      height: "10%",
       borderRadius: "50%",
     },
   };
 
   function timeout() {
-    console.log("in time out");
+    // console.log("in time out");
     setTimeout(function () {
       setvoted(false);
       setvotedeleted(false);
     }, 2000);
-    console.log("after timeout");
+    // console.log("after timeout");
   }
 
   const cardBody = () => {
     return (
-      <div className="card border-success mb-3 my-2" style={linkStyle.card}>
-        <div className="view">
+      <div
+        className="card h-100 content-card mb-3 my-2"
+        style={linkStyle.card}
+      >
+        <div className="card-body p-0">
           <img
             src={"../images/" + props.link}
-            className="img-thumbnail "
+            className="img-thumbnail my-2"
             style={linkStyle.image}
             onClick={imageClick}
             name={props.link}
@@ -334,79 +279,64 @@ export const Contentcard = (props) => {
             data-bs-target={"#" + props.title[0] + props.key}
             onMouseEnter={toggleHover}
             onMouseLeave={toggleHover}
-
-          // alt={user.username}
-          ></img>
+          />
+          <div className="text-bg-info mx-0 mb-0">
+            <h4 className="card-title text-capitalize fw-bold mb-0">
+              {props.title}
+            </h4>
+            <p className="card-text mb-0">{props.description}</p>
+            <p className="card-text mb-0">{props.category}</p>
+          </div>
         </div>
-
-        <div className="card-body  text-bg-info my-2">
-          <h5 className="card-title text-uppercase fw-bold fs-2 ">
-            {props.title}
-          </h5>
-          <p className="card-text fw-semibold">{props.description}</p>
-        </div>
-
-        <div>
-          {voteranonymity === 1 ? (
-            <></>
-          ) : (
+        <p>
+          {" "}
+          <b>Total Votes:</b> {voters.length}
+        </p>
+        <div className="d-flex flex-row justify-content-center">
+          {userType.includes("VOTER") || userType.includes("JURY") ? (
             <>
-              {" "}
+              {check === true ? (
+                <>
+                  <button
+                    className="btn btn-success px-4 mt-0 mb-2 me-2"
+                    type="button"
+                    name="voted"
+                    onClick={handleChange}
+                    id="ownuploads"
+                  >
+                    Voted <FontAwesomeIcon icon={faCheck} />
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="btn btn-secondary px-4 mt-0 mb-2 me-2"
+                    type="button"
+                    name="unvoted"
+                    onClick={handleChange}
+                    id="ownuploads"
+                  >
+                    Vote
+                  </button>
+                </>
+              )}
+            </>
+          ) : (
+            <></>
+          )}
+          {voteranonymity !== 1 && (
+            <>
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn btn-theme px-4 mt-0 mb-2"
                 data-bs-toggle="modal"
                 data-bs-target={"#" + props.title[0] + props.choiceID}
               >
-                Voter List
+                Voters List <FontAwesomeIcon icon={faUserAlt} />
               </button>
-              <p>Number of Voters {voters.length}</p>
             </>
           )}
         </div>
-
-        {userType.includes("VOTER") || userType.includes("JURY") ? (
-          <>
-            {check === true ? (
-              <>
-                <div className="form-check fw-bold text-uppercase">
-                  <input
-                    className="form-check-input "
-                    type="checkbox"
-                    name="voted"
-                    onChange={handleChange}
-                    style={linkStyle.votedcheckbox}
-                    id="ownuploads"
-                    checked
-                  // {...1===1? {"checked"}:<>bla</>}
-                  />
-                  <label className="form-check-label" htmlFor="voted">
-                    vote
-                  </label>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="form-check fw-bold  text-uppercase">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    name="unvoted"
-                    style={linkStyle.checkbox}
-                    onChange={handleChange}
-                    id="ownuploads"
-                  // {...1===1? {"checked"}:<>bla</>}
-                  />
-                  <label className="form-check-label" htmlFor="unvoted">
-                    vote
-                  </label>
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          <></>
-        )}
       </div>
     );
   };
@@ -419,30 +349,26 @@ export const Contentcard = (props) => {
         {" "}
         <tr key="1">
           {/* <td className="fw-bold">Email</td> */}
-          <td className="fw-bold">User Name</td>
+          <td className="fw-bold" colSpan={2}>
+            Voters
+          </td>
         </tr>
         {voters.map((currentPerson) => {
           return (
             <tr key={currentPerson.id[0][0]}>
-              <td data-bs-dismiss="modal">
+              <td className="text-start">
                 <Link
                   to={"/profile/" + currentPerson.id[0][0]}
                   state={{ id: currentPerson.id[0][0] }}
                 >
                   {currentPerson.username[0][0]}
                 </Link>
+              </td>
+              <td className="text-end">
                 <img
                   src={"../images/" + currentPerson.img[0][0]}
                   className="img-thumbnail "
                   style={linkStyle.iconimage}
-                // onClick={imageClick}
-                // name={props.link}
-                // data-bs-toggle="modal"
-                // data-bs-target={"#" + props.title[0] + props.key}
-                // onMouseEnter={toggleHover}
-                // onMouseLeave={toggleHover}
-
-                // alt={user.username}
                 ></img>
               </td>
             </tr>
@@ -460,11 +386,7 @@ export const Contentcard = (props) => {
 
   return (
     <>
-      {props.col === 12 ? (
-        <div className="col-5 mb-3">{cardBody()}</div>
-      ) : (
-        <div className="col-5 mb-3">{cardBody()}</div>
-      )}
+      <div className="col-6 mb-3">{cardBody()}</div>
 
       {voted === true ? (
         <>
@@ -497,7 +419,7 @@ export const Contentcard = (props) => {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-dialog modal-dialog-centered modal-fullscreen">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
@@ -517,10 +439,10 @@ export const Contentcard = (props) => {
                 className="img-thumbnail"
                 style={linkStyle.modalimage}
 
-              // alt={user.username}
+                // alt={user.username}
               />
             </div>
-            {console.log("image name props", image)}
+            {/* {console.log("image name props", image)} */}
 
             <div className="modal-footer">
               <button
@@ -533,7 +455,7 @@ export const Contentcard = (props) => {
             </div>
           </div>
         </div>
-        {console.log("types", userType)}
+        {/* {console.log("types", userType)} */}
       </div>
 
       <div
