@@ -75,7 +75,7 @@ export const EditProfile = () => {
         }
       )
       .then((res) => {
-        alert(res.data.message);
+        // alert(res.data.message);
         window.location = "/profile/" + localStorage.getItem("id");
       })
       .catch((error) => {
@@ -93,94 +93,116 @@ export const EditProfile = () => {
   return (
     <div className="signup container">
       {console.log("user here", user)}
-      <h1 className="container text-center">Update</h1>
+      <h2 className="container text-center fw-bold my-3">
+        Update Your Profile
+      </h2>
       <form className="needs-validation" noValidate>
+        <div className="row">
+          <div className="col-4">
+            <div className="text-center">
+              <h5 htmlFor="formFileSm" className="form-label fw-bold">
+                Profile Pic Change
+              </h5>
+              <img
+                src={source}
+                className=" img-thumbnail mb-2"
+                style={{
+                  height: "202px"
+                }}
+              ></img>
+              <input
+                className="form-control"
+                type="file"
+                onChange={fileHandle}
+              />
+            </div>
+          </div>
+          <div className="col-8">
+            <div className="mb-3">
+              {/* div for name */}
+              <label htmlFor="Inputname" className="form-label fw-bold fs-5">
+                Name
+              </label>
+              <input
+                type="text"
+                name="username"
+                onChange={handleChange}
+                value={user.username}
+                className="form-control"
+                id="Inputname"
+                required
+              />
+              <div className="invalid-feedback">Name is required</div>
+            </div>
+
+            <div className="mb-3">
+              {/* div for bio */}
+              <label htmlFor="bio" className="form-label fw-bold fs-5">
+                Bio
+              </label>
+              <input
+                type="text"
+                name="bio"
+                onChange={handleChange}
+                value={user.bio}
+                className="form-control"
+                id="bio"
+                required
+              />
+              <div className="invalid-feedback">Bio is required</div>
+            </div>
+            <div className="row">
+              <div className="col-6">
+                <div className="mb-3">
+                  {/* div for facebook handle */}
+                  <label
+                    htmlFor="facebookhandle"
+                    className="form-label fw-bold fs-5"
+                  >
+                    Facebook Handle
+                  </label>
+                  <input
+                    type="text"
+                    name="facebookhandle"
+                    onChange={handleChange}
+                    value={user.facebookhandle}
+                    className="form-control"
+                    id="facebookhandle"
+                  />
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="mb-3">
+                  <label
+                    htmlFor="instagramhandle"
+                    className="form-label fw-bold fs-5"
+                  >
+                    Instagram Handle
+                  </label>
+                  <input
+                    type="text"
+                    name="instagramhandle"
+                    onChange={handleChange}
+                    value={user.instagramhandle}
+                    className="form-control"
+                    id="instagramhandle"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-theme my-4"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+            >
+              Update
+            </button>
+          </div>
+        </div>
+
         <div className="mb-3">
-          <div className="mb-3">
-            <label htmlFor="Inputname" className="form-label">
-              Name
-            </label>
-            <input
-              type="text"
-              name="username"
-              onChange={handleChange}
-              value={user.username}
-              className="form-control"
-              id="Inputname"
-              required
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label">
-              Bio.
-            </label>
-            <input
-              type="text"
-              name="bio"
-              onChange={handleChange}
-              value={user.bio}
-              className="form-control"
-              id="bio"
-              required
-            />
-            <div className="invalid-feedback">Please provide a bio.</div>
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label">
-              facebookhandle
-            </label>
-            <input
-              type="text"
-              name="facebookhandle"
-              onChange={handleChange}
-              value={user.facebookhandle}
-              className="form-control"
-              id="facebookhandle"
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label">
-              instagramhandle
-            </label>
-            <input
-              type="text"
-              name="instagramhandle"
-              onChange={handleChange}
-              value={user.instagramhandle}
-              className="form-control"
-              id="instagramhandle"
-            />
-          </div>
-
-          <div className="mb-3">
-            <img
-              src={source}
-              className=" img-thumbnail"
-              // style={stylingObject.image}
-              // alt={user.username}
-            ></img>
-            <label htmlFor="formFileSm" className="form-label">
-              Profile Pic Change
-            </label>
-            <input
-              className="form-control form-control-sm"
-              type="file"
-              onChange={fileHandle}
-            />
-          </div>
-
-          <button
-            type="button"
-            className="btn btn-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-          >
-            Update
-          </button>
-
           <div
             className="modal fade"
             id="exampleModal"
@@ -192,7 +214,7 @@ export const EditProfile = () => {
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel">
-                    Create Contest
+                    Update User Information
                   </h5>
                   <button
                     type="button"
@@ -201,14 +223,15 @@ export const EditProfile = () => {
                     aria-label="Close"
                   ></button>
                 </div>
-                <div className="mb-3">
-                  <label htmlFor="exampleInputPassword1" className="form-label">
-                    Password
+                <div className="container my-4">
+                  <label htmlFor="exampleInputPassword1" className="form-label fw-bold">
+                    Confirm Password
                   </label>
                   <input
                     type="password"
                     name="reoldpassword"
                     onChange={handleChange}
+                    placeholder="Input your password"
                     value={user.reoldpassword}
                     className="form-control"
                     id="exampleInputPassword1"
@@ -226,7 +249,7 @@ export const EditProfile = () => {
                   <button
                     type="submit"
                     onClick={update}
-                    className="btn btn-primary"
+                    className="btn btn-theme"
                     data-bs-dismiss="modal"
                   >
                     Submit
