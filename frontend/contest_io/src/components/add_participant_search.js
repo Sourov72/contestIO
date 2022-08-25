@@ -249,7 +249,7 @@ export const Search = (props) => {
                   {currentPerson.username}
                 </Link>
               </td>
-              <td>{participantValueToType(currentPerson.type)}</td>
+              {/* <td>{participantValueToType(currentPerson.type)}</td> */}
               <td>
                 {props.type === "blockuser" ? (
                   <>

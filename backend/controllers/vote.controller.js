@@ -413,7 +413,10 @@ const getResults = async (req, res) => {
       $group: {
         _id: "$choiceID",
         link: { $addToSet: "$VoterData.link" },
+        userid: { $addToSet: "$VoterData.userid" },
         username: { $addToSet: "$VoterData.username" },
+        usertype: { $addToSet: "$VoterData.usertype" },
+        userimg: { $addToSet: "$VoterData.userimg" },
         voteWeight: { $addToSet: "$VoterData.voteWeight" },
         juryVoteWeight: { $addToSet: "$VoterData.juryVoteWeight" },
         
@@ -422,21 +425,13 @@ const getResults = async (req, res) => {
             $cond: [{ $eq: ["$blabla.type", 20] }, "$VoterData.juryVoteWeight", "$VoterData.voteWeight"],
           },
         },
-        usertype: { $addToSet: "$VoterData.usertype" },
         votertype: { $addToSet: "$blabla.type" },
-        userid: { $addToSet: "$VoterData.userid" },
-        userimg: { $addToSet: "$VoterData.userimg" },
-        count: {
+        votercount: {
           $sum: 1,
         },
       },
     },
 
-    // {
-    //   $sort: {
-    //     count: -1,
-    //   },
-    // },
   ]);
 
   console.log("voters");
