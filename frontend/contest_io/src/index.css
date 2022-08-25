@@ -189,8 +189,17 @@ a:hover {
   border-width: 0px !important;
   box-shadow: none !important;
 }
+.accordion-button:not(.collapsed) {
+  background-color: #cfb1f0d7 !important;
+  color: black !important;
+}
+
 
 .content-card {
   border-color: rgba(155, 39, 176, 0.478) !important;
   border-width: 4px !important;
+}
+
+.text-bg-theme {
+  background: rgba(155, 39, 176, 0.2);
 }

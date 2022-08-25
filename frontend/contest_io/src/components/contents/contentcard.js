@@ -276,11 +276,11 @@ export const Contentcard = (props) => {
             onClick={imageClick}
             name={props.link}
             data-bs-toggle="modal"
-            data-bs-target={"#" + props.title[0] + props.key}
+            data-bs-target={"#" + props.title[0] + props.contentID}
             onMouseEnter={toggleHover}
             onMouseLeave={toggleHover}
           />
-          <div className="text-bg-info mx-0 mb-0">
+          <div className="text-bg-theme mx-0 mb-0">
             <h4 className="card-title text-capitalize fw-bold mb-0">
               {props.title}
             </h4>
@@ -310,7 +310,7 @@ export const Contentcard = (props) => {
               ) : (
                 <>
                   <button
-                    className="btn btn-secondary px-4 mt-0 mb-2 me-2"
+                    className="btn btn-theme px-4 mt-0 mb-2 me-2"
                     type="button"
                     name="unvoted"
                     onClick={handleChange}
@@ -414,7 +414,7 @@ export const Contentcard = (props) => {
 
       <div
         className="modal fade"
-        id={props.title[0] + props.key}
+        id={props.title[0] + props.contentID}
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
