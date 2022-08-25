@@ -52,7 +52,7 @@ export const Login = () => {
         <div className="col-4"></div>
         <div className="col-4 my-5">
           <form>
-            <div className="card text-center">
+            <div className="card text-center text-bg-theme-light">
               <div className="card-body">
                 <div className="mb-3">
                   <label

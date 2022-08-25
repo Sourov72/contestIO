@@ -200,6 +200,13 @@ a:hover {
   border-width: 4px !important;
 }
 
+.text-bg-theme-light {
+  background: rgba(247, 204, 255, 0.2);
+  border-color: rgba(230, 149, 245, 0.478) !important;
+  border-width: 2px !important;
+}
 .text-bg-theme {
-  background: rgba(155, 39, 176, 0.2);
+  background: rgba(198, 102, 215, 0.2);
+  border-color: rgba(155, 39, 176, 0.478) !important;
+  border-width: 2px !important;
 }
