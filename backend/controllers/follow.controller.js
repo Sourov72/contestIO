@@ -10,6 +10,18 @@ const getFollowList = async (req, res) => {
     res.status(200).json(userList);
 };
 
+const isFollowed=async(req,res) => {
+    const { contestID } = req.body.contestID;
+    const userID =req.body.userID;
+    const contestList = await FollowModel.find({"userID":userID,"contestID":contestID});
+    if(contestList.length>0){
+        res.status(200).json("True");
+    }
+    else {
+        res.status(200).json("False");
+    }
+};
+
 const createFollow = async (req, res) => {
     // get the values from the request's body
     const contestID = req.body.contestID;
@@ -60,6 +72,8 @@ module.exports = {
     createFollow,
     unfollow,
     getNotification,
+    getUserFollowList,
+    isFollowed,
 };
 
 
