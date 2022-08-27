@@ -35,7 +35,7 @@ const getNotification=async(req,res)=>{
     const { userId } = req.params;
     const contestList = await FollowModel.find({"userID":userId},{"contestID":1});
     const strRet={};
-
+    const strRetFinal={};
     for (let i=0;i<contestList.length;i++){
         console.log("contetIDs",contestList[i]);
         const dt=new Date();
@@ -45,20 +45,21 @@ const getNotification=async(req,res)=>{
         if(temp2.length!=0) strRet.push({tem2,"val":"startCont"});
         const temp3=await ContestModel.find({"contestID":contestList[i],"endTime":"$gte:dt"},{"contestID":1,"registrationEndTime":"1"});
         if(temp3.length!=0) strRet.push({temp3,"val":"endConst"});
-        const sortedActivities = activities.sort((a, b) => b.date - a.date)
+        strRetFinal = strRet.sort((a, b) => b.date - a.date)
         //get notifications
     }
     
     if(contestList.length<1){
         res.status(200).join("")
     }
-    res.status(200).json(strRet);
+    res.status(200).json(strRetFinal);
 }
 
 module.exports = {
     getFollowList,
     createFollow,
     unfollow,
+    getNotification,
 };
 
 
