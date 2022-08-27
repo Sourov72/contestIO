@@ -314,7 +314,7 @@ export const UploadedContentsShow = () => {
                     // ></img>
                     (col = 12 - col),
                     (
-                      // console.log("col", col),
+                      console.log("coluuuuuu", content.contentID[0]),
 
                       <Contentcard
                         key={content.contentID[0]}
@@ -323,7 +323,7 @@ export const UploadedContentsShow = () => {
                         choiceID={content._id}
                         categoryID={content.categoryID}
                         contentID={content.contentID[0]}
-                        link={content.link[0]}
+                        link={decodeURIComponent(content.link[0])}
                         col={col}
                         title={content.title[0]}
                         description={content.description[0]}

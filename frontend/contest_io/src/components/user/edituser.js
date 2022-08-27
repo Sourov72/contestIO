@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
+
+import { uploadfile, deletefile } from "../helperFunctions";
+import { storage } from "../../firebase";
+import { deleteObject, ref } from "firebase/storage";
+
 const cookies = new Cookies();
 
 export const EditProfile = () => {
   const token = cookies.get("TOKEN");
   const [user, setuser] = useState({
     username: "",
+    nickname: "",
     oldpassword: "",
     reoldpassword: "",
     bio: "",
@@ -14,6 +20,8 @@ export const EditProfile = () => {
     instagramhandle: "",
     img: "",
   });
+  const [imageUpload, setimageUpload] = useState("");
+  const [srcimg, setsrc] = useState("");
 
   useEffect(() => {
     // here id is send simpliflically not as a object
@@ -26,9 +34,11 @@ export const EditProfile = () => {
         },
       })
       .then((res) => {
+        setsrc(decodeURIComponent(res.data.user.img));
         console.log(res.data.user.socialhandles.facebookhandle);
         setuser({
           username: res.data.user.username,
+          nickname: res.data.user.nickname,
           oldpassword: res.data.user.password,
           bio: res.data.user.bio,
           facebookhandle: res.data.user.socialhandles.facebookhandle,
@@ -49,21 +59,30 @@ export const EditProfile = () => {
 
   const fileHandle = (e) => {
     const upload_file = e.target.files[0];
+    setimageUpload(upload_file);
     console.log("uploaded file", upload_file);
-
-    setuser({
-      ...user,
-      img: upload_file.name,
-    });
-
-    console.log("setted file", user.img);
+    setsrc(URL.createObjectURL(upload_file));
+   
   };
 
-  const update = (e) => {
+  const update = async (e) => {
     e.preventDefault();
-
+    let pictureRef = "";
     console.log("pass", user.oldpassword);
     console.log("repass", user.reoldpassword);
+    if (imageUpload !== "") {
+      const downloadURL = await uploadfile(imageUpload);
+      user.img = downloadURL;
+      console.log("user img after", user.img);
+      pictureRef = await ref(storage, downloadURL);
+      console.log("picture ref", pictureRef);
+
+      // deleteObject(pictureRef);
+
+    }
+    user.img = encodeURIComponent(user.img);
+
+    console.log("picref", pictureRef);
     axios
       .post(
         "http://localhost:5000/api/user/update/" + localStorage.getItem("id"),
@@ -80,6 +99,9 @@ export const EditProfile = () => {
       })
       .catch((error) => {
         alert(error.response.data.message);
+        if (pictureRef !== "") {
+          deletefile(pictureRef);
+        }
       });
 
     setuser({
@@ -107,6 +129,21 @@ export const EditProfile = () => {
               value={user.username}
               className="form-control"
               id="Inputname"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="Inputname" className="form-label">
+              Nick Name
+            </label>
+            <input
+              type="text"
+              name="nickname"
+              onChange={handleChange}
+              value={user.nickname}
+              className="form-control"
+              id="Inputnickname"
               required
             />
           </div>
@@ -156,8 +193,9 @@ export const EditProfile = () => {
           </div>
 
           <div className="mb-3">
+
             <img
-              src={source}
+              src={srcimg}
               className=" img-thumbnail"
               // style={stylingObject.image}
               // alt={user.username}

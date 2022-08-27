@@ -32,6 +32,7 @@ export const ContestShow = () => {
     newparticipantadd: false,
     newjuryadd: false,
     blockuser: false,
+    leavecontest: false,
   });
 
   const [contest, setcontest] = useState({
@@ -46,6 +47,7 @@ export const ContestShow = () => {
     startTime: "",
     registrationEndTime: "",
     endTime: "",
+    img: "",
   });
 
   const [lists, setlists] = useState({
@@ -100,9 +102,34 @@ export const ContestShow = () => {
     setcomp({ newjuryadd: true });
   }
 
-  function blockuser(){
+  function blockuser() {
     setcomp({ blockuser: true });
   }
+
+  const leavecontest = async (e) => {
+    e.preventDefault();
+    setcomp({ leavecontest: true });
+
+    console.log("clicked", localStorage.getItem("id"), contestID);
+
+    const participant = {
+      userID: localStorage.getItem("id"),
+      contestID: contestID,
+    };
+
+    await axios
+      .delete("http://localhost:5000/api/participants/delete", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+
+        data: participant,
+      })
+      .then((res) => {
+        console.log("res body in participant Left", res.data);
+        window.location = "/";
+      });
+  };
 
   useEffect(() => {
     const uid = localStorage.getItem("id");
@@ -126,6 +153,7 @@ export const ContestShow = () => {
           startTime: res.data.startTime,
           registrationEndTime: res.data.registrationEndTime,
           endTime: res.data.endTime,
+          img: decodeURIComponent(res.data.img),
         });
 
         setstartdate(
@@ -278,7 +306,8 @@ export const ContestShow = () => {
   let source = "../images/" + "photo-contest-logo.png";
   var stylingObject = {
     image: {
-      // width: 400,
+      width: "100%",
+      height: "80%",
       borderColor: "purple",
       borderWidth: 2,
       borderRadius: 10,
@@ -426,9 +455,11 @@ export const ContestShow = () => {
 
               {!userType.includes("BLOCKED") && (
                 <>
-                {console.log("contest type", contest.type)}
+                  {console.log("contest type", contest.type)}
                   {contest.type.includes("Open") &&
-                    !userType.includes("CONTESTANT") && !userType.includes("HOST") && !userType.includes("JURY") && (
+                    !userType.includes("CONTESTANT") &&
+                    !userType.includes("HOST") &&
+                    !userType.includes("JURY") && (
                       <>
                         <button
                           className="btn btn-warning my-2"
@@ -441,7 +472,8 @@ export const ContestShow = () => {
                     )}
 
                   {contest.type.includes("Open") &&
-                    !userType.includes("VOTER") && !userType.includes("JURY") && (
+                    !userType.includes("VOTER") &&
+                    !userType.includes("JURY") && (
                       <>
                         <button
                           className="btn btn-warning my-2"
@@ -454,7 +486,8 @@ export const ContestShow = () => {
                     )}
 
                   {contest.type.includes("Public") &&
-                    !userType.includes("VOTER") && !userType.includes("JURY") && (
+                    !userType.includes("VOTER") &&
+                    !userType.includes("JURY") && (
                       <>
                         <button
                           className="btn btn-warning my-2"
@@ -481,6 +514,19 @@ export const ContestShow = () => {
                     >
                       Add Contents
                     </Link>
+                  </button>
+                </>
+              )}
+
+              {!userType.includes("BLOCKED") && !userType.includes("HOST") && (
+                <>
+                  <button
+                    type="button"
+                    className="btn btn-danger my-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#asLeaver"
+                  >
+                    Leave Contest
                   </button>
                 </>
               )}
@@ -572,7 +618,7 @@ export const ContestShow = () => {
 
                           {/* <img src={source} alt="no image"/> */}
                           <img
-                            src={source}
+                            src={contest.img}
                             className=" img-thumbnail"
                             style={stylingObject.image}
                             alt="..."
@@ -687,7 +733,7 @@ export const ContestShow = () => {
                     <ContestParticipantSearch
                       type="voterlist"
                       contestID={contestID}
-                      hostID = {contest.hostID}
+                      hostID={contest.hostID}
                     />
                   );
                 }
@@ -713,25 +759,47 @@ export const ContestShow = () => {
                 if (comp.newvoteradd === true) {
                   console.log("helo there new voter add");
 
-                  return <Search contestID={contestID} type={"voteradd"} hostID = {contest.hostID}/>;
+                  return (
+                    <Search
+                      contestID={contestID}
+                      type={"voteradd"}
+                      hostID={contest.hostID}
+                    />
+                  );
                 }
                 if (comp.newparticipantadd === true) {
                   console.log("helo there new voter add");
 
                   return (
-                    <Search contestID={contestID} type={"contestantadd"} hostID = {contest.hostID}/>
+                    <Search
+                      contestID={contestID}
+                      type={"contestantadd"}
+                      hostID={contest.hostID}
+                    />
                   );
                 }
                 if (comp.newjuryadd === true) {
                   console.log("helo there new voter add");
 
-                  return <Search contestID={contestID} type={"juryadd"} hostID = {contest.hostID}/>;
+                  return (
+                    <Search
+                      contestID={contestID}
+                      type={"juryadd"}
+                      hostID={contest.hostID}
+                    />
+                  );
                 }
 
                 if (comp.blockuser === true) {
                   console.log("helo there new block user add");
 
-                  return <Search contestID={contestID} type={"blockuser"} hostID = {contest.hostID}/>;
+                  return (
+                    <Search
+                      contestID={contestID}
+                      type={"blockuser"}
+                      hostID={contest.hostID}
+                    />
+                  );
                 }
               })()}
             </form>
@@ -814,6 +882,48 @@ export const ContestShow = () => {
                   className="btn btn-primary"
                   data-bs-dismiss="modal"
                   onClick={participateAsVoter}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="modal fade"
+          id="asLeaver"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Leave Contest
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">Are You Sure?</div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={leavecontest}
                 >
                   Submit
                 </button>

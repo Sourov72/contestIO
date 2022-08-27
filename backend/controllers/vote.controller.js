@@ -391,7 +391,6 @@ const getResults = async (req, res) => {
       },
     },
 
-
     {
       $unwind: "$VoterData",
     },
@@ -416,10 +415,14 @@ const getResults = async (req, res) => {
         username: { $addToSet: "$VoterData.username" },
         voteWeight: { $addToSet: "$VoterData.voteWeight" },
         juryVoteWeight: { $addToSet: "$VoterData.juryVoteWeight" },
-        
+
         totalVote: {
           $sum: {
-            $cond: [{ $eq: ["$blabla.type", 20] }, "$VoterData.juryVoteWeight", "$VoterData.voteWeight"],
+            $cond: [
+              { $eq: ["$blabla.type", 20] },
+              "$VoterData.juryVoteWeight",
+              "$VoterData.voteWeight",
+            ],
           },
         },
         usertype: { $addToSet: "$VoterData.usertype" },

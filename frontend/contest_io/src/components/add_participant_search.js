@@ -178,23 +178,22 @@ export const Search = (props) => {
           var list1 = [];
           var list2 = [];
 
-
           for (let i = 0; i < res.data.length; i++) {
-            if (res.data[i].type.length !== 0 && participantValueToType(res.data[i].type[0]).includes("BLOCKED")) {
+            if (
+              res.data[i].type.length !== 0 &&
+              participantValueToType(res.data[i].type[0]).includes("BLOCKED")
+            ) {
               // console.log("blocked participant", res.data[i])
               list2.push(res.data[i]);
             } else {
               list1.push(res.data[i]);
-            };
-          };
+            }
+          }
           list1 = list1.concat(list2);
 
           // console.log("list1", list1);
           setallUsers(list1);
         });
-
-
-
     } else {
       await axios
         .post("http://localhost:5000/api/user/users", user)
@@ -219,7 +218,6 @@ export const Search = (props) => {
     }, 2000);
     console.log("after timeout");
   }
-
 
   function searchList() {
     // if (searchShow) {
@@ -249,7 +247,7 @@ export const Search = (props) => {
                   {currentPerson.username}
                 </Link>
               </td>
-              <td>{participantValueToType(currentPerson.type)}</td>
+              {/* <td>{participantValueToType(currentPerson.type)}</td> */}
               <td>
                 {props.type === "blockuser" ? (
                   <>
@@ -286,23 +284,25 @@ export const Search = (props) => {
                       )}
                   </>
                 ) : (
-                  <><svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="bi bi-plus-lg"
-                    viewBox="0 0 16 16"
-                    onClick={addhandler({
-                      userID: currentPerson._id,
-                      contestID: props.contestID,
-                    })}
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
-                    />
-                  </svg></>
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-plus-lg"
+                      viewBox="0 0 16 16"
+                      onClick={addhandler({
+                        userID: currentPerson._id,
+                        contestID: props.contestID,
+                      })}
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
+                      />
+                    </svg>
+                  </>
                 )}
               </td>
             </tr>
@@ -344,11 +344,17 @@ export const Search = (props) => {
         <>
           <Alert
             alertclass="alert alert-success alert-dismissible fade show"
-            {...(addparticipant.voter ? { alerttext: "Voter Added Successfully" } : {})}
-            {...(addparticipant.contestant ? { alerttext: "Contestant Added Successfully" } : {})}
-            {...(addparticipant.jury ? { alerttext: "Jury Added Successfully" } : {})}
+            {...(addparticipant.voter
+              ? { alerttext: "Voter Added Successfully" }
+              : {})}
+            {...(addparticipant.contestant
+              ? { alerttext: "Contestant Added Successfully" }
+              : {})}
+            {...(addparticipant.jury
+              ? { alerttext: "Jury Added Successfully" }
+              : {})}
 
-          // alerthandle={alerthandle}
+            // alerthandle={alerthandle}
           />
         </>
       ) : (
@@ -357,11 +363,20 @@ export const Search = (props) => {
       {props.type === "blockuser" && addparticipant.clicked === true ? (
         <>
           <Alert
+            {...(addparticipant.blocked
+              ? {
+                  alertclass: "alert alert-danger alert-dismissible fade show",
+                  alerttext: "User Blocked Successfully",
+                }
+              : {})}
+            {...(addparticipant.unblocked
+              ? {
+                  alertclass: "alert alert-warning alert-dismissible fade show",
+                  alerttext: "User Unblocked Successfully",
+                }
+              : {})}
 
-            {...(addparticipant.blocked ? { alertclass: "alert alert-danger alert-dismissible fade show", alerttext: "User Blocked Successfully" } : {})}
-            {...(addparticipant.unblocked ? { alertclass: "alert alert-warning alert-dismissible fade show", alerttext: "User Unblocked Successfully" } : {})}
-
-          // alerthandle={alerthandle}
+            // alerthandle={alerthandle}
           />
         </>
       ) : (

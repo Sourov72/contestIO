@@ -11,6 +11,11 @@ const userSchema = new Schema(
       minlength: 1,
     },
 
+    nickname: {
+      type: String,
+      trim: true,
+    },
+
     password: {
       type: String,
       required: true,
@@ -33,9 +38,9 @@ const userSchema = new Schema(
       facebookhandle: String,
       instagramhandle: String,
     },
-    img :{
-      type : String,
-    }
+    img: {
+      type: String,
+    },
   },
   {
     timestamps: true,

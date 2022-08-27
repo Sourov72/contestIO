@@ -320,18 +320,21 @@ export const Contentcard = (props) => {
     console.log("after timeout");
   }
 
+  const idddd = "s" + props.key
+  console.log("idddd", idddd)
+
   const cardBody = () => {
     return (
       <div className="card border-success mb-3 my-2" style={linkStyle.card}>
         <div className="view">
           <img
-            src={"../images/" + props.link}
+            src={props.link}
             className="img-thumbnail "
             style={linkStyle.image}
             onClick={imageClick}
             name={props.link}
             data-bs-toggle="modal"
-            data-bs-target={"#" + props.title[0] + props.key}
+            data-bs-target={"#" + props.title[0] + props.contentID}
             onMouseEnter={toggleHover}
             onMouseLeave={toggleHover}
 
@@ -432,7 +435,7 @@ export const Contentcard = (props) => {
                   {currentPerson.username[0][0]}
                 </Link>
                 <img
-                  src={"../images/" + currentPerson.img[0][0]}
+                  src={decodeURIComponent(currentPerson.img[0][0])}
                   className="img-thumbnail "
                   style={linkStyle.iconimage}
                 // onClick={imageClick}
@@ -492,7 +495,7 @@ export const Contentcard = (props) => {
 
       <div
         className="modal fade"
-        id={props.title[0] + props.key}
+        id={props.title[0] + props.contentID}
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -513,7 +516,7 @@ export const Contentcard = (props) => {
 
             <div className="modal-body">
               <img
-                src={"../images/" + image}
+                src={(image)}
                 className="img-thumbnail"
                 style={linkStyle.modalimage}
 

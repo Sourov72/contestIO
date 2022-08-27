@@ -6,7 +6,11 @@ import { ContestBox } from "./contests/contestBox";
 import { obj2str } from "./helperFunctions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import {
+  faFacebook,
+  faInstagram,
+  faSnapchat,
+} from "@fortawesome/free-brands-svg-icons";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
@@ -22,6 +26,7 @@ export const Profileview = () => {
   var limit = 4;
   const [user, setuser] = useState({
     username: "",
+    nickname: "",
     email: "",
     bio: "",
     facebookhandle: "",
@@ -33,12 +38,13 @@ export const Profileview = () => {
     var { value } = e.target;
     console.log("skip's value: ", value);
     fetchContests(value);
-  }
+  };
   const fetchContests = async (skip) => {
     let query = obj2str([
       { userID: ["eq", userID] },
       { skip: ["skip", skip] },
-      { limit: ["limit", limit] }]);
+      { limit: ["limit", limit] },
+    ]);
     // console.log("the query:", query);
     axios
       .get(`http://localhost:5000/api/participants/queryContests?${query}`, {
@@ -49,12 +55,12 @@ export const Profileview = () => {
       .then((res) => {
         // console.log("res: ". res.data)
         var contests = [];
-          for (let i = 0; i < res.data.contests.length; i++) {
-            contests.push(res.data.contests[i]["contestID"]);
-          }
+        for (let i = 0; i < res.data.contests.length; i++) {
+          contests.push(res.data.contests[i]["contestID"]);
+        }
         setResult({
           count: res.data.count,
-          contests : contests,
+          contests: contests,
         });
       });
   };
@@ -63,6 +69,7 @@ export const Profileview = () => {
       // console.log(res.data.user.socialhandles.facebookhandle);
       setuser({
         username: res.data.user.username,
+        nickname: res.data.user.nickname,
         email: res.data.user.email,
         bio: res.data.user.bio,
         facebookhandle: res.data.user.socialhandles.facebookhandle,
@@ -72,8 +79,6 @@ export const Profileview = () => {
     });
     fetchContests();
   }, [location]);
-
-  let source = "../images/" + user.img;
 
   var stylingObject = {
     image: {
@@ -151,20 +156,24 @@ export const Profileview = () => {
 
   return (
     <div className="signup container">
+      {console.log("srs", user.img)}
       <h1 className="text-center my-3">Profile</h1>
       <form className="row">
         <div className="col-3">
           <div className="text-wrap">
             <div className="text-center">
               <img
-                src={source}
+                src={user.img}
                 className=" img-thumbnail"
                 style={stylingObject.image}
                 alt={user.username}
               ></img>
             </div>
             <p className="fs-4 fw-bold my-0">{user.username}</p>
-            <p>@username</p>
+            <p className="mb-0">
+              <FontAwesomeIcon icon={faSnapchat} /> &nbsp;
+              {user.nickname}
+            </p>
             <p>{user.bio}</p>
 
             {userID === localStorage.getItem("id") && (
@@ -174,6 +183,7 @@ export const Profileview = () => {
                 </button>
               </Link>
             )}
+
             <p className="mb-0 mt-2">
               <FontAwesomeIcon icon={faEnvelope} /> &nbsp;
               {user.email}
@@ -190,10 +200,9 @@ export const Profileview = () => {
         </div>
 
         <div className="col-9">
-        <div className="col-6 fw-light fst-italic text-muted fs-6 mb-2">
-          Showing {result.contests.length} out of{" "}
-          {result.count} contests{" "}
-        </div>
+          <div className="col-6 fw-light fst-italic text-muted fs-6 mb-2">
+            Showing {result.contests.length} out of {result.count} contests{" "}
+          </div>
           <ContestBox
             contests={result.contests}
             boxTitle={

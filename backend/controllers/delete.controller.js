@@ -1,6 +1,8 @@
 const VoteModel = require("../models/vote.model");
 const ContentModel = require("../models/content.model");
-
+const fileDelete = require("./filedelete");
+const { ref } = require("firebase/storage");
+const { storage } = require("./firebase");
 const ChoiceModel = require("../models/choice.model");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
@@ -76,6 +78,14 @@ async function deletecontentfunc(participantID) {
   console.log("contents", contents);
 
   if (contents) await deletechoicefunc(contents);
+
+  let pictureRef = "";
+  for(let i=0; i<contents.length; i++){
+
+    pictureRef = await ref(storage, decodeURIComponent(contents[i].link));
+    console.log(fileDelete.deleteFile(pictureRef));
+
+  }
 
   const contentsdeleted = await ContentModel.deleteMany({
     participantID: participantID,

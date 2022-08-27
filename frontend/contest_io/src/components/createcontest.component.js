@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { participantTypeToValue } from "../components/helperFunctions";
+import {
+  participantTypeToValue,
+  uploadfile,
+  deletefile,
+} from "./helperFunctions";
 import Cookies from "universal-cookie";
+import { storage } from "../firebase";
+import { ref } from "firebase/storage";
 const cookies = new Cookies();
 
 export const CreateContest = () => {
@@ -15,6 +21,8 @@ export const CreateContest = () => {
     contesttypecom: false,
   });
 
+  const [imageUpload, setimageUpload] = useState("");
+
   const [contest, setcontest] = useState({
     hostID: "",
     title: "",
@@ -27,6 +35,7 @@ export const CreateContest = () => {
     startTime: "",
     registrationEndTime: "",
     endTime: "",
+    img: "",
   });
 
   const [lists, setlists] = useState({
@@ -63,6 +72,14 @@ export const CreateContest = () => {
     setcomp({ contesttypecom: true });
   }
 
+  const bannerfileHandle = async (e) => {
+    const upload_file = e.target.files[0];
+    setimageUpload(upload_file);
+    console.log("uploaded file", upload_file);
+
+    // console.log("setted file image ref", imageRef);
+  };
+
   const handleChange = (e) => {
     var { name, value } = e.target;
     if (name === "voterAnonymity") {
@@ -89,12 +106,19 @@ export const CreateContest = () => {
     });
   }, []);
 
-  const createNewContest = (e) => {
+  const createNewContest = async (e) => {
     e.preventDefault();
     id = localStorage.getItem("id");
-
+    let pictureRef = "";
+    console.log("img in isgnfdsf", imageUpload);
     console.log("hostid ", contest.hostID);
-    console.log('contest', contest)
+    console.log("contest", contest);
+    if (imageUpload !== "") {
+      const downloadURL = await uploadfile(imageUpload);
+      contest.img = encodeURIComponent(downloadURL);
+      console.log("user img after", contest.img);
+      pictureRef = await ref(storage, downloadURL);
+    }
 
     axios
       .post("http://localhost:5000/api/contests/create", contest, {
@@ -103,7 +127,6 @@ export const CreateContest = () => {
         },
       })
       .then((res) => {
-        
         const host = {
           userID: localStorage.getItem("id"),
           contestID: res.data._id,
@@ -134,6 +157,9 @@ export const CreateContest = () => {
       })
       .catch((error) => {
         alert("could not create contest, ", error);
+        if (pictureRef !== "") {
+          deletefile(pictureRef);
+        }
       });
   };
 
@@ -167,7 +193,11 @@ export const CreateContest = () => {
             <div className="d-flex flex-column justify-content-center mt-2">
               <button
                 type="radio"
-                className={(comp.generalcom || comp.timeschedulecom || comp.contesttypecom) ? 'btn btn-success text-white my-2' : 'btn btn-theme text-white my-2' }
+                className={
+                  comp.generalcom || comp.timeschedulecom || comp.contesttypecom
+                    ? "btn btn-success text-white my-2"
+                    : "btn btn-theme text-white my-2"
+                }
                 onClick={general}
               >
                 General
@@ -175,7 +205,11 @@ export const CreateContest = () => {
 
               <button
                 type="radio"
-                className={(comp.timeschedulecom || comp.contesttypecom) ? 'btn btn-success text-white my-2' : 'btn btn-theme text-white my-2' }
+                className={
+                  comp.timeschedulecom || comp.contesttypecom
+                    ? "btn btn-success text-white my-2"
+                    : "btn btn-theme text-white my-2"
+                }
                 onClick={timeschedule}
               >
                 Time schedule
@@ -183,7 +217,11 @@ export const CreateContest = () => {
 
               <button
                 type="radio"
-                className={(comp.contesttypecom) ? 'btn btn-success text-white my-2' : 'btn btn-theme text-white my-2' }
+                className={
+                  comp.contesttypecom
+                    ? "btn btn-success text-white my-2"
+                    : "btn btn-theme text-white my-2"
+                }
                 onClick={contesttype}
               >
                 Voting &amp; Participants
@@ -268,7 +306,7 @@ export const CreateContest = () => {
                             </select>
                           </div>
                         </div>
-                        
+
                         <div className="my-3">
                           <label
                             className="form-check-label fw-bold me-2"
@@ -294,6 +332,17 @@ export const CreateContest = () => {
                         >
                           Next
                         </button>
+                      </div>
+
+                      <div className="mb-3">
+                        <label htmlFor="formFileSm" className="form-label">
+                          Contest Banner Upload
+                        </label>
+                        <input
+                          className="form-control form-control-sm"
+                          type="file"
+                          onChange={bannerfileHandle}
+                        />
                       </div>
                     </>
                   );
@@ -385,40 +434,40 @@ export const CreateContest = () => {
                     <>
                       <div className="mb-3">
                         <div>
-                        <div className="row">
-                          <div className="col-6">
-                            <label
-                              htmlFor="inputEmail4"
-                              className="form-label fw-bold my-3"
-                            >
-                              General Vote weight
-                            </label>
-                            <input
-                              type="number"
-                              name="voteWeight"
-                              onChange={handleChange}
-                              value={contest.voteWeight}
-                              className="form-control"
-                              id="voteWeight"
-                            />
+                          <div className="row">
+                            <div className="col-6">
+                              <label
+                                htmlFor="inputEmail4"
+                                className="form-label fw-bold my-3"
+                              >
+                                General Vote weight
+                              </label>
+                              <input
+                                type="number"
+                                name="voteWeight"
+                                onChange={handleChange}
+                                value={contest.voteWeight}
+                                className="form-control"
+                                id="voteWeight"
+                              />
+                            </div>
+                            <div className="col-6">
+                              <label
+                                htmlFor="inputEmail4"
+                                className="form-label fw-bold my-3"
+                              >
+                                Jury Vote Weight
+                              </label>
+                              <input
+                                type="number"
+                                name="juryVoteWeight"
+                                onChange={handleChange}
+                                value={contest.juryVoteWeight}
+                                className="form-control"
+                                id="juryVoteWeight"
+                              />
+                            </div>
                           </div>
-                          <div className="col-6">
-                            <label
-                              htmlFor="inputEmail4"
-                              className="form-label fw-bold my-3"
-                            >
-                              Jury Vote Weight
-                            </label>
-                            <input
-                              type="number"
-                              name="juryVoteWeight"
-                              onChange={handleChange}
-                              value={contest.juryVoteWeight}
-                              className="form-control"
-                              id="juryVoteWeight"
-                            />
-                          </div>
-                        </div>
 
                           <label
                             htmlFor="formFileSm1"

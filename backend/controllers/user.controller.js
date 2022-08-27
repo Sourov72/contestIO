@@ -2,9 +2,13 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const participantModel = require("../models/participant.model");
+const fileDelete = require("./filedelete");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
-// router.route("/").get((req, res) => {
+const { ref } = require("firebase/storage");
+const { storage } = require("./firebase");
+const { v4 } = require("uuid");
+// // router.route("/").get((req, res) => {
 //   User.find()
 //     .then((users) => res.json(users))
 //     .catch((err) => res.status(400).json("Error :" + err));
@@ -208,8 +212,10 @@ const profilecheck = (req, res) => {
   });
 };
 
-const createUser = (req, res) => {
+const createUser = async (req, res) => {
+  console.log("reqbody", req.body);
   const username = req.body.username;
+  const nickname = req.body.nickname;
   const password = req.body.password;
   const email = req.body.email;
   const bio = req.body.bio;
@@ -229,6 +235,7 @@ const createUser = (req, res) => {
           console.log("hashed password: ", password);
           const newUser = new User({
             username,
+            nickname,
             password,
             email,
             bio,
@@ -268,6 +275,7 @@ const updateUser = async (req, res) => {
   const id = req.user.userID;
   // console.log("req body", req.body)
   // console.log("req user", req.user)
+  let pictureRef = "";
 
   const pass = req.body.reoldpassword;
   // console.log("req id", id);
@@ -293,8 +301,19 @@ const updateUser = async (req, res) => {
       });
     });
 
+  const newUser = await User.findOne({ _id: id });
+  console.log("hereeee", newUser.img);
+  console.log("req body", req.body.img);
+  console.log("outside if");
+  if (newUser.img !== "" && newUser.img !== req.body.img) {
+    console.log("hereeee", newUser.img);
+    console.log("req body", req.body.img);
+    pictureRef = await ref(storage, decodeURIComponent(newUser.img));
+  } 
+
   const user = await User.findByIdAndUpdate(id, {
     username: req.body.username,
+    nickname: req.body.nickname,
     bio: req.body.bio,
     socialhandles: {
       facebookhandle: req.body.facebookhandle,
@@ -307,6 +326,13 @@ const updateUser = async (req, res) => {
     return res.status(400).json({ message: "Could not update" });
   }
   console.log("user update success");
+  if (pictureRef !== "") {
+    // await pictureRef.delete();
+
+    console.log("in delete but why");
+
+    console.log(fileDelete.deleteFile(pictureRef));
+  }
   return res.status(200).json({ message: "User Updated!" });
 };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useParams } from "react-router-dom";
 import Cookies from "universal-cookie";
+import { Alert } from "../alert.component";
 const cookies = new Cookies();
 
 export const ContestCategoryAdd = (props) => {
@@ -16,6 +17,8 @@ export const ContestCategoryAdd = (props) => {
     maxvoteperUser: "",
     maxchoices: "",
   });
+
+  const [addcategory, setaddcategory] = useState(false);
 
   useEffect(() => {
     contestID = location.state.contestID;
@@ -56,6 +59,8 @@ export const ContestCategoryAdd = (props) => {
         if (res.data.msg === "added successfully") {
           console.log("category added successfully");
           // window.location = "/contestshow";
+          setaddcategory(true);
+          timeout();
 
           setcategory({
             ...category,
@@ -68,6 +73,14 @@ export const ContestCategoryAdd = (props) => {
       });
     //window.location = "/";
   };
+
+  function timeout() {
+    console.log("in time out");
+    setTimeout(function () {
+      setaddcategory(false);
+    }, 2000);
+    console.log("after timeout");
+  }
 
   return (
     <div className="signup container">
@@ -176,7 +189,7 @@ export const ContestCategoryAdd = (props) => {
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary mb-3"
+                  className="btn btn-primary "
                   data-bs-dismiss="modal"
                   onClick={createNewCategory}
                 >
@@ -187,6 +200,18 @@ export const ContestCategoryAdd = (props) => {
           </div>
         </div>
       </form>
+      {addcategory === true ? (
+        <>
+          <Alert
+            alertclass="alert alert-success alert-dismissible fade show"
+            alerttext="Category added successfully"
+
+            // alerthandle={alerthandle}
+          />
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };
