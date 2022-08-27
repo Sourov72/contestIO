@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Alert } from "../alert.component";
 import Cookies from "universal-cookie";
-import { Alert } from "../alert.component";
 const cookies = new Cookies();
 
 export const ContestCategoryAdd = (props) => {
