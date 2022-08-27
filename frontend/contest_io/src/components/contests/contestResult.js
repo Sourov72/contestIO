@@ -92,9 +92,10 @@ export const ContestResult = (props) => {
         <div className="row justify-content-around text-center my-3">
           {results.length === 0 && (
             <>
-              <p>No contents were uploaded in this category</p>
+              <p>No votes were casted in this category</p>
             </>
           )}
+          
           {results.length > 2 && (
             <>
               <div className={"mt-5 col-4"}>
@@ -110,7 +111,7 @@ export const ContestResult = (props) => {
                   choiceID={results[2]._id}
                   categoryID={category._id}
                   contentID={results[2].contentid[0]}
-                  link={results[2].link[0]}
+                  link={decodeURIComponent(results[2].link[0])}
                   isResult={true}
                   col={12}
                   title={results[2].title[0]}
@@ -134,7 +135,7 @@ export const ContestResult = (props) => {
                   choiceID={results[0]._id}
                   categoryID={category._id}
                   contentID={results[0].contentid[0]}
-                  link={results[0].link[0]}
+                  link={decodeURIComponent(results[0].link[0])}
                   isResult={true}
                   col={12}
                   title={results[0].title[0]}
@@ -158,7 +159,7 @@ export const ContestResult = (props) => {
                   choiceID={results[1]._id}
                   categoryID={category._id}
                   contentID={results[1].contentid[0]}
-                  link={results[1].link[0]}
+                  link={decodeURIComponent(results[1].link[0])}
                   isResult={true}
                   col={12}
                   title={results[1].title[0]}

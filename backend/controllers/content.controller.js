@@ -249,30 +249,29 @@ const createContent = async (req, res) => {
       link,
     });
     // contentid = content._id;
+    const { categoryID } = req.body.choice;
+    const contentID = content._id;
+    console.log("content id", content._id);
+    try {
+      // try to create a new document
+
+      choice = await ChoiceModel.create({
+        categoryID,
+        contestID,
+        contentID,
+      });
+      // contentid = content._id;
+
+      console.log(choice);
+    } catch (error) {
+      // if failed, return error
+      console.log("choice creation unsuccessfull");
+    }
 
     res.status(200).json({ content, msg: "added successfully" });
   } catch (error) {
     // if failed, return error
     res.status(400).json({ error: error.message });
-  }
-
-  const { categoryID } = req.body.choice;
-  const contentID = content._id;
-  console.log("content id", content._id);
-  try {
-    // try to create a new document
-
-    choice = await ChoiceModel.create({
-      categoryID,
-      contestID,
-      contentID,
-    });
-    // contentid = content._id;
-
-    console.log(choice);
-  } catch (error) {
-    // if failed, return error
-    console.log("choice creation unsuccessfull");
   }
 };
 
@@ -293,7 +292,7 @@ const deleteContent = async (req, res) => {
 // update a content
 const updateContent = async (req, res) => {
   const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  if (!mongoose.Types.ObjectId.isValid(id)) { 
     return res.status(404).json({ error: "No such content" });
   }
 

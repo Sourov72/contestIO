@@ -258,6 +258,7 @@ export const UploadedContentsShow = (props) => {
           <div className="row justify-content-center">
             {contents.categorycontents.length > 0 ? (
               <>
+              
                 {contents.categorycontents.map(
                   (content) => (
                     (

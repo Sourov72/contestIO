@@ -20,6 +20,7 @@ export const CreateContest = () => {
     timeschedulecom: false,
     contesttypecom: false,
   });
+  const [srcimg, setsrc] = useState("");
 
   const [imageUpload, setimageUpload] = useState("");
 
@@ -76,7 +77,7 @@ export const CreateContest = () => {
     const upload_file = e.target.files[0];
     setimageUpload(upload_file);
     console.log("uploaded file", upload_file);
-
+    setsrc(URL.createObjectURL(upload_file));
     // console.log("setted file image ref", imageRef);
   };
 
@@ -326,6 +327,24 @@ export const CreateContest = () => {
                           />
                         </div>
                       </div>
+                      <div className="mb-3">
+                        <label htmlFor="formFileSm" className="form-label">
+                          Contest Banner Upload
+                        </label>
+
+                        <input
+                          className="form-control form-control-sm mb-3"
+                          type="file"
+                          onChange={bannerfileHandle}
+                        />
+                        <img
+                          src={srcimg}
+                          className=" img-thumbnail mb-1"
+                          style={{
+                            width: "100%",
+                          }}
+                        ></img>
+                      </div>
                       <div className="d-flex flex-row justify-content-end">
                         <button
                           type="radio"
@@ -334,17 +353,6 @@ export const CreateContest = () => {
                         >
                           Next
                         </button>
-                      </div>
-
-                      <div className="mb-3">
-                        <label htmlFor="formFileSm" className="form-label">
-                          Contest Banner Upload
-                        </label>
-                        <input
-                          className="form-control form-control-sm"
-                          type="file"
-                          onChange={bannerfileHandle}
-                        />
                       </div>
                     </>
                   );

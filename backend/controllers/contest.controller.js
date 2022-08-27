@@ -259,6 +259,11 @@ const queryContests = async (req, res) => {
           data: "$stage2",
         },
       },
+      {
+        $sort: {
+          startTime: 1,
+        }
+      }
     ]);
     // console.log("private contests, ", privateContests[0].data);
     // contests = publicContests.concat(privateContests.data);
@@ -272,9 +277,9 @@ const queryContests = async (req, res) => {
   }
 
   // const contests = publicContests.concat(privateContests)
-  contests.sort(function (a, b) {
-    a["startTime"] > b["startTime"];
-  });
+  // contests = contests.sort(function (a, b) {
+  //   a["createdAt"] > b["createdAt"];
+  // });
 
   // console.log('count after', count)
   res.status(200).json({

@@ -346,6 +346,8 @@ export const ContestShow = () => {
   var stylingObject = {
     image: {
       width: "100%",
+      height: "200px",
+      objectFit: "cover",
       borderColor: "purple",
       borderWidth: 2,
       borderRadius: 10,
@@ -467,10 +469,11 @@ export const ContestShow = () => {
                   </div>
                 </div>
               )}
-              {userType.length !== 0 &&
+              {/* {userType.length !== 0 &&
                 (userType.includes("HOST") ||
                   userType.includes("CONTESTANT") ||
-                  !userType.includes("BLOCKED")) && (
+                  !userType.includes("BLOCKED")) &&} */}
+              { (
                   <div className="accordion-item">
                     <h2 className="accordion-header" id="headingThree">
                       <button
@@ -541,23 +544,23 @@ export const ContestShow = () => {
                             </>
                           )}
 
-              {!userType.includes("BLOCKED") && (
-                <>
-                  {console.log("contest type", contest.type)}
-                  {contest.type.includes("Open") &&
-                    !userType.includes("CONTESTANT") &&
-                    !userType.includes("HOST") &&
-                    !userType.includes("JURY") && (
-                      <>
-                        <button
-                          className="btn btn-warning my-2"
-                          data-bs-toggle="modal"
-                          data-bs-target="#asParticipant"
-                        >
-                          Participate as Contestant
-                        </button>
-                      </>
-                    )}
+                          {!userType.includes("BLOCKED") && (
+                            <>
+                              {console.log("contest type", contest.type)}
+                              {contest.type.includes("Open") &&
+                                !userType.includes("CONTESTANT") &&
+                                !userType.includes("HOST") &&
+                                !userType.includes("JURY") && (
+                                  <>
+                                    <button
+                                      className="btn btn-warning my-2"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#asParticipant"
+                                    >
+                                      Participate as Contestant
+                                    </button>
+                                  </>
+                                )}
 
                               {(contest.type.includes("Open") ||
                                 contest.type.includes("Public")) &&
@@ -628,7 +631,7 @@ export const ContestShow = () => {
               </div>
               <div className="col-7">
                 <img
-                  src={source}
+                  src={contest.img}
                   className=" img-thumbnail"
                   style={stylingObject.image}
                   alt="..."
@@ -676,13 +679,13 @@ export const ContestShow = () => {
                             Registration Starts
                           </h4>
                           <h3>
-                            <span className="badge text-bg-light me-1">
+                            <span className="badge text-bg-success me-1">
                               {dateconver(contest.startTime, "date")}
                             </span>
-                            <span className="badge text-bg-light me-1">
+                            <span className="badge text-bg-success me-1">
                               {dateconver(contest.startTime, "month")}
                             </span>
-                            <span className="badge text-bg-light me-1">
+                            <span className="badge text-bg-success me-1">
                               {dateconver(contest.startTime, "year")}
                             </span>
                           </h3>
@@ -932,7 +935,7 @@ export const ContestShow = () => {
                   type="submit"
                   className="btn btn-theme"
                   data-bs-dismiss="modal"
-                  onClick={leavecontest}
+                  onClick={participateAsVoter}
                 >
                   Submit
                 </button>

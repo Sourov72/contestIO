@@ -20,6 +20,8 @@ export const ContestContentAdd = (props) => {
     categoryID: "",
   });
 
+  const [srcimg, setsrc] = useState("");
+
   const [imageUpload, setimageUpload] = useState("");
 
   const [content, setcontent] = useState({
@@ -104,6 +106,7 @@ export const ContestContentAdd = (props) => {
     const upload_file = e.target.files[0];
     setimageUpload(upload_file);
     console.log("uploaded file", upload_file);
+    setsrc(URL.createObjectURL(upload_file));
   };
 
   const createNewContent = async (e) => {
@@ -139,17 +142,17 @@ export const ContestContentAdd = (props) => {
         // console.log(res.data);
         if (res.data.msg === "added successfully") {
           console.log("added successfully");
-          setchoice({
-            categoryID: ""
-          })
+          // setchoice({
+          //   categoryID: ""
+          // })
           setcontent({
-            userID: "",
-            contestID: "",
-            type: "",
+            ...content,
+           
             title: "",
             description: "",
             link: "",
           })
+          setsrc("");
         }
       });
     //window.location = "/";
@@ -223,11 +226,19 @@ export const ContestContentAdd = (props) => {
                 Upload Content Media
               </label>
               <input
-                className="form-control form-control-sm"
+                className="form-control form-control-sm mb-3"
                 type="file"
+                // value={content.title}
                 key={content.type}
                 onChange={fileHandle}
               />
+              <img
+                src={srcimg}
+                className=" img-thumbnail mb-1"
+                style={{
+                  width: "100%"
+                }}
+              ></img>
             </div>
           </>
         )}

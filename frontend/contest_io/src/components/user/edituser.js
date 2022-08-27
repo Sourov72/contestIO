@@ -127,14 +127,17 @@ export const EditProfile = () => {
               </h5>
               <img
                 src={srcimg}
-                className=" img-thumbnail mb-2"
+                className=" img-thumbnail mb-1"
                 style={{
-                  height: "202px"
+                  width: "90%"
                 }}
               ></img>
               <input
-                className="form-control"
+                className="form-control mx-4 my-1"
                 type="file"
+                style={{
+                  width: "90%"
+                }}
                 onChange={fileHandle}
               />
             </div>
@@ -190,7 +193,7 @@ export const EditProfile = () => {
 
           <div className="mb-3">
             <label htmlFor="exampleInputPassword1" className="form-label fw-bold fs-5">
-              facebookhandle
+              Facebook Handle
             </label>
             <input
               type="text"
@@ -204,7 +207,7 @@ export const EditProfile = () => {
 
           <div className="mb-3"> 
             <label htmlFor="exampleInputPassword1" className="form-label fw-bold fs-5">
-              instagramhandle
+              Instagram Handle
             </label>
             <input
               type="text"

@@ -87,7 +87,7 @@ const getBL_UNBL_users = async (req, res) => {
         username: 1,
       },
     },
-  ]);
+  ]).limit(20);
 
   res.json(userss);
   console.log("in block unblock", userss);

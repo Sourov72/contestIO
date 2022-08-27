@@ -262,15 +262,16 @@ export const Contentcard = (props) => {
     // console.log("after timeout");
   }
 
-  const idddd = "s" + props.key
-  console.log("idddd", idddd)
+  const idddd = "s" + props.key;
+  console.log("idddd", idddd);
+
+  {
+    console.log("props link", props.link);
+  }
 
   const cardBody = () => {
     return (
-      <div
-        className="card h-100 content-card mb-3 my-2"
-        style={linkStyle.card}
-      >
+      <div className="card h-100 content-card mb-3 my-2" style={linkStyle.card}>
         <div className="card-body p-0">
           <img
             src={props.link}
@@ -291,12 +292,14 @@ export const Contentcard = (props) => {
             <p className="card-text mb-0">{props.category}</p>
           </div>
         </div>
-        <p>
-          {" "}
-          <b>Total Voters:</b> {voters.length}
-        </p>
+        {(props.isResult || voteranonymity !== 1)  && (
+          <p>
+            <b>Total Voters:</b> {voters.length}
+          </p>
+        )}
         <div className="d-flex flex-row justify-content-center">
-          {(!props.isResult && (userType.includes("VOTER") || userType.includes("JURY"))) ? (
+          {!props.isResult &&
+          (userType.includes("VOTER") || userType.includes("JURY")) ? (
             <>
               {check === true ? (
                 <>
@@ -389,7 +392,7 @@ export const Contentcard = (props) => {
 
   return (
     <>
-      <div className={"col-"+ String(props.col) + " mb-3"}>{cardBody()}</div>
+      <div className={"col-" + String(props.col) + " mb-3"}>{cardBody()}</div>
 
       {voted === true ? (
         <>
@@ -426,7 +429,7 @@ export const Contentcard = (props) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-              {props.title}
+                {props.title}
               </h5>
               <button
                 type="button"
@@ -438,7 +441,7 @@ export const Contentcard = (props) => {
 
             <div className="modal-body">
               <img
-                src={(image)}
+                src={image}
                 className="img-thumbnail"
                 style={linkStyle.modalimage}
 
