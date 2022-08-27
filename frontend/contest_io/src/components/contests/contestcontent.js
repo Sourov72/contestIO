@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "universal-cookie";
+import { uploadfile, deletefile } from "../helperFunctions";
+import { storage } from "../../firebase";
+import { deleteObject, ref } from "firebase/storage";
 const cookies = new Cookies();
 
 export const ContestContentAdd = (props) => {
@@ -16,6 +19,8 @@ export const ContestContentAdd = (props) => {
   const [choice, setchoice] = useState({
     categoryID: "",
   });
+
+  const [imageUpload, setimageUpload] = useState("");
 
   const [content, setcontent] = useState({
     userID: "",
@@ -35,7 +40,7 @@ export const ContestContentAdd = (props) => {
     setcontent({
       ...content,
       userID: userid,
-      contestID:contestid,
+      contestID: contestid,
       type: type,
     });
 
@@ -97,18 +102,23 @@ export const ContestContentAdd = (props) => {
 
   const fileHandle = (e) => {
     const upload_file = e.target.files[0];
-    // console.log("uploaded file", upload_file);
-
-    setcontent({
-      ...content,
-      link: upload_file.name,
-    });
-
-    console.log("setted file", content.link);
+    setimageUpload(upload_file);
+    console.log("uploaded file", upload_file);
   };
 
-  const createNewContent = (e) => {
+  const createNewContent = async (e) => {
     e.preventDefault();
+    let pictureRef = "";
+
+    if (imageUpload !== "") {
+      const downloadURL = await uploadfile(imageUpload);
+      content.link = encodeURIComponent(downloadURL);
+      console.log("user img after", content.link);
+      pictureRef = await ref(storage, downloadURL);
+      console.log("picture ref", pictureRef);
+
+      // deleteObject(pictureRef);
+    }
 
     // alert("content add form posted");
     axios

@@ -262,6 +262,9 @@ export const Contentcard = (props) => {
     // console.log("after timeout");
   }
 
+  const idddd = "s" + props.key
+  console.log("idddd", idddd)
+
   const cardBody = () => {
     return (
       <div
@@ -270,8 +273,8 @@ export const Contentcard = (props) => {
       >
         <div className="card-body p-0">
           <img
-            src={"../images/" + props.link}
-            className="img-thumbnail my-2"
+            src={props.link}
+            className="img-thumbnail "
             style={linkStyle.image}
             onClick={imageClick}
             name={props.link}
@@ -366,7 +369,7 @@ export const Contentcard = (props) => {
               </td>
               <td className="text-end">
                 <img
-                  src={"../images/" + currentPerson.img[0][0]}
+                  src={decodeURIComponent(currentPerson.img[0][0])}
                   className="img-thumbnail "
                   style={linkStyle.iconimage}
                 ></img>
@@ -435,7 +438,7 @@ export const Contentcard = (props) => {
 
             <div className="modal-body">
               <img
-                src={"../images/" + image}
+                src={(image)}
                 className="img-thumbnail"
                 style={linkStyle.modalimage}
 

@@ -268,7 +268,7 @@ export const UploadedContentsShow = (props) => {
                         choiceID={content._id}
                         categoryID={content.categoryID}
                         contentID={content.contentID[0]}
-                        link={content.link[0]}
+                        link={decodeURIComponent(content.link[0])}
                         isResult={false}
                         col={6}
                         title={content.title[0]}

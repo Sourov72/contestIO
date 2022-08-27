@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Alert } from "../alert.component";
 import Cookies from "universal-cookie";
+import { Alert } from "../alert.component";
 const cookies = new Cookies();
 
 export const ContestCategoryAdd = (props) => {
@@ -16,6 +17,8 @@ export const ContestCategoryAdd = (props) => {
   });
   const [success, setSuccess] = useState(false)
   const [clicked, setClicked] = useState(false)
+
+  const [addcategory, setaddcategory] = useState(false);
 
   useEffect(() => {
     setcategory({
@@ -54,7 +57,9 @@ export const ContestCategoryAdd = (props) => {
             // window.location = "/contestshow";
             setSuccess(true)
             console.log("contest creation successfull")
-  
+            setaddcategory(true);
+          timeout();
+
             setcategory({
               ...category,
               title: "",
@@ -68,6 +73,14 @@ export const ContestCategoryAdd = (props) => {
     setClicked(true)
     //window.location = "/";
   };
+
+  function timeout() {
+    console.log("in time out");
+    setTimeout(function () {
+      setaddcategory(false);
+    }, 2000);
+    console.log("after timeout");
+  }
 
   return (
     <div className="signup container my-3">
@@ -200,6 +213,18 @@ export const ContestCategoryAdd = (props) => {
           </div>
         </div>
       </form>
+      {addcategory === true ? (
+        <>
+          <Alert
+            alertclass="alert alert-success alert-dismissible fade show"
+            alerttext="Category added successfully"
+
+            // alerthandle={alerthandle}
+          />
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

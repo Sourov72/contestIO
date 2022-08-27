@@ -1,17 +1,30 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { storage } from "../firebase";
+import { ref } from "firebase/storage";
+import {
+  participantValueToType,
+  obj2str,
+  participantTypeToValue,
+  uploadfile,
+  deletefile,
+} from "./helperFunctions";
 
 export const Signup = () => {
   const [user, setuser] = useState({
     username: "",
     password: "",
     rePassword: "",
+    nickname: "",
     email: "",
     bio: "",
     facebookhandle: "",
     instagramhandle: "",
     img: "",
   });
+  const [srcimg, setsrc] = useState("");
+
+  const [imageUpload, setimageUpload] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,20 +35,19 @@ export const Signup = () => {
     });
   };
 
-  const fileHandle = (e) => {
+  const fileHandle = async (e) => {
     const upload_file = e.target.files[0];
+    setimageUpload(upload_file);
+    setsrc(URL.createObjectURL(upload_file));
     console.log("uploaded file", upload_file);
 
-    setuser({
-      ...user,
-      img: upload_file.name,
-    });
-
-    console.log("setted file", user.img);
+    // console.log("setted file image ref", imageRef);
   };
 
-  const signup = (e) => {
+  const signup = async (e) => {
     e.preventDefault();
+    let pictureRef = "";
+    console.log("img in isgnfdsf", imageUpload);
     const { username, password, rePassword, email, bio } = user;
     if (username && email && bio && password === rePassword) {
       alert("Signup form posted");
@@ -43,6 +55,7 @@ export const Signup = () => {
         .post("http://localhost:5000/api/user/add", user)
         .then((res) => {
           alert("signup successful");
+
           window.location = "/login";
         })
         .catch((err) => {
@@ -53,6 +66,9 @@ export const Signup = () => {
       alert(
         "Make sure you have provided proper username, email, password and bio"
       );
+      if (pictureRef !== "") {
+        deletefile(pictureRef);
+      }
     }
   };
 

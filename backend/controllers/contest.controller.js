@@ -298,6 +298,7 @@ const createContest = async (req, res) => {
     startTime,
     registrationEndTime,
     endTime,
+    img,
   } = req.body;
   try {
     // try to create a new document
@@ -313,6 +314,7 @@ const createContest = async (req, res) => {
       startTime,
       registrationEndTime,
       endTime,
+      img,
     });
     res.status(200).json(contest);
   } catch (error) {
@@ -365,16 +367,16 @@ const updateContest = async (req, res) => {
 };
 
 const createCategory = async (req, res) => {
-  console.log("req bodh", req.body);
+  // console.log("req bodh", req.body);
   const { contestID, title, description, maxvoteperUser, maxchoices } =
     req.body;
   if (!isHost(req.user.userID, contestID)) {
-    console.log(
-      "user [",
-      req.user.email,
-      "] cannot create category of contest:",
-      id
-    );
+    // console.log(
+    //   "user [",
+    //   req.user.email,
+    //   "] cannot create category of contest:",
+    //   id
+    // );
     return res.status(400).json({
       message: "don't have sufficient permissions to create contest category",
     });
@@ -388,7 +390,7 @@ const createCategory = async (req, res) => {
       maxvoteperUser,
       maxchoices,
     });
-    console.log("created cateog", category);
+    // console.log("created cateog", category);
     res.status(200).json({ category, msg: "added successfully" });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -399,12 +401,12 @@ const getContestCategories = async (req, res) => {
   const { id } = req.params;
 
   if (!req.user || !isParticipant(req.user.userID, id)) {
-    console.log(
-      "user [",
-      req.user ? req.user.email : "",
-      "] cannot access categories of contest:",
-      id
-    );
+    // console.log(
+    //   "user [",
+    //   req.user ? req.user.email : "",
+    //   "] cannot access categories of contest:",
+    //   id
+    // );
     return res.status(400).json({
       message: "don't have sufficient permissions to view contest contents",
     });
@@ -429,7 +431,7 @@ const getContestvoterAnonymity = async (req, res) => {
     return res.status(404).json({ error: "No such contest" });
   }
 
-  console.log("voter anonymity", contest.voterAnonymity)
+  // console.log("voter anonymity", contest.voterAnonymity)
 
   res.status(200).json(contest.voterAnonymity);
 };
@@ -437,15 +439,15 @@ const getContestvoterAnonymity = async (req, res) => {
 const newvoteradd = async (req, res) => {
   const { id } = req.params;
   // const var = req.body;
-  console.log("params", req.params);
-  console.log("list", req.body);
+  // console.log("params", req.params);
+  // console.log("list", req.body);
 
   var arrayLength = req.body.length;
   for (var i = 0; i < arrayLength; i++) {
     const userID = req.body[i];
     const contestID = id;
     const type = 8;
-    console.log(userID, contestID, type);
+    // console.log(userID, contestID, type);
     // try {
     //   // try to create a new document
     //   const participant = await ParticipantModel.create({

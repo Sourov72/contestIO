@@ -123,7 +123,7 @@ const queryContests = async (req, res) => {
   // console.log(query)
   const contests = await ParticipantModel.find(query).skip(skip).limit(limit).populate("contestID");
   const cnt = await ParticipantModel.count(query);
-  console.log("contests: ", contests);
+  // console.log("contests: ", contests);
   res.status(200).json({ 
     contests: contests,
     count: cnt,

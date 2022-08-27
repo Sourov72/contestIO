@@ -35,6 +35,7 @@ export const ContestShow = () => {
     newjuryadd: false,
     blockuser: false,
     resultshow: false,
+    leavecontest: false,
   });
 
   const [contest, setcontest] = useState({
@@ -49,6 +50,7 @@ export const ContestShow = () => {
     startTime: "",
     registrationEndTime: "",
     endTime: "",
+    img: "",
   });
 
   function general() {
@@ -102,6 +104,31 @@ export const ContestShow = () => {
     setcomp({ blockuser: true });
   }
 
+  const leavecontest = async (e) => {
+    e.preventDefault();
+    setcomp({ leavecontest: true });
+
+    console.log("clicked", localStorage.getItem("id"), contestID);
+
+    const participant = {
+      userID: localStorage.getItem("id"),
+      contestID: contestID,
+    };
+
+    await axios
+      .delete("http://localhost:5000/api/participants/delete", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+
+        data: participant,
+      })
+      .then((res) => {
+        console.log("res body in participant Left", res.data);
+        window.location = "/";
+      });
+  };
+
   useEffect(() => {
     const uid = localStorage.getItem("id");
 
@@ -124,6 +151,7 @@ export const ContestShow = () => {
           startTime: res.data.startTime,
           registrationEndTime: res.data.registrationEndTime,
           endTime: res.data.endTime,
+          img: decodeURIComponent(res.data.img),
         });
       });
     var q = [{ userID: ["eq", uid] }, { contestID: ["eq", contestID] }];
@@ -513,23 +541,23 @@ export const ContestShow = () => {
                             </>
                           )}
 
-                          {!userType.includes("BLOCKED") && (
-                            <>
-                              {/* {console.log("contest type", contest.type)} */}
-                              {contest.type.includes("Open") &&
-                                !userType.includes("CONTESTANT") &&
-                                !userType.includes("HOST") &&
-                                !userType.includes("JURY") && (
-                                  <>
-                                    <button
-                                      className="btn btn-warning my-2"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#asParticipant"
-                                    >
-                                      Participate as Contestant
-                                    </button>
-                                  </>
-                                )}
+              {!userType.includes("BLOCKED") && (
+                <>
+                  {console.log("contest type", contest.type)}
+                  {contest.type.includes("Open") &&
+                    !userType.includes("CONTESTANT") &&
+                    !userType.includes("HOST") &&
+                    !userType.includes("JURY") && (
+                      <>
+                        <button
+                          className="btn btn-warning my-2"
+                          data-bs-toggle="modal"
+                          data-bs-target="#asParticipant"
+                        >
+                          Participate as Contestant
+                        </button>
+                      </>
+                    )}
 
                               {(contest.type.includes("Open") ||
                                 contest.type.includes("Public")) &&
@@ -904,7 +932,49 @@ export const ContestShow = () => {
                   type="submit"
                   className="btn btn-theme"
                   data-bs-dismiss="modal"
-                  onClick={participateAsVoter}
+                  onClick={leavecontest}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="modal fade"
+          id="asLeaver"
+          tabIndex="-1"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Leave Contest
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">Are You Sure?</div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={leavecontest}
                 >
                   Submit
                 </button>
