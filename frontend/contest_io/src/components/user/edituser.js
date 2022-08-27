@@ -126,7 +126,7 @@ export const EditProfile = () => {
                 Profile Pic Change
               </h5>
               <img
-                src={source}
+                src={srcimg}
                 className=" img-thumbnail mb-2"
                 style={{
                   height: "202px"
@@ -158,7 +158,7 @@ export const EditProfile = () => {
             </div>
 
           <div className="mb-3">
-            <label htmlFor="Inputname" className="form-label">
+            <label htmlFor="Inputname" className="form-label fw-bold fs-5">
               Nick Name
             </label>
             <input
@@ -173,8 +173,8 @@ export const EditProfile = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label">
-              Bio.
+            <label htmlFor="exampleInputPassword1" className="form-label fw-bold fs-5">
+              Bio
             </label>
             <input
               type="text"
@@ -189,7 +189,7 @@ export const EditProfile = () => {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label">
+            <label htmlFor="exampleInputPassword1" className="form-label fw-bold fs-5">
               facebookhandle
             </label>
             <input
@@ -202,8 +202,8 @@ export const EditProfile = () => {
             />
           </div>
 
-          <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label">
+          <div className="mb-3"> 
+            <label htmlFor="exampleInputPassword1" className="form-label fw-bold fs-5">
               instagramhandle
             </label>
             <input
@@ -216,7 +216,7 @@ export const EditProfile = () => {
             />
           </div>
 
-          <div className="mb-3">
+          {/* <div className="mb-3">
 
             <img
               src={srcimg}
@@ -232,7 +232,7 @@ export const EditProfile = () => {
               type="file"
               onChange={fileHandle}
             />
-          </div>
+          </div> */}
 
             <button
               type="button"

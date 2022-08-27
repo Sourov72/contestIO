@@ -82,8 +82,9 @@ export const Profileview = () => {
 
   var stylingObject = {
     image: {
-      width: "100%",
-      height: "100%",
+      width: "250px",
+      height: "250px",
+      objectFit: "cover",
       transform: "translate(0px, -10%)",
       borderColor: "purple",
       borderWidth: 3,
