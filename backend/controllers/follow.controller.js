@@ -39,16 +39,20 @@ const getNotification=async(req,res)=>{
     for (let i=0;i<contestList.length;i++){
         console.log("contetIDs",contestList[i]);
         const dt=new Date();
-        const temp=await ContestModel.find({"contestID":contestList[i],"registrationEndTime":"$lte:dt"},{"contestID":1,"registrationEndTime":"1"});
-        strRet.push(temp);
-
+        const temp=await ContestModel.find({"contestID":contestList[i],"registrationEndTime":"$gte:dt"},{"contestID":1,"registrationEndTime":"1"});
+        if(temp.length!=0) strRet.push({temp,"val":"endReg"});
+        const temp2=await ContestModel.find({"contestID":contestList[i],"startTime":"$gte:dt"},{"contestID":1,"registrationEndTime":"1"});
+        if(temp2.length!=0) strRet.push({tem2,"val":"startCont"});
+        const temp3=await ContestModel.find({"contestID":contestList[i],"endTime":"$gte:dt"},{"contestID":1,"registrationEndTime":"1"});
+        if(temp3.length!=0) strRet.push({temp3,"val":"endConst"});
+        const sortedActivities = activities.sort((a, b) => b.date - a.date)
         //get notifications
     }
     
     if(contestList.length<1){
         res.status(200).join("")
     }
-    res.status(200).json("Notify1");
+    res.status(200).json(strRet);
 }
 
 module.exports = {
