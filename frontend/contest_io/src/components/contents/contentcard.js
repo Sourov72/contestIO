@@ -5,7 +5,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Alert } from "../alert.component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faUserAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 const cookies = new Cookies();
 
 export const Contentcard = (props) => {
@@ -220,9 +220,9 @@ export const Contentcard = (props) => {
       position: "absolute",
       zIndex: "9999",
       top: "0",
-      left: "5%",
-      width: "90vw",
-      height: "90vh",
+      left: "10%",
+      width: "80vw",
+      height: "80vh",
       backgroundSize: "contain",
       backgroundRepeat: "no-repeat no-repeat",
       backgroundPosition: "center center",
@@ -270,12 +270,32 @@ export const Contentcard = (props) => {
     // console.log("after timeout");
   }
 
-  const idddd = "s" + props.key;
-  console.log("idddd", idddd);
+  // {
+  //   console.log("props link", props.link);
+  // }
 
-  {
-    console.log("props link", props.link);
-  }
+  const deletecontent = async (e) => {
+    e.preventDefault();
+    console.log("content delete", e.target.value);
+
+    const temp_content = {
+      contentID: e.target.value,
+    };
+
+    await axios
+      .delete("http://localhost:5000/api/contents/delete", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+
+        data: temp_content,
+      })
+      .then((res) => {
+        console.log("res body in content Delete", res.data);
+        // window.location = "/";
+        props.func(props.select);
+      });
+  };
 
   const cardBody = () => {
     return (
@@ -342,12 +362,25 @@ export const Contentcard = (props) => {
             <>
               <button
                 type="button"
-                className="btn btn-theme px-4 mt-0 mb-2"
+                className="btn btn-theme px-4 mt-0 mb-2 me-2"
                 data-bs-toggle="modal"
                 data-bs-target={"#" + props.title[0] + props.choiceID}
-                
               >
                 Voters List <FontAwesomeIcon icon={faUserAlt} />
+              </button>
+            </>
+          )}
+          {props.deleteshow === true && (
+            <>
+              <button
+                type="button"
+                className="btn btn-danger px-4 mt-0 mb-2"
+                data-bs-toggle="modal"
+                data-bs-target={
+                  "#" + props.title[0] + props.contentID + "delete"
+                }
+              >
+                Delete <FontAwesomeIcon icon={faTrash} />
               </button>
             </>
           )}
@@ -370,7 +403,7 @@ export const Contentcard = (props) => {
         {voters.map((currentPerson) => {
           return (
             <tr key={currentPerson.id[0][0]}>
-              <td className="text-start">
+              <td className="text-start" data-bs-dismiss="modal">
                 <Link
                   to={"/profile/" + currentPerson.id[0][0]}
                   state={{ id: currentPerson.id[0][0] }}
@@ -484,6 +517,49 @@ export const Contentcard = (props) => {
             <table className="table table-borderless table-hover search-table mb-2">
               <tbody>{voterList()}</tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id={props.title[0] + props.contentID + "delete"}
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Delete Content
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">Are You Sure?</div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                className="btn btn-theme"
+                data-bs-dismiss="modal"
+                value={props.contentID}
+                onClick={deletecontent}
+              >
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       </div>

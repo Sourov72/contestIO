@@ -540,19 +540,20 @@ export const ContestShow = () => {
                           </>
                         )}
 
+                        {userType.includes("CONTESTANT") && (
+                          <>
+                            <button
+                              type="submit"
+                              className="btn btn-theme my-2"
+                              onClick={contentadd}
+                            >
+                              Add Contents
+                            </button>
+                          </>
+                        )}
+
                         {!userType.includes("BLOCKED") && (
                           <>
-                            {(userType.length !== 0 && !userType.includes("HOST")) && (
-                              <>
-                                <button
-                                  className="btn btn-danger my-2 fw-bold"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#asLeaver"
-                                >
-                                  Leave Contest
-                                </button>
-                              </>
-                            )}
                             {contest.type.includes("Open") &&
                               !userType.includes("CONTESTANT") &&
                               !userType.includes("VOTER") &&
@@ -584,18 +585,19 @@ export const ContestShow = () => {
                                   </button>
                                 </>
                               )}
-                          </>
-                        )}
 
-                        {userType.includes("CONTESTANT") && (
-                          <>
-                            <button
-                              type="submit"
-                              className="btn btn-theme my-2"
-                              onClick={contentadd}
-                            >
-                              Add Contents
-                            </button>
+                            {userType.length !== 0 &&
+                              !userType.includes("HOST") && (
+                                <>
+                                  <button
+                                    className="btn btn-danger my-2 fw-bold"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#asLeaver"
+                                  >
+                                    Leave Contest
+                                  </button>
+                                </>
+                              )}
                           </>
                         )}
                       </div>

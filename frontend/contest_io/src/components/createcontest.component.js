@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Compressor from "compressorjs"
+import Compressor from "compressorjs";
 import axios from "axios";
 import {
   participantTypeToValue,
@@ -38,6 +38,11 @@ export const CreateContest = () => {
     registrationEndTime: "",
     endTime: "",
     img: "",
+  });
+
+  const [uploadshow, setuploadshow] = useState({
+    display: false,
+    displaytext: "",
   });
 
   const [lists, setlists] = useState({
@@ -79,10 +84,10 @@ export const CreateContest = () => {
     new Compressor(upload_file, {
       quality: 0.2,
       success: (result) => {
-        console.log("Hello, inside compressed, ", result.size)
+        console.log("Hello, inside compressed, ", result.size);
         setimageUpload(result);
-      }
-    })
+      },
+    });
     console.log("uploaded file", upload_file);
     setsrc(URL.createObjectURL(upload_file));
     // console.log("setted file image ref", imageRef);
@@ -113,6 +118,16 @@ export const CreateContest = () => {
       hostID: localStorage.getItem("id"),
     });
   }, []);
+
+  const uploadshowfunc = (e) => {
+    console.log("in time out");
+
+    // uploadshow.displaytext = "upload successfull";
+
+    setuploadshow({ display: true, displaytext: "UpLoading File" });
+
+    console.log(uploadshow.displaytext);
+  };
 
   const createNewContest = async (e) => {
     e.preventDefault();
@@ -164,6 +179,7 @@ export const CreateContest = () => {
         window.location = "/";
       })
       .catch((error) => {
+        setuploadshow({ display: false, displaytext: "" });
         alert("could not create contest, ", error);
         if (pictureRef !== "") {
           deletefile(pictureRef);
@@ -192,6 +208,7 @@ export const CreateContest = () => {
     reader.readAsText(upload_file);
   };
 
+  let source = "../../images/" + "loading.gif";
   return (
     <>
       <div className="container">
@@ -236,6 +253,36 @@ export const CreateContest = () => {
               </button>
             </div>
           </div>
+          {uploadshow.display === true && (
+            <>
+              <div
+                className=""
+                style={{
+                  position: "fixed",
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  zIndex: "10",
+                  backgroundColor: "rgba(0,0,0, 0.4)",
+                  top: "0",
+                  left: "0",
+                }}
+              >
+                <img
+                  src={source}
+                  className=" img-thumbnail"
+                  style={{
+                    position: "absolute",
+                    marginLeft: "40%",
+                    top: "25%",
+                    width: "20%",
+                    backgroundColor: "transparent",
+                    borderWidth: "0px",
+                  }}
+                ></img>
+              </div>
+            </>
+          )}
 
           <div className="col-7">
             <form>
@@ -597,8 +644,12 @@ export const CreateContest = () => {
                               </button>
                               <button
                                 type="submit"
-                                onClick={createNewContest}
+                                onClick={(e) => {
+                                  createNewContest(e);
+                                  uploadshowfunc(e);
+                                }}
                                 className="btn btn-theme"
+                                data-bs-dismiss="modal"
                               >
                                 Submit
                               </button>

@@ -14,7 +14,6 @@ export const UploadedContentsShow = (props) => {
  
   const [select, setselect] = useState("all");
 
-  const location = useLocation();
 
   const [check, setcheck] = useState(false);
 
@@ -36,6 +35,8 @@ export const UploadedContentsShow = (props) => {
   const [contents, setcontents] = useState({
     categorycontents: "",
   });
+
+  const [owndelete, setowndelete] = useState(false);
 
   const [voteranonymity, setvoteranonymity] = useState(0);
 
@@ -107,7 +108,7 @@ export const UploadedContentsShow = (props) => {
     if (sel_type === "all") {
       tempcontentdata = {
         type: "all",
-        id: location.state.contestID,
+        id: props.contestID,
       };
     } else {
       tempcontentdata = {
@@ -135,11 +136,13 @@ export const UploadedContentsShow = (props) => {
 
   function getusercategorycontent(sel_type) {
 
+    console.log("come in the get user category content");
+
     var tempcontentdata = "";
     if (sel_type === "all") {
       tempcontentdata = {
         type: "all",
-        id: location.state.contestID,
+        id: props.contestID,
       };
     } else {
       tempcontentdata = {
@@ -206,8 +209,10 @@ export const UploadedContentsShow = (props) => {
 
     if (name === "ownuploads") {
       if (e.target.checked) {
+        setowndelete(true);
         value = 1;
       } else {
+        setowndelete(false);
         value = 0;
       }
     }
@@ -293,6 +298,9 @@ export const UploadedContentsShow = (props) => {
                         title={content.title[0]}
                         description={content.description[0]}
                         anonimity = {voteranonymity}
+                        deleteshow = {owndelete}
+                        func = {getusercategorycontent}
+                        select = {select}
                       />
                     )
                   )

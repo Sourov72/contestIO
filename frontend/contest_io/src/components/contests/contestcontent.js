@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Compressor from "compressorjs"
+import Compressor from "compressorjs";
 import Cookies from "universal-cookie";
 import { uploadfile } from "../helperFunctions";
 import { storage } from "../../firebase";
@@ -18,6 +18,11 @@ export const ContestContentAdd = (props) => {
 
   const [choice, setchoice] = useState({
     categoryID: "",
+  });
+
+  const [uploadshow, setuploadshow] = useState({
+    display: false,
+    displaytext: "",
   });
 
   const [srcimg, setsrc] = useState("");
@@ -77,6 +82,16 @@ export const ContestContentAdd = (props) => {
       });
   }
 
+  const uploadshowfunc = (e) => {
+    console.log("in time out");
+
+    // uploadshow.displaytext = "upload successfull";
+
+    setuploadshow({ display: true, displaytext: "UpLoading File" });
+
+    console.log(uploadshow.displaytext);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -102,10 +117,10 @@ export const ContestContentAdd = (props) => {
     new Compressor(upload_file, {
       quality: 0.2,
       success: (result) => {
-        console.log("Hello, inside compressed, ", result.size)
+        console.log("Hello, inside compressed, ", result.size);
         setimageUpload(result);
-      }
-    })
+      },
+    });
     console.log("uploaded file", upload_file);
     setsrc(URL.createObjectURL(upload_file));
   };
@@ -143,6 +158,7 @@ export const ContestContentAdd = (props) => {
           // setchoice({
           //   categoryID: ""
           // })
+          setuploadshow({ display: false, displaytext: "" });
           setcontent({
             ...content,
 
@@ -155,6 +171,8 @@ export const ContestContentAdd = (props) => {
       });
     //window.location = "/";
   };
+
+  let source = "../../images/" + "loading.gif";
 
   return (
     <div className="signup container my-3">
@@ -210,6 +228,37 @@ export const ContestContentAdd = (props) => {
               required
             />
           </div>
+
+          {uploadshow.display === true && (
+            <>
+              <div
+                className=""
+                style={{
+                  position: "fixed",
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  zIndex: "10",
+                  backgroundColor: "rgba(0,0,0, 0.4)",
+                  top: "0",
+                  left: "0",
+                }}
+              >
+                <img
+                  src={source}
+                  className=" img-thumbnail"
+                  style={{
+                    position: "absolute",
+                    marginLeft: "45%",
+                    top: "30%",
+                    width: "20%",
+                    backgroundColor: "transparent",
+                    borderWidth: "0px",
+                  }}
+                ></img>
+              </div>
+            </>
+          )}
 
           {content.type === "Poll" ? (
             <></>
@@ -279,7 +328,11 @@ export const ContestContentAdd = (props) => {
                     type="submit"
                     className="btn btn-theme"
                     data-bs-dismiss="modal"
-                    onClick={createNewContent}
+                    // onClick={createNewContent}
+                    onClick={(e) => {
+                      createNewContent(e);
+                      uploadshowfunc(e);
+                    }}
                   >
                     Submit
                   </button>

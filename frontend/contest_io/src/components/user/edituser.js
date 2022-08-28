@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Compressor from "compressorjs"
+import Compressor from "compressorjs";
 import Cookies from "universal-cookie";
 
 import { uploadfile, deletefile } from "../helperFunctions";
@@ -65,12 +65,12 @@ export const EditProfile = () => {
   const fileHandle = (e) => {
     const upload_file = e.target.files[0];
     new Compressor(upload_file, {
-      quality: 0.,
+      quality: 0.1,
       success: (result) => {
-        console.log("Hello, inside compressed, ", result.size)
+        console.log("Hello, inside compressed, ", result.size);
         setimageUpload(result);
-      }
-    })
+      },
+    });
     console.log("uploaded file", upload_file);
     setsrc(URL.createObjectURL(upload_file));
   };
@@ -120,6 +120,7 @@ export const EditProfile = () => {
       })
       .catch((error) => {
         alert(error.response.data.message);
+        setuploadshow({ display: false, displaytext: "" });
         if (pictureRef !== "") {
           deletefile(pictureRef);
         }
@@ -136,9 +137,7 @@ export const EditProfile = () => {
   return (
     <div className="signup container">
       {/* {console.log("user here", user)} */}
-      <h2 className="text-center fw-bold my-3">
-        Update Your Profile
-      </h2>
+      <h2 className="text-center fw-bold my-3">Update Your Profile</h2>
       <form className="needs-validation" noValidate>
         <div className="row">
           <div className="col-4">
@@ -146,37 +145,36 @@ export const EditProfile = () => {
               <h5 htmlFor="formFileSm" className="form-label fw-bold">
                 Profile Pic Change
               </h5>
-              {uploadshow.display === true && (<>
-
-              <div
-                className=""
-                style={{
-                  position: "absolute",
-                  display: "block",
-                  width: "100%",
-                  height: "100%",
-                  zIndex: "10",
-                  backgroundColor: "rgba(0,0,0, 0.4)",
-                  top: "0",
-                  left: "0",
-                }}
-              >
-                <img
-                  src={source}
-                  className=" img-thumbnail"
-                  style={{
-                    position: "absolute",
-                    marginLeft: "-8%",
-                    top: "25%",
-                    width: "20%",
-                    backgroundColor: "transparent",
-                    borderWidth: "0px",
-                  }}
-                ></img>
-                
-              </div>
-
-              </>)}
+              {uploadshow.display === true && (
+                <>
+                  <div
+                    className=""
+                    style={{
+                      position: "absolute",
+                      display: "block",
+                      width: "100%",
+                      height: "100%",
+                      zIndex: "10",
+                      backgroundColor: "rgba(0,0,0, 0.4)",
+                      top: "0",
+                      left: "0",
+                    }}
+                  >
+                    <img
+                      src={source}
+                      className=" img-thumbnail"
+                      style={{
+                        position: "absolute",
+                        marginLeft: "-8%",
+                        top: "25%",
+                        width: "20%",
+                        backgroundColor: "transparent",
+                        borderWidth: "0px",
+                      }}
+                    ></img>
+                  </div>
+                </>
+              )}
 
               <img
                 src={srcimg}
@@ -357,7 +355,7 @@ export const EditProfile = () => {
             </div>
           </div>
         </div>
-      </form >
-    </div >
+      </form>
+    </div>
   );
 };

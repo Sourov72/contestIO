@@ -26,10 +26,10 @@ router.post('/create', basicAuth, createContent)
 
 router.get('/getallcontent', getallContent)
 
-router.post('/getusercontent', basicAuth, getuserContent)
+router.post('/getusercontent', getuserContent)
 
 // DELETE a new content
-router.delete('/delete/:id', basicAuth, deleteContent)
+router.delete('/delete', basicAuth, deleteContent)
 
 // UPDATE a new content
 router.patch('/update/:id', basicAuth, updateContent)

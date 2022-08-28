@@ -4,6 +4,7 @@ const fileDelete = require("./filedelete");
 const { ref } = require("firebase/storage");
 const { storage } = require("./firebase");
 const ChoiceModel = require("../models/choice.model");
+
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -108,7 +109,7 @@ async function deletecontentfunc(participantID) {
 async function deleteSingleContent(contentID) {
   console.log("delete singleFunc", contentID);
   const contents = await ContentModel.find({
-    contentID: contentID,
+    _id: contentID,
   });
 
   console.log("contents", contents);
@@ -122,21 +123,9 @@ async function deleteSingleContent(contentID) {
     console.log(fileDelete.deleteFile(pictureRef));
 
   }
-
-  const contentsdeleted = await ContentModel.deleteMany({
-    contentID: contentID,
-  });
-
-  console.log("contents deleted", contentsdeleted);
-  if (!contentsdeleted) {
-    console.log("no content found for deletion");
-  } else {
-    console.log("succuessfully deleted the contents");
-
-    deletevotefunc(participantID);
-  }
 }
 
 module.exports = {
   deletecontentfunc,
+  deleteSingleContent,
 };

@@ -2,6 +2,7 @@ const ContentModel = require("../models/content.model");
 const ChoiceModel = require("../models/choice.model");
 const participantmod = require("../controllers/participant.controller");
 const choicemod = require("../controllers/choice.controller");
+const deletemod = require("../controllers/delete.controller");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 // get all contents
@@ -277,12 +278,21 @@ const createContent = async (req, res) => {
 
 // delete a content
 const deleteContent = async (req, res) => {
-  const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "No such content" });
-  }
+  console.log("delete content body", req.body);
 
-  const content = await ContentModel.findByIdAndDelete(id);
+  var { contentID } = req.body;
+
+  console.log("content id", contentID);
+
+  contentID = ObjectId(contentID);
+
+  const contentFind = await ContentModel.findById(contentID);
+
+  console.log("content find", contentFind);
+
+  if (contentFind) await deletemod.deleteSingleContent(contentID);
+
+  const content = await ContentModel.findByIdAndDelete(contentID);
   if (!content) {
     return res.status(404).json({ error: "No such content" });
   }
@@ -292,7 +302,7 @@ const deleteContent = async (req, res) => {
 // update a content
 const updateContent = async (req, res) => {
   const { id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(id)) { 
+  if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "No such content" });
   }
 
