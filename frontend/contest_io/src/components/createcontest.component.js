@@ -237,13 +237,13 @@ export const CreateContest = () => {
                 Voting &amp; Participants
               </button>
 
-              {srcimg !== "" && (
+              {comp.generalcom && srcimg !== "" && (
                 <>
                 <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
                   <PhotoView src={srcimg}>
                     <img
                       src={srcimg}
-                      className=" img-thumbnail mb-1 mt-4"
+                      className=" img-thumbnail mb-1 mt-2"
                       style={{
                         width: "100%",
                         height: "200px",
@@ -252,7 +252,7 @@ export const CreateContest = () => {
                     ></img>
                   </PhotoView>
                 </PhotoProvider>
-                <p className="text-center fst-italic fw-lighter mt-0 py-0">Click for better view</p>
+                <p className="text-center fst-italic fw-lighter mt-0 py-0">Banner - Click for better view</p>
                 </>
               )}
             </div>
