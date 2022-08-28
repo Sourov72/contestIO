@@ -157,7 +157,6 @@ export const Profileview = () => {
 
   return (
     <div className="signup container">
-      {console.log("srs", user.img)}
       <h1 className="text-center my-3">Profile</h1>
       <form className="row">
         <div className="col-3">

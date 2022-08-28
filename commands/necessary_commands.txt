@@ -41,6 +41,6 @@ to connect database ->
 
 
 to connect firebase ->
-
-1.cd frontend/contestio/
-2.yarn add firebase uuid
+cd frontend/contestio/
+yarn add firebase uuid
+npm install compressorjs

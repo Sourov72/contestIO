@@ -300,7 +300,7 @@ export const UploadedContentsShow = (props) => {
               </>
             ) : (
               <>
-                <div>no contents to show</div>
+                <p className="fw-light fst-italic text-center my-3">No contents to show.</p>
               </>
             )}
           </div>

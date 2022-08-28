@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Compressor from "compressorjs"
 import axios from "axios";
 import {
   participantTypeToValue,
@@ -75,7 +76,13 @@ export const CreateContest = () => {
 
   const bannerfileHandle = async (e) => {
     const upload_file = e.target.files[0];
-    setimageUpload(upload_file);
+    new Compressor(upload_file, {
+      quality: 0.2,
+      success: (result) => {
+        console.log("Hello, inside compressed, ", result.size)
+        setimageUpload(result);
+      }
+    })
     console.log("uploaded file", upload_file);
     setsrc(URL.createObjectURL(upload_file));
     // console.log("setted file image ref", imageRef);
