@@ -24,17 +24,19 @@ export const Contentcard = (props) => {
     const contestid = {
       contestID: props.contestID,
     };
-    axios
-      .get("http://localhost:5000/api/contests/getvoteranonymity", {
-        params: contestid,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        // console.log("res body in anonimity get", res.data);
-        setvoteranonymity(res.data);
-      });
+    // axios
+    //   .get("http://localhost:5000/api/contests/getvoteranonymity", {
+    //     params: contestid,
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     // console.log("res body in anonimity get", res.data);
+    //     setvoteranonymity(res.data);
+    //   });
+
+    setvoteranonymity(props.anonimity);
 
     const vote = {
       userID: props.userID,
@@ -214,11 +216,17 @@ export const Contentcard = (props) => {
     },
 
     modalimage: {
-      width: "auto",
-      height: "90%",
-      borderColor: "black",
-      borderWidth: 2,
-      borderRadius: "5%",
+      // display: "none",
+      position: "absolute",
+      zIndex: "9999",
+      top: "0",
+      left: "5%",
+      width: "90vw",
+      height: "90vh",
+      backgroundSize: "contain",
+      backgroundRepeat: "no-repeat no-repeat",
+      backgroundPosition: "center center",
+      backgroundColor: "black",
     },
 
     card: {
@@ -292,7 +300,7 @@ export const Contentcard = (props) => {
             <p className="card-text mb-0">{props.category}</p>
           </div>
         </div>
-        {(props.isResult || voteranonymity !== 1)  && (
+        {(props.isResult || voteranonymity !== 1) && (
           <p>
             <b>Total Voters:</b> {voters.length}
           </p>
@@ -352,7 +360,6 @@ export const Contentcard = (props) => {
 
     return voters.length > 0 ? (
       <>
-        {" "}
         <tr key="1">
           {/* <td className="fw-bold">Email</td> */}
           <td className="fw-bold" colSpan={2}>

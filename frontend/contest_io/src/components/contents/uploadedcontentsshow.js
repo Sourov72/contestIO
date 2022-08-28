@@ -37,6 +37,8 @@ export const UploadedContentsShow = (props) => {
     categorycontents: "",
   });
 
+  const [voteranonymity, setvoteranonymity] = useState(0);
+
   useEffect(() => {
     contestid = props.contestID;
     setcontestattr({
@@ -45,6 +47,22 @@ export const UploadedContentsShow = (props) => {
       contestID: contestid,
     });
     setUserType(props.userType);
+
+    const contestidobj = {
+      contestID: props.contestID,
+    };
+
+    axios
+      .get("http://localhost:5000/api/contests/getvoteranonymity", {
+        params: contestidobj,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        // console.log("res body in anonimity get", res.data);
+        setvoteranonymity(res.data);
+      });
 
     allcontent = "all";
     setselect("all");
@@ -274,6 +292,7 @@ export const UploadedContentsShow = (props) => {
                         col={6}
                         title={content.title[0]}
                         description={content.description[0]}
+                        anonimity = {voteranonymity}
                       />
                     )
                   )

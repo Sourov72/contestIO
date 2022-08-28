@@ -21,6 +21,10 @@ export const EditProfile = () => {
     img: "",
   });
   const [imageUpload, setimageUpload] = useState("");
+  const [uploadshow, setuploadshow] = useState({
+    display: false,
+    displaytext: "",
+  });
   const [srcimg, setsrc] = useState("");
 
   useEffect(() => {
@@ -62,14 +66,25 @@ export const EditProfile = () => {
     setimageUpload(upload_file);
     console.log("uploaded file", upload_file);
     setsrc(URL.createObjectURL(upload_file));
-   
+  };
+
+  const uploadshowfunc = (e) => {
+    console.log("in time out");
+
+    // uploadshow.displaytext = "upload successfull";
+
+    setuploadshow({ display: true, displaytext: "UpLoading File" });
+
+    console.log(uploadshow.displaytext);
   };
 
   const update = async (e) => {
     e.preventDefault();
+    // timeout();
     let pictureRef = "";
     console.log("pass", user.oldpassword);
     console.log("repass", user.reoldpassword);
+    // uploadshow.display = true;
     if (imageUpload !== "") {
       const downloadURL = await uploadfile(imageUpload);
       user.img = downloadURL;
@@ -78,9 +93,10 @@ export const EditProfile = () => {
       console.log("picture ref", pictureRef);
 
       // deleteObject(pictureRef);
-
     }
     user.img = encodeURIComponent(user.img);
+
+    console.log("upload show", uploadshow);
 
     console.log("picref", pictureRef);
     axios
@@ -110,14 +126,12 @@ export const EditProfile = () => {
     });
   };
 
-  let source = "../../images/" + user.img;
+  let source = "../../images/" + "loading.gif";
 
   return (
     <div className="signup container">
       {console.log("user here", user)}
-      <h2 className="text-center fw-bold my-3">
-        Update Your Profile
-      </h2>
+      <h2 className="text-center fw-bold my-3">Update Your Profile</h2>
       <form className="needs-validation" noValidate>
         <div className="row">
           <div className="col-4">
@@ -125,23 +139,57 @@ export const EditProfile = () => {
               <h5 htmlFor="formFileSm" className="form-label fw-bold">
                 Profile Pic Change
               </h5>
+              {uploadshow.display === true && (<>
+
+              <div
+                className=""
+                style={{
+                  position: "absolute",
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  zIndex: "10",
+                  backgroundColor: "rgba(0,0,0, 0.4)",
+                  top: "0",
+                  left: "0",
+                }}
+              >
+                <img
+                  src={source}
+                  className=" img-thumbnail"
+                  style={{
+                    position: "absolute",
+                    marginLeft: "-8%",
+                    top: "25%",
+                    width: "20%",
+                    backgroundColor: "transparent",
+                    borderWidth: "0px",
+                  }}
+                ></img>
+                
+              </div>
+
+              </>)}
+
               <img
                 src={srcimg}
                 className=" img-thumbnail mb-1"
                 style={{
-                  width: "90%"
+                  width: "90%",
                 }}
               ></img>
+
               <input
                 className="form-control mx-4 my-1"
                 type="file"
                 style={{
-                  width: "90%"
+                  width: "90%",
                 }}
                 onChange={fileHandle}
               />
             </div>
           </div>
+
           <div className="col-8">
             <div className="mb-3">
               {/* div for name */}
@@ -160,82 +208,73 @@ export const EditProfile = () => {
               <div className="invalid-feedback">Name is required</div>
             </div>
 
-          <div className="mb-3">
-            <label htmlFor="Inputname" className="form-label fw-bold fs-5">
-              Nick Name
-            </label>
-            <input
-              type="text"
-              name="nickname"
-              onChange={handleChange}
-              value={user.nickname}
-              className="form-control"
-              id="Inputnickname"
-              required
-            />
-          </div>
+            <div className="mb-3">
+              <label htmlFor="Inputname" className="form-label fw-bold fs-5">
+                Nick Name
+              </label>
+              <input
+                type="text"
+                name="nickname"
+                onChange={handleChange}
+                value={user.nickname}
+                className="form-control"
+                id="Inputnickname"
+                required
+              />
+            </div>
 
-          <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label fw-bold fs-5">
-              Bio
-            </label>
-            <input
-              type="text"
-              name="bio"
-              onChange={handleChange}
-              value={user.bio}
-              className="form-control"
-              id="bio"
-              required
-            />
-            <div className="invalid-feedback">Please provide a bio.</div>
-          </div>
+            <div className="mb-3">
+              <label
+                htmlFor="exampleInputPassword1"
+                className="form-label fw-bold fs-5"
+              >
+                Bio
+              </label>
+              <input
+                type="text"
+                name="bio"
+                onChange={handleChange}
+                value={user.bio}
+                className="form-control"
+                id="bio"
+                required
+              />
+              <div className="invalid-feedback">Please provide a bio.</div>
+            </div>
 
-          <div className="mb-3">
-            <label htmlFor="exampleInputPassword1" className="form-label fw-bold fs-5">
-              Facebook Handle
-            </label>
-            <input
-              type="text"
-              name="facebookhandle"
-              onChange={handleChange}
-              value={user.facebookhandle}
-              className="form-control"
-              id="facebookhandle"
-            />
-          </div>
+            <div className="mb-3">
+              <label
+                htmlFor="exampleInputPassword1"
+                className="form-label fw-bold fs-5"
+              >
+                Facebook Handle
+              </label>
+              <input
+                type="text"
+                name="facebookhandle"
+                onChange={handleChange}
+                value={user.facebookhandle}
+                className="form-control"
+                id="facebookhandle"
+              />
+            </div>
 
-          <div className="mb-3"> 
-            <label htmlFor="exampleInputPassword1" className="form-label fw-bold fs-5">
-              Instagram Handle
-            </label>
-            <input
-              type="text"
-              name="instagramhandle"
-              onChange={handleChange}
-              value={user.instagramhandle}
-              className="form-control"
-              id="instagramhandle"
-            />
-          </div>
-
-          {/* <div className="mb-3">
-
-            <img
-              src={srcimg}
-              className=" img-thumbnail"
-              // style={stylingObject.image}
-              // alt={user.username}
-            ></img>
-            <label htmlFor="formFileSm" className="form-label">
-              Profile Pic Change
-            </label>
-            <input
-              className="form-control form-control-sm"
-              type="file"
-              onChange={fileHandle}
-            />
-          </div> */}
+            <div className="mb-3">
+              <label
+                htmlFor="exampleInputPassword1"
+                className="form-label fw-bold fs-5"
+              >
+                Instagram Handle
+              </label>
+              <input
+                type="text"
+                name="instagramhandle"
+                onChange={handleChange}
+                value={user.instagramhandle}
+                className="form-control"
+                id="instagramhandle"
+              />
+            </div>
 
             <button
               type="button"
@@ -252,7 +291,7 @@ export const EditProfile = () => {
           <div
             className="modal fade"
             id="exampleModal"
-            tabindex="-1"
+            tabIndex="-1"
             aria-labelledby="exampleModalLabel"
             aria-hidden="true"
           >
@@ -270,7 +309,10 @@ export const EditProfile = () => {
                   ></button>
                 </div>
                 <div className="container my-4">
-                  <label htmlFor="exampleInputPassword1" className="form-label fw-bold">
+                  <label
+                    htmlFor="exampleInputPassword1"
+                    className="form-label fw-bold"
+                  >
                     Confirm Password
                   </label>
                   <input
@@ -294,7 +336,10 @@ export const EditProfile = () => {
                   </button>
                   <button
                     type="submit"
-                    onClick={update}
+                    onClick={(e) => {
+                      update(e);
+                      uploadshowfunc(e);
+                    }}
                     className="btn btn-theme"
                     data-bs-dismiss="modal"
                   >
@@ -305,7 +350,7 @@ export const EditProfile = () => {
             </div>
           </div>
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 };
