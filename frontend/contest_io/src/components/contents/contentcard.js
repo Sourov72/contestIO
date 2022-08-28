@@ -345,6 +345,7 @@ export const Contentcard = (props) => {
                 className="btn btn-theme px-4 mt-0 mb-2"
                 data-bs-toggle="modal"
                 data-bs-target={"#" + props.title[0] + props.choiceID}
+                
               >
                 Voters List <FontAwesomeIcon icon={faUserAlt} />
               </button>
