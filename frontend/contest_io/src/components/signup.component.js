@@ -49,7 +49,7 @@ export const Signup = () => {
     let pictureRef = "";
     console.log("img in isgnfdsf", imageUpload);
     const { username, password, rePassword, email, bio } = user;
-    if (username && email && bio && password === rePassword) {
+    if (username && email && password === rePassword) {
       alert("Signup form posted");
       axios
         .post("http://localhost:5000/api/user/add", user)

@@ -14,8 +14,8 @@ export const ContestCategoryAdd = (props) => {
     maxvoteperUser: 99999,
     maxchoices: 99999,
   });
-  const [success, setSuccess] = useState(false)
-  const [clicked, setClicked] = useState(false)
+  const [success, setSuccess] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   const [addcategory, setaddcategory] = useState(false);
 
@@ -25,7 +25,6 @@ export const ContestCategoryAdd = (props) => {
       contestID: props.contestID,
     });
     // console.log('contestId set is: ', category.contestID)
-
   }, [props]);
 
   const handleChange = (e) => {
@@ -35,13 +34,12 @@ export const ContestCategoryAdd = (props) => {
       ...category,
       [name]: value,
     });
-
   };
 
   const createNewCategory = (e) => {
     e.preventDefault();
 
-    if(category.title !== "") {
+    if (category.title !== "") {
       axios
         .post("http://localhost:5000/api/contests/category", category, {
           headers: {
@@ -54,22 +52,21 @@ export const ContestCategoryAdd = (props) => {
           if (res.data.msg === "added successfully") {
             // console.log("category added successfully");
             // window.location = "/contestshow";
-            setSuccess(true)
-            console.log("contest creation successfull")
+            setSuccess(true);
+            console.log("contest creation successfull");
             setaddcategory(true);
-          timeout();
+            timeout();
 
             setcategory({
               ...category,
               title: "",
               description: "",
-              maxvoteperUser: "",
-              maxchoices: "",
+              
             });
           }
         });
     }
-    setClicked(true)
+    setClicked(true);
     //window.location = "/";
   };
 
@@ -159,14 +156,14 @@ export const ContestCategoryAdd = (props) => {
 
         {clicked === true && (
           <>
-          {setClicked(false)}
-          {console.log("clicked was true")}
-          <Alert
-            alertclass="alert alert-danger alert-dismissible fade show"
-            {...(success === false
-              ? { alerttext: "Category Could not be created" }
-              : {})}
-          />
+            {setClicked(false)}
+            {console.log("clicked was true")}
+            <Alert
+              alertclass="alert alert-danger alert-dismissible fade show"
+              {...(success === false
+                ? { alerttext: "Category Could not be created" }
+                : {})}
+            />
           </>
         )}
 

@@ -461,7 +461,7 @@ export const CreateContest = () => {
                           Registration/Contest Start Time
                         </label>
                         <input
-                          min={today}
+                          // min={today}
                           name="startTime"
                           placeholder="Registration Start Time"
                           type="text"
@@ -480,7 +480,7 @@ export const CreateContest = () => {
                           Registration End Time
                         </label>
                         <input
-                          min={today}
+                          // min={today}
                           name="registrationEndTime"
                           placeholder="Registration End Time"
                           type="text"
@@ -499,7 +499,7 @@ export const CreateContest = () => {
                           Contest End Time
                         </label>
                         <input
-                          min={today}
+                          // min={today}
                           name="endTime"
                           type="text"
                           placeholder="Contest End Time"
