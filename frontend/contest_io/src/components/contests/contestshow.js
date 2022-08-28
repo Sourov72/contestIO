@@ -469,7 +469,7 @@ export const ContestShow = () => {
                   </div>
                 </div>
               )}
-              { !userType.includes("BLOCKED") &&
+              {!userType.includes("BLOCKED") && (
                 <div className="accordion-item">
                   <h2 className="accordion-header" id="headingThree">
                     <button
@@ -542,7 +542,17 @@ export const ContestShow = () => {
 
                         {!userType.includes("BLOCKED") && (
                           <>
-                            {/* {console.log("contest type", contest.type)} */}
+                            {(userType.length !== 0 && !userType.includes("HOST")) && (
+                              <>
+                                <button
+                                  className="btn btn-danger my-2 fw-bold"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#asLeaver"
+                                >
+                                  Leave Contest
+                                </button>
+                              </>
+                            )}
                             {contest.type.includes("Open") &&
                               !userType.includes("CONTESTANT") &&
                               !userType.includes("VOTER") &&
@@ -592,7 +602,7 @@ export const ContestShow = () => {
                     </div>
                   </div>
                 </div>
-              }
+              )}
             </div>
             {comp.resultshow === true && (
               <img

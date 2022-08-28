@@ -1,10 +1,3 @@
-// export function obj2qstr(obj) {
-//     const keyValuePairs = [];
-//     for (let i = 0; i < Object.keys(obj).length; i += 1) {
-//       keyValuePairs.push(`${encodeURIComponent(Object.keys(obj)[i])}=${encodeURIComponent(Object.values(obj)[i])}`);
-//     }
-//     return keyValuePairs.join('&');
-//   }
 import { storage } from "../firebase";
 import {
   ref,
@@ -106,18 +99,13 @@ export function participantValueToType(value) {
   return retval;
 }
 
+
 export async function uploadfile(file) {
-  console.log("file is", file);
-
+  // console.log("file is", file);
   const imageRef = ref(storage, `profilePictures/${file.name + v4()}`);
-
   await uploadBytes(imageRef, file);
   const downloadURL = await getDownloadURL(imageRef);
-  console.log("downloadURL", downloadURL);
-  console.log("encoded downloadURL", encodeURIComponent(downloadURL));
-  // user.img = encodeURIComponent(downloadURL);
-  // console.log("user img after", user.img);
-  // pictureRef = await ref(storage, downloadURL);
+  console.log("downloadURL, " ,downloadURL)
   return downloadURL;
 }
 

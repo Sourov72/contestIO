@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import Compressor from "compressorjs"
 import Cookies from "universal-cookie";
-import { uploadfile, deletefile } from "../helperFunctions";
+import { uploadfile } from "../helperFunctions";
 import { storage } from "../../firebase";
-import { deleteObject, ref } from "firebase/storage";
+import { ref } from "firebase/storage";
 const cookies = new Cookies();
 
 export const ContestContentAdd = (props) => {
@@ -99,7 +99,13 @@ export const ContestContentAdd = (props) => {
 
   const fileHandle = (e) => {
     const upload_file = e.target.files[0];
-    setimageUpload(upload_file);
+    new Compressor(upload_file, {
+      quality: 0.2,
+      success: (result) => {
+        console.log("Hello, inside compressed, ", result.size)
+        setimageUpload(result);
+      }
+    })
     console.log("uploaded file", upload_file);
     setsrc(URL.createObjectURL(upload_file));
   };

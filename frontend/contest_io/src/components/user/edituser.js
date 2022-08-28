@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Compressor from "compressorjs"
 import Cookies from "universal-cookie";
 
 import { uploadfile, deletefile } from "../helperFunctions";
@@ -35,7 +36,7 @@ export const EditProfile = () => {
       })
       .then((res) => {
         setsrc(decodeURIComponent(res.data.user.img));
-        console.log(res.data.user.socialhandles.facebookhandle);
+        // console.log(res.data.user.socialhandles.facebookhandle);
         setuser({
           username: res.data.user.username,
           nickname: res.data.user.nickname,
@@ -50,7 +51,7 @@ export const EditProfile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
+    // console.log(name, value);
     setuser({
       ...user,
       [name]: value,
@@ -59,7 +60,13 @@ export const EditProfile = () => {
 
   const fileHandle = (e) => {
     const upload_file = e.target.files[0];
-    setimageUpload(upload_file);
+    new Compressor(upload_file, {
+      quality: 0.,
+      success: (result) => {
+        console.log("Hello, inside compressed, ", result.size)
+        setimageUpload(result);
+      }
+    })
     console.log("uploaded file", upload_file);
     setsrc(URL.createObjectURL(upload_file));
    
@@ -68,10 +75,11 @@ export const EditProfile = () => {
   const update = async (e) => {
     e.preventDefault();
     let pictureRef = "";
-    console.log("pass", user.oldpassword);
-    console.log("repass", user.reoldpassword);
+    // console.log("pass", user.oldpassword);
+    // console.log("repass", user.reoldpassword);
     if (imageUpload !== "") {
       const downloadURL = await uploadfile(imageUpload);
+      console.log("user img before", downloadURL);
       user.img = downloadURL;
       console.log("user img after", user.img);
       pictureRef = await ref(storage, downloadURL);
@@ -82,7 +90,7 @@ export const EditProfile = () => {
     }
     user.img = encodeURIComponent(user.img);
 
-    console.log("picref", pictureRef);
+    // console.log("picref", pictureRef);
     axios
       .post(
         "http://localhost:5000/api/user/update/" + localStorage.getItem("id"),
@@ -114,7 +122,7 @@ export const EditProfile = () => {
 
   return (
     <div className="signup container">
-      {console.log("user here", user)}
+      {/* {console.log("user here", user)} */}
       <h2 className="text-center fw-bold my-3">
         Update Your Profile
       </h2>
