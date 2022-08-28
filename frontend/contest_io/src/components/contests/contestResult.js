@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Contentcard } from "../contents/contentcard";
 import { Link } from "react-router-dom";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
@@ -95,7 +97,7 @@ export const ContestResult = (props) => {
               <p>No votes were casted in this category</p>
             </>
           )}
-          
+
           {results.length > 2 && (
             <>
               <div className={"mt-5 col-4"}>
@@ -169,6 +171,7 @@ export const ContestResult = (props) => {
             </>
           )}
         </div>
+        {/* {console.log("results, ", results)} */}
         {results.length > 0 && (
           <>
             <div className="container text-center">
@@ -190,7 +193,17 @@ export const ContestResult = (props) => {
                       return (
                         <tr key={result._id}>
                           <td>#{index + 1}</td>
-                          <td>{result.title[0]}</td>
+                          <td>
+                            <PhotoProvider
+                              maskOpacity={0.8}
+                              bannerVisible={false}
+                            >
+                              <PhotoView key={result._id} src={decodeURIComponent(result.link[0])}>
+                                <a>{result.title[0]}</a>
+                              </PhotoView>
+                            </PhotoProvider>
+                          </td>
+                          {/* <td>{result.title[0]}</td> */}
                           <td>
                             <Link
                               to={"/profile/" + result.userid[0]}

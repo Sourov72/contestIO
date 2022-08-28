@@ -5,7 +5,9 @@ import Cookies from "universal-cookie";
 
 import { uploadfile, deletefile } from "../helperFunctions";
 import { storage } from "../../firebase";
-import { deleteObject, ref } from "firebase/storage";
+import { ref } from "firebase/storage";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 
 const cookies = new Cookies();
 
@@ -178,13 +180,18 @@ export const EditProfile = () => {
 
               </>)}
 
-              <img
+              <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
+                <PhotoView src={user.img}>
+                <img
                 src={srcimg}
                 className=" img-thumbnail mb-1"
                 style={{
                   width: "90%",
                 }}
               ></img>
+                </PhotoView>
+              </PhotoProvider>
+              
 
               <input
                 className="form-control mx-4 my-1"

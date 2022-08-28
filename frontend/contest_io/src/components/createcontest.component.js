@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Compressor from "compressorjs"
+import Compressor from "compressorjs";
 import axios from "axios";
 import {
   participantTypeToValue,
@@ -9,6 +9,8 @@ import {
 import Cookies from "universal-cookie";
 import { storage } from "../firebase";
 import { ref } from "firebase/storage";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 const cookies = new Cookies();
 
 export const CreateContest = () => {
@@ -79,10 +81,10 @@ export const CreateContest = () => {
     new Compressor(upload_file, {
       quality: 0.2,
       success: (result) => {
-        console.log("Hello, inside compressed, ", result.size)
+        console.log("Hello, inside compressed, ", result.size);
         setimageUpload(result);
-      }
-    })
+      },
+    });
     console.log("uploaded file", upload_file);
     setsrc(URL.createObjectURL(upload_file));
     // console.log("setted file image ref", imageRef);
@@ -234,6 +236,25 @@ export const CreateContest = () => {
               >
                 Voting &amp; Participants
               </button>
+
+              {srcimg !== "" && (
+                <>
+                <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
+                  <PhotoView src={srcimg}>
+                    <img
+                      src={srcimg}
+                      className=" img-thumbnail mb-1 mt-4"
+                      style={{
+                        width: "100%",
+                        height: "200px",
+                        objectFit: "cover",
+                      }}
+                    ></img>
+                  </PhotoView>
+                </PhotoProvider>
+                <p className="text-center fst-italic fw-lighter mt-0 py-0">Click for better view</p>
+                </>
+              )}
             </div>
           </div>
 
@@ -335,22 +356,19 @@ export const CreateContest = () => {
                         </div>
                       </div>
                       <div className="mb-3">
-                        <label htmlFor="formFileSm" className="form-label">
+                        <label
+                          htmlFor="formFileSm"
+                          className="form-label fw-bold mb-2"
+                        >
                           Contest Banner Upload
                         </label>
 
                         <input
                           className="form-control form-control-sm mb-3"
                           type="file"
+                          accept="image/*"
                           onChange={bannerfileHandle}
                         />
-                        <img
-                          src={srcimg}
-                          className=" img-thumbnail mb-1"
-                          style={{
-                            width: "100%",
-                          }}
-                        ></img>
                       </div>
                       <div className="d-flex flex-row justify-content-end">
                         <button

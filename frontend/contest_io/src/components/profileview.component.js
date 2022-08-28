@@ -6,6 +6,8 @@ import { ContestBox } from "./contests/contestBox";
 import { obj2str } from "./helperFunctions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 import {
   faFacebook,
   faInstagram,
@@ -162,12 +164,16 @@ export const Profileview = () => {
         <div className="col-3">
           <div className="text-wrap">
             <div className="text-center">
-              <img
-                src={user.img}
-                className=" img-thumbnail"
-                style={stylingObject.image}
-                alt={user.username}
-              ></img>
+              <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
+                <PhotoView src={user.img}>
+                  <img
+                    src={user.img}
+                    className=" img-thumbnail"
+                    style={stylingObject.image}
+                    alt={user.username}
+                  ></img>
+                </PhotoView>
+              </PhotoProvider>
             </div>
             <p className="fs-4 fw-bold my-0">{user.username}</p>
             <p className="mb-0">

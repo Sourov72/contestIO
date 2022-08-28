@@ -44,3 +44,4 @@ to connect firebase ->
 cd frontend/contestio/
 yarn add firebase uuid
 npm install compressorjs
+npm install react-photo-view
