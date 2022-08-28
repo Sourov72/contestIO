@@ -26,7 +26,7 @@ export const CreateContest = () => {
   const [srcimg, setsrc] = useState("");
 
   const [imageUpload, setimageUpload] = useState("");
-  const [prog, setProg] = useState(33)
+  const [prog, setProg] = useState(0)
 
   const [contest, setcontest] = useState({
     hostID: "",
@@ -125,13 +125,13 @@ export const CreateContest = () => {
     setProg(100)
     id = localStorage.getItem("id");
     let pictureRef = "";
-    console.log("img in isgnfdsf", imageUpload);
-    console.log("hostid ", contest.hostID);
-    console.log("contest", contest);
+    // console.log("img in isgnfdsf", imageUpload);
+    // console.log("hostid ", contest.hostID);
+    // console.log("contest", contest);
     if (imageUpload !== "") {
       const downloadURL = await uploadfile(imageUpload);
       contest.img = encodeURIComponent(downloadURL);
-      console.log("user img after", contest.img);
+      // console.log("user img after", contest.img);
       pictureRef = await ref(storage, downloadURL);
     }
 
