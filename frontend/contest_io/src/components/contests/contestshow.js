@@ -469,144 +469,130 @@ export const ContestShow = () => {
                   </div>
                 </div>
               )}
-              {/* {userType.length !== 0 &&
-                (userType.includes("HOST") ||
-                  userType.includes("CONTESTANT") ||
-                  !userType.includes("BLOCKED")) &&} */}
-              { (
-                  <div className="accordion-item">
-                    <h2 className="accordion-header" id="headingThree">
-                      <button
-                        className="accordion-button collapsed text-center fw-bold"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#collapseThree"
-                        aria-expanded="false"
-                        aria-controls="collapseThree"
-                      >
-                        Options
-                      </button>
-                    </h2>
-                    <div
-                      id="collapseThree"
-                      className="accordion-collapse collapse"
-                      aria-labelledby="headingThree"
-                      data-bs-parent="#accordionExample"
+              { !userType.includes("BLOCKED") &&
+                <div className="accordion-item">
+                  <h2 className="accordion-header" id="headingThree">
+                    <button
+                      className="accordion-button collapsed text-center fw-bold"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="#collapseThree"
+                      aria-expanded="false"
+                      aria-controls="collapseThree"
                     >
-                      <div className="accordion-body">
-                        <div className="d-flex flex-column justify-content-center">
-                          {userType.includes("HOST") && (
-                            <>
-                              <button
-                                type="submit"
-                                className="btn btn-theme my-2"
-                                onClick={addcontestcategory}
-                              >
-                                Add Category
-                              </button>
-                              <button className="btn btn-theme my-2">
-                                <Link to="" state={{}} className="text-light">
-                                  Edit Contest
-                                </Link>
-                              </button>
+                      Options
+                    </button>
+                  </h2>
+                  <div
+                    id="collapseThree"
+                    className="accordion-collapse collapse"
+                    aria-labelledby="headingThree"
+                    data-bs-parent="#accordionExample"
+                  >
+                    <div className="accordion-body">
+                      <div className="d-flex flex-column justify-content-center">
+                        {userType.includes("HOST") && (
+                          <>
+                            <button
+                              type="submit"
+                              className="btn btn-theme my-2"
+                              onClick={addcontestcategory}
+                            >
+                              Add Category
+                            </button>
+                            <button className="btn btn-theme my-2">
+                              <Link to="" state={{}} className="text-light">
+                                Edit Contest
+                              </Link>
+                            </button>
 
-                              <button
-                                type="submit"
-                                className="btn btn-theme my-2"
-                                onClick={voteradd}
-                              >
-                                Add Voters
-                              </button>
+                            <button
+                              type="submit"
+                              className="btn btn-theme my-2"
+                              onClick={voteradd}
+                            >
+                              Add Voters
+                            </button>
 
-                              <button
-                                type="submit"
-                                className="btn btn-theme my-2"
-                                onClick={contestantadd}
-                              >
-                                Add Contestants
-                              </button>
+                            <button
+                              type="submit"
+                              className="btn btn-theme my-2"
+                              onClick={contestantadd}
+                            >
+                              Add Contestants
+                            </button>
 
-                              <button
-                                type="submit"
-                                className="btn btn-theme my-2"
-                                onClick={juryadd}
-                              >
-                                Add Jury
-                              </button>
+                            <button
+                              type="submit"
+                              className="btn btn-theme my-2"
+                              onClick={juryadd}
+                            >
+                              Add Jury
+                            </button>
 
-                              <button
-                                type="submit"
-                                className="btn btn-danger my-2"
-                                onClick={blockuser}
-                              >
-                                Block Users
-                              </button>
-                            </>
-                          )}
+                            <button
+                              type="submit"
+                              className="btn btn-danger my-2"
+                              onClick={blockuser}
+                            >
+                              Block Users
+                            </button>
+                          </>
+                        )}
 
-                          {!userType.includes("BLOCKED") && (
-                            <>
-                              {console.log("contest type", contest.type)}
-                              {contest.type.includes("Open") &&
-                                !userType.includes("CONTESTANT") &&
-                                !userType.includes("HOST") &&
-                                !userType.includes("JURY") && (
-                                  <>
-                                    <button
-                                      className="btn btn-warning my-2"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#asParticipant"
-                                    >
-                                      Participate as Contestant
-                                    </button>
-                                  </>
-                                )}
+                        {!userType.includes("BLOCKED") && (
+                          <>
+                            {/* {console.log("contest type", contest.type)} */}
+                            {contest.type.includes("Open") &&
+                              !userType.includes("CONTESTANT") &&
+                              !userType.includes("VOTER") &&
+                              !userType.includes("HOST") &&
+                              !userType.includes("JURY") && (
+                                <>
+                                  <button
+                                    className="btn btn-warning my-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#asParticipant"
+                                  >
+                                    Participate as Contestant
+                                  </button>
+                                </>
+                              )}
 
-                              {(contest.type.includes("Open") ||
-                                contest.type.includes("Public")) &&
-                                !userType.includes("VOTER") &&
-                                !userType.includes("JURY") && (
-                                  <>
-                                    <button
-                                      className="btn btn-warning my-2"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#asVoter"
-                                    >
-                                      Participate as Voter
-                                    </button>
-                                  </>
-                                )}
-                            </>
-                          )}
+                            {(contest.type.includes("Open") ||
+                              contest.type.includes("Public")) &&
+                              !userType.includes("VOTER") &&
+                              !userType.includes("CONTESTANT") &&
+                              !userType.includes("JURY") && (
+                                <>
+                                  <button
+                                    className="btn btn-warning my-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#asVoter"
+                                  >
+                                    Participate as Voter
+                                  </button>
+                                </>
+                              )}
+                          </>
+                        )}
 
-                          {userType.includes("CONTESTANT") && (
-                            <>
-                              <button
-                                type="submit"
-                                className="btn btn-theme my-2"
-                                onClick={contentadd}
-                              >
-                                Add Contents
-                              </button>
-                              {/* <button className="btn btn-theme my-2">
-                                <Link
-                                  to="/contestcontentadd"
-                                  className="text-light"
-                                  state={{
-                                    contestID: contestID,
-                                    contesttype: contest.objective,
-                                  }}
-                                >
-                                  Add Contents
-                                </Link>
-                              </button> */}
-                            </>
-                          )}
-                        </div>
+                        {userType.includes("CONTESTANT") && (
+                          <>
+                            <button
+                              type="submit"
+                              className="btn btn-theme my-2"
+                              onClick={contentadd}
+                            >
+                              Add Contents
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
+              }
             </div>
             {comp.resultshow === true && (
               <img
@@ -650,7 +636,7 @@ export const ContestShow = () => {
                             <p>{contest.description}</p>
                           </div>
                           <div className="col-12">
-                            <h4 className=" mb-0 fw-bold">Vote Weight</h4>
+                            <h4 className=" mb-0 fw-bold mb-2">Vote Weight</h4>
                             <div className="row">
                               <div className="col-12">
                                 <h3>
