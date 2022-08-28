@@ -26,6 +26,7 @@ export const CreateContest = () => {
   const [srcimg, setsrc] = useState("");
 
   const [imageUpload, setimageUpload] = useState("");
+  const [prog, setProg] = useState(33)
 
   const [contest, setcontest] = useState({
     hostID: "",
@@ -63,16 +64,19 @@ export const CreateContest = () => {
 
   function general(e) {
     e.preventDefault();
+    setProg(0)
     setcomp({ generalcom: true });
   }
 
   function timeschedule(e) {
     e.preventDefault();
+    setProg(33)
     setcomp({ timeschedulecom: true });
   }
 
   function contesttype(e) {
     e.preventDefault();
+    setProg(66)
     setcomp({ contesttypecom: true });
   }
 
@@ -118,6 +122,7 @@ export const CreateContest = () => {
 
   const createNewContest = async (e) => {
     e.preventDefault();
+    setProg(100)
     id = localStorage.getItem("id");
     let pictureRef = "";
     console.log("img in isgnfdsf", imageUpload);
@@ -239,26 +244,42 @@ export const CreateContest = () => {
 
               {comp.generalcom && srcimg !== "" && (
                 <>
-                <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
-                  <PhotoView src={srcimg}>
-                    <img
-                      src={srcimg}
-                      className=" img-thumbnail mb-1 mt-2"
-                      style={{
-                        width: "100%",
-                        height: "200px",
-                        objectFit: "cover",
-                      }}
-                    ></img>
-                  </PhotoView>
-                </PhotoProvider>
-                <p className="text-center fst-italic fw-lighter mt-0 py-0">Banner - Click for better view</p>
+                  <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
+                    <PhotoView src={srcimg}>
+                      <img
+                        src={srcimg}
+                        className=" img-thumbnail mb-1 mt-2"
+                        style={{
+                          width: "100%",
+                          height: "200px",
+                          objectFit: "cover",
+                        }}
+                      ></img>
+                    </PhotoView>
+                  </PhotoProvider>
+                  <p className="text-center fst-italic fw-lighter mt-0 py-0">
+                    Banner - Click for better view
+                  </p>
                 </>
               )}
             </div>
           </div>
-
+            
           <div className="col-7">
+            {/* progress bar */}
+            <div className="progress my-3">
+              <div
+                className="progress-bar bg-theme"
+                role="progressbar"
+                style={{
+                  width:`${prog}%`,
+                }}
+                aria-valuenow={prog}
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >{prog}%</div>
+            </div>
+
             <form>
               {(() => {
                 if (comp.generalcom === true) {
