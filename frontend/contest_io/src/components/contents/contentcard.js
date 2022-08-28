@@ -5,7 +5,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Alert } from "../alert.component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faUserAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 const cookies = new Cookies();

@@ -194,6 +194,7 @@ export const EditProfile = () => {
               <input
                 className="form-control mx-4 my-1"
                 type="file"
+                accept="image/*"
                 style={{
                   width: "90%",
                 }}

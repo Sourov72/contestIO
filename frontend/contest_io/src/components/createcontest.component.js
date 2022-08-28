@@ -43,10 +43,11 @@ export const CreateContest = () => {
     img: "",
   });
 
-  const [uploadshow, setuploadshow] = useState({
-    display: false,
-    displaytext: "",
+  const [uploadshow, setuploadshow] = useState({	
+    display: false,	
+    displaytext: "",	
   });
+  
 
   const [lists, setlists] = useState({
     contestant: [],
@@ -125,14 +126,11 @@ export const CreateContest = () => {
     });
   }, []);
 
-  const uploadshowfunc = (e) => {
-    console.log("in time out");
-
-    // uploadshow.displaytext = "upload successfull";
-
-    setuploadshow({ display: true, displaytext: "UpLoading File" });
-
-    console.log(uploadshow.displaytext);
+  const uploadshowfunc = (e) => {	
+    console.log("in time out");	
+    // uploadshow.displaytext = "upload successfull";	
+    setuploadshow({ display: true, displaytext: "UpLoading File" });	
+    console.log(uploadshow.displaytext);	
   };
 
   const createNewContest = async (e) => {
@@ -215,7 +213,8 @@ export const CreateContest = () => {
     reader.readAsText(upload_file);
   };
 
-  let source = "../../images/" + "loading.gif";
+  let source = "../../images/loading.gif";
+
   return (
     <>
       <div className="container">
@@ -280,35 +279,37 @@ export const CreateContest = () => {
                 </>
               )}
             </div>
-<<<<<<< HEAD
-          {uploadshow.display === true && (
-            <>
-              <div
-                className=""
-                style={{
-                  position: "fixed",
-                  display: "block",
-                  width: "100%",
-                  height: "100%",
-                  zIndex: "10",
-                  backgroundColor: "rgba(0,0,0, 0.4)",
-                  top: "0",
-                  left: "0",
-                }}
-              >
-                <img
-                  src={source}
-                  className=" img-thumbnail"
-                  style={{
-                    position: "absolute",
-                    marginLeft: "40%",
-                    top: "25%",
-                    width: "20%",
-                    backgroundColor: "transparent",
-                    borderWidth: "0px",
-                  }}
-                ></img>
           </div>
+
+          {uploadshow.display === true && (	
+            <>	
+              <div	
+                style={{	
+                  position: "fixed",	
+                  display: "block",	
+                  width: "100%",	
+                  height: "100%",	
+                  zIndex: "10",	
+                  backgroundColor: "rgba(0,0,0, 0.4)",	
+                  top: "0",	
+                  left: "0",	
+                }}	
+              >	
+                <img	
+                  src={source}	
+                  className=" img-thumbnail"	
+                  style={{	
+                    position: "absolute",	
+                    marginLeft: "40%",	
+                    top: "25%",	
+                    width: "20%",	
+                    backgroundColor: "transparent",	
+                    borderWidth: "0px",	
+                  }}	
+                ></img>	
+              </div>	
+            </>	
+          )}
             
           <div className="col-7">
             {/* progress bar */}
@@ -580,6 +581,7 @@ export const CreateContest = () => {
                             className="form-control"
                             type="file"
                             name="jury"
+                            accept="text/plain"
                             onChange={fileHandle}
                             id="jury"
                           />
@@ -604,6 +606,7 @@ export const CreateContest = () => {
                             className="form-control"
                             type="file"
                             name="contestant"
+                            accept="text/plain"
                             onChange={fileHandle}
                             id="contestant"
                           />
@@ -625,6 +628,7 @@ export const CreateContest = () => {
                             className="form-control"
                             type="file"
                             name="voter"
+                            accept="text/plain"
                             onChange={fileHandle}
                             id="voter"
                           />
@@ -681,11 +685,11 @@ export const CreateContest = () => {
                               </button>
                               <button
                                 type="submit"
-                                onClick={(e) => {
-                                  createNewContest(e);
-                                  uploadshowfunc(e);
-                                }}
-                                className="btn btn-theme"
+                                onClick={(e) => {	
+                                  createNewContest(e);	
+                                  uploadshowfunc(e);	
+                                }}	
+                                className="btn btn-theme"	
                                 data-bs-dismiss="modal"
                               >
                                 Submit
