@@ -7,6 +7,7 @@ export const ContestBox = ({contests, boxTitle, q, col}) => {
   function myfollowClick(){
     fol=1-fol;
   }
+  
   return (
     
     <div className="row py-2 mb-4 contest-box card-group">

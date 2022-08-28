@@ -1,5 +1,5 @@
 const FollowModel = require("../models/contestFollow.model");
-const userModel = require("../models/user.model");
+//const userModel = require("../models/user.model");
 const ContestModel = require("../models/contest.model");
 const mongoose = require("mongoose");
 
@@ -76,5 +76,3 @@ module.exports = {
     isFollowed,
 };
 
-
-module.exports = mongoose.model('ContestFollow', contestFollowSchema)
