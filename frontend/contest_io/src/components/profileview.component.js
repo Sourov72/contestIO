@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
+import nullSource from "../images/null-user.png"
 import {
   faFacebook,
   faInstagram,
@@ -157,6 +158,8 @@ export const Profileview = () => {
     );
   }
 
+  // let nullSource = "../images/null-user.png";
+
   return (
     <div className="signup container">
       <h1 className="text-center my-3 fw-bold">Profile</h1>
@@ -165,9 +168,9 @@ export const Profileview = () => {
           <div className="text-wrap">
             <div className="text-center">
               <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
-                <PhotoView src={user.img}>
+                <PhotoView src={user.img ? user.img : nullSource}>
                   <img
-                    src={user.img}
+                    src={user.img ? user.img : nullSource}
                     className=" img-thumbnail"
                     style={stylingObject.image}
                     alt={user.username}
@@ -178,7 +181,7 @@ export const Profileview = () => {
             <p className="fs-4 fw-bold my-0">{user.username}</p>
             <p className="mb-0">
               <FontAwesomeIcon icon={faSnapchat} /> &nbsp;
-              {user.nickname}
+              {user.nickname ? user.nickname : "username"}
             </p>
             <p>{user.bio}</p>
 
@@ -192,15 +195,15 @@ export const Profileview = () => {
 
             <p className="mb-0 mt-2">
               <FontAwesomeIcon icon={faEnvelope} /> &nbsp;
-              {user.email}
+              {user.email ? user.email : "Not provided"}
             </p>
             <p className="mb-0">
               <FontAwesomeIcon icon={faFacebook} /> &nbsp;
-              {user.facebookhandle}
+              {user.facebookhandle ? user.facebookhandle : "Not provided"}
             </p>
             <p className="mb-0">
               <FontAwesomeIcon icon={faInstagram} /> &nbsp;
-              {user.instagramhandle}
+              {user.instagramhandle ? user.instagramhandle : "Not provided"}
             </p>
           </div>
         </div>
