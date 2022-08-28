@@ -7,6 +7,8 @@ import { ContestContentAdd } from "./contestcontent";
 import { ContestCategoryAdd } from "./category";
 import { UploadedContentsShow } from "../contents/uploadedcontentsshow";
 import { ContestResult } from "./contestResult";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 import {
   participantValueToType,
   obj2str,
@@ -628,12 +630,16 @@ export const ContestShow = () => {
                 <h4 className="badges float-left">{getBadges()}</h4>
               </div>
               <div className="col-7">
-                <img
-                  src={contest.img}
-                  className=" img-thumbnail"
-                  style={stylingObject.image}
-                  alt="..."
-                />
+                <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
+                  <PhotoView src={contest.img}>
+                    <img
+                      src={contest.img}
+                      className=" img-thumbnail"
+                      style={stylingObject.image}
+                      alt="..."
+                    />
+                  </PhotoView>
+                </PhotoProvider>
               </div>
             </div>
             <>
@@ -973,9 +979,8 @@ export const ContestShow = () => {
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn btn-theme"
                   data-bs-dismiss="modal"
-                  onClick={leavecontest}
                 >
                   Submit
                 </button>

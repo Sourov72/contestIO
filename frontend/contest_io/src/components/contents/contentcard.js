@@ -5,7 +5,9 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Alert } from "../alert.component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faUserAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 const cookies = new Cookies();
 
 export const Contentcard = (props) => {
@@ -19,24 +21,11 @@ export const Contentcard = (props) => {
   const [voteranonymity, setvoteranonymity] = useState(0);
   const [voted, setvoted] = useState(false);
   const [votedeleted, setvotedeleted] = useState(false);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   useEffect(() => {
-    const contestid = {
-      contestID: props.contestID,
-    };
-    // axios
-    //   .get("http://localhost:5000/api/contests/getvoteranonymity", {
-    //     params: contestid,
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     // console.log("res body in anonimity get", res.data);
-    //     setvoteranonymity(res.data);
-    //   });
-
     setvoteranonymity(props.anonimity);
+    setimage(props.link);
 
     const vote = {
       userID: props.userID,
@@ -91,20 +80,15 @@ export const Contentcard = (props) => {
       });
   }, [props]);
 
-  const imageClick = (e) => {
-    // console.log("Click", e.target.name);
-    setimage(e.target.name);
-  };
-
-  const toggleHover = () => {
-    // console.log("sjflksjf")
-    if (hov === true) {
-      hov = false;
-    } else {
-      // console.log("jfdlkdsjfk")
-      hov = true;
-    }
-  };
+  // const toggleHover = () => {
+  //   // console.log("sjflksjf")
+  //   if (hov === true) {
+  //     hov = false;
+  //   } else {
+  //     // console.log("jfdlkdsjfk")
+  //     hov = true;
+  //   }
+  // };
 
   const alerthandle = async () => {
     if (voted === true) {
@@ -200,6 +184,14 @@ export const Contentcard = (props) => {
           // console.log("res body in content voters get", res.data);
         });
     }
+  };
+
+  const openImageViewer = () => {
+    setIsViewerOpen(true);
+  };
+
+  const closeImageViewer = () => {
+    setIsViewerOpen(false);
   };
 
   // console.log("hello there brooooo")
@@ -301,17 +293,16 @@ export const Contentcard = (props) => {
     return (
       <div className="card h-100 content-card mb-3 my-2" style={linkStyle.card}>
         <div className="card-body p-0">
-          <img
-            src={props.link}
-            className="img-thumbnail "
-            style={linkStyle.image}
-            onClick={imageClick}
-            name={props.link}
-            data-bs-toggle="modal"
-            data-bs-target={"#" + props.title[0] + props.contentID}
-            onMouseEnter={toggleHover}
-            onMouseLeave={toggleHover}
-          />
+          <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
+            <PhotoView src={props.link}>
+              <img
+                src={props.link}
+                className="img-thumbnail "
+                style={linkStyle.image}
+                name={props.link}
+              />
+            </PhotoView>
+          </PhotoProvider>
           <div className="text-bg-theme mx-0 mb-0">
             <h4 className="card-title text-capitalize fw-bold mb-0">
               {props.title}
@@ -459,7 +450,20 @@ export const Contentcard = (props) => {
         <></>
       )}
 
-      <div
+      {/* {isViewerOpen && (
+        <ImageViewer
+          src={[props.link]}
+          currentIndex={0}
+          disableScroll={true}
+          backgroundStyle={{
+            backgroundColor: "rgba(0,0,0,0.8)"
+          }}
+          closeOnClickOutside={true}
+          onClose={closeImageViewer}
+        />
+      )} */}
+
+      {/* <div
         className="modal fade"
         id={props.title[0] + props.contentID}
         tabIndex="-1"
@@ -489,8 +493,6 @@ export const Contentcard = (props) => {
                 // alt={user.username}
               />
             </div>
-            {/* {console.log("image name props", image)} */}
-
             <div className="modal-footer">
               <button
                 type="button"
@@ -502,8 +504,7 @@ export const Contentcard = (props) => {
             </div>
           </div>
         </div>
-        {/* {console.log("types", userType)} */}
-      </div>
+      </div> */}
 
       <div
         className="modal fade"

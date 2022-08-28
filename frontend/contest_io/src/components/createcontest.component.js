@@ -9,6 +9,8 @@ import {
 import Cookies from "universal-cookie";
 import { storage } from "../firebase";
 import { ref } from "firebase/storage";
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 const cookies = new Cookies();
 
 export const CreateContest = () => {
@@ -24,6 +26,7 @@ export const CreateContest = () => {
   const [srcimg, setsrc] = useState("");
 
   const [imageUpload, setimageUpload] = useState("");
+  const [prog, setProg] = useState(0)
 
   const [contest, setcontest] = useState({
     hostID: "",
@@ -66,16 +69,19 @@ export const CreateContest = () => {
 
   function general(e) {
     e.preventDefault();
+    setProg(0)
     setcomp({ generalcom: true });
   }
 
   function timeschedule(e) {
     e.preventDefault();
+    setProg(33)
     setcomp({ timeschedulecom: true });
   }
 
   function contesttype(e) {
     e.preventDefault();
+    setProg(66)
     setcomp({ contesttypecom: true });
   }
 
@@ -131,15 +137,16 @@ export const CreateContest = () => {
 
   const createNewContest = async (e) => {
     e.preventDefault();
+    setProg(100)
     id = localStorage.getItem("id");
     let pictureRef = "";
-    console.log("img in isgnfdsf", imageUpload);
-    console.log("hostid ", contest.hostID);
-    console.log("contest", contest);
+    // console.log("img in isgnfdsf", imageUpload);
+    // console.log("hostid ", contest.hostID);
+    // console.log("contest", contest);
     if (imageUpload !== "") {
       const downloadURL = await uploadfile(imageUpload);
       contest.img = encodeURIComponent(downloadURL);
-      console.log("user img after", contest.img);
+      // console.log("user img after", contest.img);
       pictureRef = await ref(storage, downloadURL);
     }
 
@@ -251,8 +258,29 @@ export const CreateContest = () => {
               >
                 Voting &amp; Participants
               </button>
+
+              {comp.generalcom && srcimg !== "" && (
+                <>
+                  <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
+                    <PhotoView src={srcimg}>
+                      <img
+                        src={srcimg}
+                        className=" img-thumbnail mb-1 mt-2"
+                        style={{
+                          width: "100%",
+                          height: "200px",
+                          objectFit: "cover",
+                        }}
+                      ></img>
+                    </PhotoView>
+                  </PhotoProvider>
+                  <p className="text-center fst-italic fw-lighter mt-0 py-0">
+                    Banner - Click for better view
+                  </p>
+                </>
+              )}
             </div>
-          </div>
+<<<<<<< HEAD
           {uploadshow.display === true && (
             <>
               <div
@@ -280,11 +308,23 @@ export const CreateContest = () => {
                     borderWidth: "0px",
                   }}
                 ></img>
-              </div>
-            </>
-          )}
-
+          </div>
+            
           <div className="col-7">
+            {/* progress bar */}
+            <div className="progress my-3">
+              <div
+                className="progress-bar bg-theme"
+                role="progressbar"
+                style={{
+                  width:`${prog}%`,
+                }}
+                aria-valuenow={prog}
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >{prog}%</div>
+            </div>
+
             <form>
               {(() => {
                 if (comp.generalcom === true) {
@@ -382,22 +422,19 @@ export const CreateContest = () => {
                         </div>
                       </div>
                       <div className="mb-3">
-                        <label htmlFor="formFileSm" className="form-label">
+                        <label
+                          htmlFor="formFileSm"
+                          className="form-label fw-bold mb-2"
+                        >
                           Contest Banner Upload
                         </label>
 
                         <input
                           className="form-control form-control-sm mb-3"
                           type="file"
+                          accept="image/*"
                           onChange={bannerfileHandle}
                         />
-                        <img
-                          src={srcimg}
-                          className=" img-thumbnail mb-1"
-                          style={{
-                            width: "100%",
-                          }}
-                        ></img>
                       </div>
                       <div className="d-flex flex-row justify-content-end">
                         <button
