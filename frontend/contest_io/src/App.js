@@ -20,6 +20,7 @@ import { ContestShow } from "./components/contests/contestshow";
 import { ContestContentAdd } from "./components/contests/contestcontent";
 import { Home } from "./components/Home";
 import { About } from "./components/About";
+import { Notification } from "./components/Notifications";
 import { UploadedContentsShow } from "./components/contents/uploadedcontentsshow";
 import { ProtectedRoutes } from "./components/protectedRoutes.component";
 // hooks
@@ -35,6 +36,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              <Route path="/notifications" element={<Notification />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/search" element={<Search />} />
               <Route path="/profile">

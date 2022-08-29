@@ -86,6 +86,13 @@ export const Navbar = (props) => {
                 );
               }
             })()}
+            <li className='nav-item'>
+              <Link to="/notifications" className={isSelected('notifications') ? 'nav-link fw-bold active' : 'nav-link fw-bold'} name="notifications" onClick={handleClick}>
+                Notificaions
+              </Link>
+            </li>
+
+
           </ul>
 
           {(() => {
