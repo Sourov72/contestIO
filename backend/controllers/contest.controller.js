@@ -193,6 +193,13 @@ const queryContests = async (req, res) => {
       }
     }
   }
+  for (let key in query) {
+    if (key.includes("ID")) {
+      for (let key2 in query[key]) {
+        query[key][key2] = mongoose.Types.ObjectId(query[key][key2]);
+      }
+    }
+  }
   // console.log("query", query)
   // const contests = await ContestModel.find(query)
   //   .limit(limit)
