@@ -11,9 +11,8 @@ export const UploadedContentsShow = (props) => {
   var contestid = "";
   var categoryid = "";
   var allcontent = "";
- 
-  const [select, setselect] = useState("all");
 
+  const [select, setselect] = useState("all");
 
   const [check, setcheck] = useState(false);
 
@@ -67,7 +66,6 @@ export const UploadedContentsShow = (props) => {
 
     allcontent = "all";
     setselect("all");
-
 
     getallcategories(allcontent);
     getcategorycontent(allcontent);
@@ -135,7 +133,6 @@ export const UploadedContentsShow = (props) => {
   }
 
   function getusercategorycontent(sel_type) {
-
     console.log("come in the get user category content");
 
     var tempcontentdata = "";
@@ -145,6 +142,9 @@ export const UploadedContentsShow = (props) => {
         id: props.contestID,
       };
     } else {
+      if (categoryid === "") {
+        categoryid = category.categoryID;
+      }
       tempcontentdata = {
         type: "category",
         id: categoryid,
@@ -225,12 +225,9 @@ export const UploadedContentsShow = (props) => {
     }
   };
 
-
   return (
     <div className="container my-3">
-      <h4 className="fw-bold">
-        Choose Category
-      </h4>
+      <h4 className="fw-bold">Choose Category</h4>
       <select
         className="form-select "
         name="category"
@@ -256,7 +253,6 @@ export const UploadedContentsShow = (props) => {
         )}
       </select>
 
-
       {userType.includes("CONTESTANT") ? (
         <>
           <div className="form-check my-2">
@@ -281,34 +277,31 @@ export const UploadedContentsShow = (props) => {
           <div className="row justify-content-center">
             {contents.categorycontents.length > 0 ? (
               <>
-              
-                {contents.categorycontents.map(
-                  (content) => (
-                    (
-                      <Contentcard
-                        key={content.contentID[0]}
-                        userID={contestattr.userID}
-                        contestID={contestattr.contestID}
-                        choiceID={content._id}
-                        categoryID={content.categoryID}
-                        contentID={content.contentID[0]}
-                        link={decodeURIComponent(content.link[0])}
-                        isResult={false}
-                        col={6}
-                        title={content.title[0]}
-                        description={content.description[0]}
-                        anonimity = {voteranonymity}
-                        deleteshow = {owndelete}
-                        func = {getusercategorycontent}
-                        select = {select}
-                      />
-                    )
-                  )
-                )}
+                {contents.categorycontents.map((content) => (
+                  <Contentcard
+                    key={content.contentID[0]}
+                    userID={contestattr.userID}
+                    contestID={contestattr.contestID}
+                    choiceID={content._id}
+                    categoryID={content.categoryID}
+                    contentID={content.contentID[0]}
+                    link={decodeURIComponent(content.link[0])}
+                    isResult={false}
+                    col={6}
+                    title={content.title[0]}
+                    description={content.description[0]}
+                    anonimity={voteranonymity}
+                    deleteshow={owndelete}
+                    func={getusercategorycontent}
+                    select={select}
+                  />
+                ))}
               </>
             ) : (
               <>
-                <p className="fw-light fst-italic text-center my-3">No contents to show.</p>
+                <p className="fw-light fst-italic text-center my-3">
+                  No contents to show.
+                </p>
               </>
             )}
           </div>
