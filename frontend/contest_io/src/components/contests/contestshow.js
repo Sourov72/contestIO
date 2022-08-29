@@ -113,6 +113,19 @@ export const ContestShow = () => {
   }
 
   function followContestChange(){
+    const folQ = {
+      contestID: contestID,
+      userID:localStorage.getItem("id"),
+    };
+    //console.log(folQ.contestID);
+    axios
+      .get("http://localhost:5000/api/follow/createFollow", {
+        params:folQ,
+      })
+      .then((res) => {
+        console.log(res.data);
+      });
+
     setFol({fol:!isFol.fol});
     
   }
@@ -187,13 +200,15 @@ export const ContestShow = () => {
         // console.log("participant types:", types);
       });
 
+
       const folQ = {
         contestID: contestID,
-        userID:usrid,
+        userID:localStorage.getItem("id"),
       };
+      //console.log(folQ.contestID);
       axios
-        .get("http://localhost:5000/api/follow/", {
-          params: folQ,
+        .get("http://localhost:5000/api/follow", {
+          params:folQ,
         })
         .then((res) => {
           if(res.data==="False"){
@@ -201,7 +216,7 @@ export const ContestShow = () => {
           }
           else {
             //console.log("asche else");
-            setFol({fol:false});
+            setFol({fol:true});
             //foll.push(0);
           }
         });

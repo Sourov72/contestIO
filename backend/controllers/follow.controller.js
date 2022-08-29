@@ -12,7 +12,8 @@ const getFollowList = async (req, res) => {
 };
 
 const isFollowed=async(req,res) => {
-    const  {contestID,userID}  = req.body;
+    const  {contestID,userID}  = req.query;
+    console.log("userid haha", userID, "contestid", contestID);
     const contestList = await FollowModel.find({"userID":userID,"contestID":contestID});
     if(contestList.length>0){
         res.status(200).json("True");
@@ -25,10 +26,15 @@ const isFollowed=async(req,res) => {
 
 const createFollow = async (req, res) => {
     // get the values from the request's body
-    const contestID = req.body.contestID;
-    const userID =req.body.userID;
+    
+    const  {contestID,userID}  = req.query;
+    console.log("userid haha", userID, "contestid", contestID);
     await FollowModel.create({"userID":userID,"contestID":contestID});
-    res.status(200).json("Followed");
+    const contestList = await FollowModel.find({"userID":userID,"contestID":contestID});
+    if(contestList.length>0){
+        res.status(200).json("Followed");
+    }
+    res.status(200).json("error");
   };
 
 const unfollow =async(req,res) => {

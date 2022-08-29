@@ -14,7 +14,7 @@ router.get('/',isFollowed);
 
 router.get('/getNotification',getNotification);
 
-router.post('/createFollow',createFollow);
+router.get('/createFollow',createFollow);
 
 router.delete('/unfollow',unfollow);
 
