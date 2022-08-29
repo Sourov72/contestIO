@@ -21,6 +21,7 @@ router.get('/query', queryContents);
 // GET a single content
 router.get('/content/:id', getContent)
 
+
 // POST a new content
 router.post('/create', basicAuth, createContent)
 

@@ -420,8 +420,8 @@ export const ContestShow = () => {
                   </div>
                 </div>
               </div>
-              {console.log(userType)}
-              {userType.includes("HOST") && (
+              {/* {console.log(userType)} */}
+              {token && userType.includes("HOST") && (
                 <div className="accordion-item">
                   <h2 className="accordion-header" id="headingTwo">
                     <button
@@ -471,7 +471,7 @@ export const ContestShow = () => {
                   </div>
                 </div>
               )}
-              {!userType.includes("BLOCKED") && (
+              {token &&  !userType.includes("BLOCKED") && (
                 <div className="accordion-item">
                   <h2 className="accordion-header" id="headingThree">
                     <button
@@ -493,7 +493,7 @@ export const ContestShow = () => {
                   >
                     <div className="accordion-body">
                       <div className="d-flex flex-column justify-content-center">
-                        {userType.includes("HOST") && (
+                        {token && userType.includes("HOST") && (
                           <>
                             <button
                               type="submit"
@@ -542,7 +542,7 @@ export const ContestShow = () => {
                           </>
                         )}
 
-                        {userType.includes("CONTESTANT") && (
+                        {token && userType.includes("CONTESTANT") && (
                           <>
                             <button
                               type="submit"
@@ -554,7 +554,7 @@ export const ContestShow = () => {
                           </>
                         )}
 
-                        {!userType.includes("BLOCKED") && (
+                        {token && !userType.includes("BLOCKED") && (
                           <>
                             {contest.type.includes("Open") &&
                               !userType.includes("CONTESTANT") &&
