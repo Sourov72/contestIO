@@ -162,7 +162,7 @@ export const Profileview = () => {
 
   return (
     <div className="signup container">
-      <h1 className="text-center my-3">Profile</h1>
+      <h1 className="text-center my-3 fw-bold">Profile</h1>
       <form className="row">
         <div className="col-3">
           <div className="text-wrap">

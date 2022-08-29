@@ -981,6 +981,7 @@ export const ContestShow = () => {
                   type="submit"
                   className="btn btn-theme"
                   data-bs-dismiss="modal"
+                  onClick={leavecontest}
                 >
                   Submit
                 </button>

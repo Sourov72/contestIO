@@ -89,13 +89,19 @@ export const ContestSearch = () => {
     if (!value || value === "None" || value === 0) {
       value = "";
       console.log("value set to blank");
-    } else if (name === "registrationOpen") {
+    } 
+    if (name === "registrationOpen") {
       name = "registrationEndTime";
-      value = today.toJSON();
+      if(value !== "")
+        value = today.toJSON();
+      
     } else if (name === "startTime" || name === "endTime") {
       value = new Date(value).toJSON();
     }
+    console.log("search name", search[name]);
     var arr = search[name];
+    console.log("arr", arr);
+    console.log("value", value)
     arr[1] = value;
     setSearch({
       ...search,
