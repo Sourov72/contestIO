@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import Compressor from "compressorjs";
 import Cookies from "universal-cookie";
+import { uploadfile } from "../helperFunctions";
+import { storage } from "../../firebase";
+import { ref } from "firebase/storage";
 const cookies = new Cookies();
 
 export const ContestContentAdd = (props) => {
   let contestid = "0";
   const token = cookies.get("TOKEN");
-  let navigate = useNavigate();
-
-  const location = useLocation();
 
   const [contestattr, setcontestattr] = useState({
     contesttype: "",
@@ -19,6 +19,15 @@ export const ContestContentAdd = (props) => {
   const [choice, setchoice] = useState({
     categoryID: "",
   });
+
+  const [uploadshow, setuploadshow] = useState({
+    display: false,
+    displaytext: "",
+  });
+
+  const [srcimg, setsrc] = useState("");
+
+  const [imageUpload, setimageUpload] = useState("");
 
   const [content, setcontent] = useState({
     userID: "",
@@ -30,18 +39,15 @@ export const ContestContentAdd = (props) => {
   });
 
   useEffect(() => {
-    contestid = location.state.contestID;
-
-    console.log("contekjskjf", contestid)
-
-    const type = location.state.contesttype;
+    contestid = props.contestID;
+    const type = props.contesttype;
 
     const userid = localStorage.getItem("id");
 
     setcontent({
       ...content,
       userID: userid,
-      contestID:contestid,
+      contestID: contestid,
       type: type,
     });
 
@@ -49,16 +55,8 @@ export const ContestContentAdd = (props) => {
       ...contestattr,
       contesttype: type,
     });
-
-    // setchoice({
-    //   ...choice,
-    //   contestID: contestid,
-    // });
-
-    console.log("contestid in useeffect", contestid);
-
     getallcategories();
-  }, []);
+  }, [props]);
 
   function getallcategories() {
     // console.log(user);
@@ -84,6 +82,16 @@ export const ContestContentAdd = (props) => {
       });
   }
 
+  const uploadshowfunc = (e) => {
+    console.log("in time out");
+
+    // uploadshow.displaytext = "upload successfull";
+
+    setuploadshow({ display: true, displaytext: "UpLoading File" });
+
+    console.log(uploadshow.displaytext);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     console.log(name, value);
@@ -91,46 +99,44 @@ export const ContestContentAdd = (props) => {
       ...content,
       [name]: value,
     });
-
-    console.log("contestID in handlechange ", content.contestID);
   };
 
   const categoryChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
-
-    console.log("value", value);
-
     var foundValue = contestattr.contestcategories.filter(
       (obj) => obj.title === value
     );
-
-    console.log("category id", foundValue[0]._id);
-
     setchoice({
       ...choice,
       categoryID: foundValue[0]._id,
     });
-
-    console.log("categoryID ", choice.categoryID);
   };
 
   const fileHandle = (e) => {
     const upload_file = e.target.files[0];
-    console.log("uploaded file", upload_file);
-
-    setcontent({
-      ...content,
-      link: upload_file.name,
+    new Compressor(upload_file, {
+      quality: 0.2,
+      success: (result) => {
+        console.log("Hello, inside compressed, ", result.size);
+        setimageUpload(result);
+      },
     });
-
-    console.log("setted file", content.link);
+    console.log("uploaded file", upload_file);
+    setsrc(URL.createObjectURL(upload_file));
   };
 
-  const createNewContent = (e) => {
+  const createNewContent = async (e) => {
     e.preventDefault();
+    let pictureRef = "";
 
-    alert("content add form posted");
+    if (imageUpload !== "") {
+      const downloadURL = await uploadfile(imageUpload);
+      content.link = encodeURIComponent(downloadURL);
+      console.log("user img after", content.link);
+      pictureRef = await ref(storage, downloadURL);
+      console.log("picture ref", pictureRef);
+    }
+
     axios
       .post(
         "http://localhost:5000/api/contents/create",
@@ -146,146 +152,201 @@ export const ContestContentAdd = (props) => {
       )
       .then((res) => {
         // alert(res.data);
-        console.log(res.data);
+        // console.log(res.data);
         if (res.data.msg === "added successfully") {
           console.log("added successfully");
-          //   window.location = "/";
-          navigate("/contests/" + content.contestID, { state: { contestID: content.contestID } });
+          // setchoice({
+          //   categoryID: ""
+          // })
+          setuploadshow({ display: false, displaytext: "" });
+          setcontent({
+            ...content,
+
+            title: "",
+            description: "",
+            link: "",
+          });
+          setsrc("");
         }
       });
     //window.location = "/";
   };
 
+  let source = "../../images/" + "loading.gif";
+
   return (
-    <div className="signup container">
-      {/* {console.log("content here", content)} */}
-      <h1 className="container text-center">content add</h1>
-      <form className="needs-validation" noValidate>
-        <div className="mb-3">
+    <div className="signup container my-3">
+      {contestattr.contestcategories.length > 0 ? (
+        <form className="needs-validation" noValidate>
           <div className="mb-3">
             <div className="mb-3">
-              <label htmlFor="inputEmail4" className="form-label fw-bold">
-                Choose Category
-              </label>
-              <select
-                className="form-select"
-                name="category"
-                onChange={categoryChange}
-                // value={contest.objective}
-                id="category"
-              >
-                {contestattr.contestcategories.length > 0 ? (
-                  <>
-                    {contestattr.contestcategories.map((contestcat) => (
-                      <option key={contestcat._id}> {contestcat.title}</option>
-                    ))}
-                  </>
-                ) : (
-                  <></>
-                )}
-                {/* <option>Photo Contest</option>
-                <option>Video Contest</option>
-                <option>Poll</option> */}
-              </select>
-            </div>
+              <div className="mb-3">
+                <label htmlFor="inputEmail4" className="form-label fw-bold">
+                  Choose Category
+                </label>
+                <select
+                  className="form-select"
+                  name="category"
+                  onChange={categoryChange}
+                  // value={contest.objective}
+                  id="category"
+                >
+                  {contestattr.contestcategories.map((contestcat) => (
+                    <option key={contestcat._id}> {contestcat.title}</option>
+                  ))}
+                </select>
+              </div>
 
-            <label htmlFor="Inputname" className="form-label">
-              content Title
+              <label htmlFor="Inputname" className="form-label fw-bold">
+                Title of Your Content
+              </label>
+              <input
+                type="text"
+                name="title"
+                onChange={handleChange}
+                value={content.title}
+                className="form-control"
+                id="title"
+                required
+              />
+            </div>
+          </div>
+          <div className="mb-3">
+            <label
+              htmlFor="exampleInputPassword1"
+              className="form-label fw-bold"
+            >
+              Short Description
             </label>
             <input
               type="text"
-              name="title"
+              name="description"
               onChange={handleChange}
-              value={content.title}
+              value={content.description}
               className="form-control"
-              id="title"
+              id="description"
               required
             />
           </div>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
-            content Description
-          </label>
-          <input
-            type="text"
-            name="description"
-            onChange={handleChange}
-            value={content.description}
-            className="form-control"
-            id="description"
-            required
-          />
-        </div>
 
-        {content.type === "Poll" ? (
-          <></>
-        ) : (
-          <>
-            <div className="mb-3">
-              <label htmlFor="formFileSm" className="form-label">
-                Content Media
-              </label>
-              <input
-                className="form-control form-control-sm"
-                type="file"
-                onChange={fileHandle}
-              />
-            </div>
-          </>
-        )}
-
-        <button
-          type="button"
-          className="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-        >
-          Create content
-        </button>
-
-        <div
-          className="modal fade"
-          id="exampleModal"
-          tabIndex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Create content
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
+          {uploadshow.display === true && (
+            <>
+              <div
+                className=""
+                style={{
+                  position: "fixed",
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  zIndex: "10",
+                  backgroundColor: "rgba(0,0,0, 0.4)",
+                  top: "0",
+                  left: "0",
+                }}
+              >
+                <img
+                  src={source}
+                  className=" img-thumbnail"
+                  style={{
+                    position: "absolute",
+                    marginLeft: "45%",
+                    top: "30%",
+                    width: "20%",
+                    backgroundColor: "transparent",
+                    borderWidth: "0px",
+                  }}
+                ></img>
               </div>
-              <div className="modal-body">Are You Sure?</div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary mb-3"
-                  data-bs-dismiss="modal"
-                  onClick={createNewContent}
-                >
-                  Submit
-                </button>
+            </>
+          )}
+
+          {content.type === "Poll" ? (
+            <></>
+          ) : (
+            <>
+              <div className="mb-3">
+                <label htmlFor="formFileSm" className="form-label fw-bold">
+                  Upload Content Media
+                </label>
+                <input
+                  className="form-control form-control-sm mb-3"
+                  type="file"
+                  // value={content.title}
+                  key={content.type}
+                  onChange={fileHandle}
+                />
+                <img
+                  src={srcimg}
+                  className=" img-thumbnail mb-1"
+                  style={{
+                    width: "100%",
+                  }}
+                ></img>
+              </div>
+            </>
+          )}
+
+          <button
+            type="button"
+            className="btn btn-theme"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+          >
+            Create content
+          </button>
+
+          <div
+            className="modal fade"
+            id="exampleModal"
+            tabIndex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Create content
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">Are You Sure?</div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-theme"
+                    data-bs-dismiss="modal"
+                    // onClick={createNewContent}
+                    onClick={(e) => {
+                      createNewContent(e);
+                      uploadshowfunc(e);
+                    }}
+                  >
+                    Submit
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      ) : (
+        <p className="fw-light fst-italic text-center my-3">
+          No categories yet. Please ask the host to add categories to add
+          contents into.
+        </p>
+      )}
     </div>
   );
 };

@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { Contentcard } from "./contentcard";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
-export const UploadedContentsShow = () => {
+export const UploadedContentsShow = (props) => {
   const token = cookies.get("TOKEN");
-  var contestid = "0";
-  var categoryid = "0";
-  // var check = false;
-  var col = 12;
+  var contestid = "";
+  var categoryid = "";
+  var allcontent = "";
+ 
+  const [select, setselect] = useState("all");
 
-
-  const userid = localStorage.getItem("id");
-
-  const location = useLocation();
 
   const [check, setcheck] = useState(false);
 
-  const[userType, setUserType] = useState("");
+  const [userType, setUserType] = useState("");
 
   const [contestattr, setcontestattr] = useState({
     userID: "",
@@ -39,22 +36,41 @@ export const UploadedContentsShow = () => {
     categorycontents: "",
   });
 
+  const [owndelete, setowndelete] = useState(false);
+
+  const [voteranonymity, setvoteranonymity] = useState(0);
+
   useEffect(() => {
-    contestid = location.state.contestID;
-    // contestid = "62d50baa66f2e7694652ff74";
-
-    console.log("userid", localStorage.getItem("id"));
-
+    contestid = props.contestID;
     setcontestattr({
       ...contestattr,
       userID: localStorage.getItem("id"),
       contestID: contestid,
     });
+    setUserType(props.userType);
 
-    setUserType(location.state.userType);
+    const contestidobj = {
+      contestID: props.contestID,
+    };
 
-    getallcategories();
-    //getcategorycontent();
+    axios
+      .get("http://localhost:5000/api/contests/getvoteranonymity", {
+        params: contestidobj,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        // console.log("res body in anonimity get", res.data);
+        setvoteranonymity(res.data);
+      });
+
+    allcontent = "all";
+    setselect("all");
+
+
+    getallcategories(allcontent);
+    getcategorycontent(allcontent);
   }, []);
 
   function getallcategories() {
@@ -87,10 +103,24 @@ export const UploadedContentsShow = () => {
       });
   }
 
-  function getcategorycontent() {
+  function getcategorycontent(sel_type) {
+    var tempcontentdata = "";
+    if (sel_type === "all") {
+      tempcontentdata = {
+        type: "all",
+        id: props.contestID,
+      };
+    } else {
+      tempcontentdata = {
+        type: "category",
+        id: categoryid,
+      };
+    }
+
     console.log("category id in get category  content", categoryid);
     axios
-      .get("http://localhost:5000/api/contents/getallcontent/" + categoryid, {
+      .get("http://localhost:5000/api/contents/getallcontent", {
+        params: tempcontentdata,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -104,19 +134,31 @@ export const UploadedContentsShow = () => {
       });
   }
 
-  function getusercategorycontent() {
-    const categorytemp = {
-      categoryID: categoryid,
-    };
+  function getusercategorycontent(sel_type) {
 
-    console.log("category id in get category  content", categoryid);
+    console.log("come in the get user category content");
+
+    var tempcontentdata = "";
+    if (sel_type === "all") {
+      tempcontentdata = {
+        type: "all",
+        id: props.contestID,
+      };
+    } else {
+      tempcontentdata = {
+        type: "category",
+        id: categoryid,
+      };
+    }
+
+    // console.log("category id in get category  content", categoryid);
     axios
       .post("http://localhost:5000/api/contents/getusercontent", {
         contest: contestattr,
-        category: categorytemp,
-        // headers: {
-        //   Authorization: `Bearer ${token}`,
-        // },
+        category: tempcontentdata,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then((res) => {
         // console.log(res);
@@ -129,82 +171,66 @@ export const UploadedContentsShow = () => {
   }
 
   const categoryChange = (e) => {
+    allcontent = "category";
+
+    setselect("category");
     const { name, value } = e.target;
-    console.log(name, value);
 
-    console.log("value", value);
+    if (value == "all") {
+      allcontent = "all";
+      setselect("all");
+    }
 
-    console.log("user", contestattr.userID);
+    // console.log("allcontent", allcontent);
+
+    // console.log("user", contestattr.userID);
 
     var foundValue = categories.contestcategories.filter(
       (obj) => obj.title === value
     );
 
-    console.log("category id", foundValue[0]._id);
+    if (allcontent != "all") {
+      // console.log("category id", foundValue[0]._id);
 
-    setcategoryid({
-      ...category,
-      categoryID: foundValue[0]._id,
-    });
-    categoryid = foundValue[0]._id;
-
-    console.log("categoryID from change ", category.categoryID);
-    console.log("user id from change", contestattr.userID);
-    console.log("contest id from change", contestattr.contestID);
-    console.log("check value", check);
-    if (check === false) getcategorycontent();
-    else getusercategorycontent();
+      setcategoryid({
+        ...category,
+        categoryID: foundValue[0]._id,
+      });
+      categoryid = foundValue[0]._id;
+    }
+    if (check === false) getcategorycontent(allcontent);
+    else getusercategorycontent(allcontent);
   };
 
   const handleChange = async (e) => {
-    console.log("category id", category.categoryID);
+    // console.log("category id", category.categoryID);
     categoryid = category.categoryID;
     var { name, value } = e.target;
 
     if (name === "ownuploads") {
       if (e.target.checked) {
+        setowndelete(true);
         value = 1;
       } else {
+        setowndelete(false);
         value = 0;
       }
     }
     if (value === 1) {
       setcheck(true);
-      getusercategorycontent();
+      getusercategorycontent(select);
     } else {
       setcheck(false);
-      getcategorycontent();
+      getcategorycontent(select);
     }
   };
 
-  var stylingObject = {
-    image: {
-      width: "30%",
-      height: "30%",
-      transform: "translate(0px, 10%)",
-      borderColor: "purple",
-      borderWidth: 3,
-      borderRadius: "50%",
-    },
-    checkbox: {
-      width: "1.3%",
-      height: "15px",
-      transform: "translate(0px, -20%)",
-      borderColor: "black",
-      borderWidth: 2,
-      color: "black",
-      borderRadius: "50%",
-      
-      
-      
-    },
-  };
 
   return (
-    <div className="container">
-      <label htmlFor="inputEmail4" className="form-label fw-bold">
+    <div className="container my-3">
+      <h4 className="fw-bold">
         Choose Category
-      </label>
+      </h4>
       <select
         className="form-select "
         name="category"
@@ -214,6 +240,10 @@ export const UploadedContentsShow = () => {
       >
         <option value="" selected disabled hidden>
           Please select category
+        </option>
+        <option name="All" value="all">
+          {" "}
+          All
         </option>
         {categories.contestcategories.length > 0 ? (
           <>
@@ -226,17 +256,15 @@ export const UploadedContentsShow = () => {
         )}
       </select>
 
-      {console.log("partici", userType)}
 
       {userType.includes("CONTESTANT") ? (
         <>
-          <div className="form-check my-2 text-uppercase fw-bold">
+          <div className="form-check my-2">
             <input
               className="form-check-input"
               type="checkbox"
               name="ownuploads"
               onChange={handleChange}
-              style = {stylingObject.checkbox}
               id="ownuploads"
             />
             <label className="form-check-label" htmlFor="ownuploads">
@@ -249,24 +277,14 @@ export const UploadedContentsShow = () => {
       )}
 
       <div className="text-center">
-        <div className="container ">
+        <div className="container-fluid my-3">
           <div className="row justify-content-center">
-            {console.log("contentssss", contents.categorycontents)}
             {contents.categorycontents.length > 0 ? (
               <>
+              
                 {contents.categorycontents.map(
                   (content) => (
-                    // <img
-                    //   key={content.contentID[0]}
-                    //   src={"../images/" + content.link[0]}
-                    //   className=" img-thumbnail"
-                    //   style={stylingObject.image}
-                    // // alt={user.username}
-                    // ></img>
-                    (col = 12 - col),
                     (
-                      // console.log("col", col),
-
                       <Contentcard
                         key={content.contentID[0]}
                         userID={contestattr.userID}
@@ -274,10 +292,15 @@ export const UploadedContentsShow = () => {
                         choiceID={content._id}
                         categoryID={content.categoryID}
                         contentID={content.contentID[0]}
-                        link={content.link[0]}
-                        col={col}
+                        link={decodeURIComponent(content.link[0])}
+                        isResult={false}
+                        col={6}
                         title={content.title[0]}
                         description={content.description[0]}
+                        anonimity = {voteranonymity}
+                        deleteshow = {owndelete}
+                        func = {getusercategorycontent}
+                        select = {select}
                       />
                     )
                   )
@@ -285,7 +308,7 @@ export const UploadedContentsShow = () => {
               </>
             ) : (
               <>
-                <div>no contents to show</div>
+                <p className="fw-light fst-italic text-center my-3">No contents to show.</p>
               </>
             )}
           </div>

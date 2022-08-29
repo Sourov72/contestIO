@@ -17,9 +17,7 @@ import { ContestSearch } from "./components/contests/ContestSearch";
 import { Search } from "./components/contests/search";
 import { CreateContest } from "./components/createcontest.component";
 import { ContestShow } from "./components/contests/contestshow";
-import { ContestCategoryAdd } from "./components/contests/category";
 import { ContestContentAdd } from "./components/contests/contestcontent";
-import { useState } from "react";
 import { Home } from "./components/Home";
 import { About } from "./components/About";
 import { UploadedContentsShow } from "./components/contents/uploadedcontentsshow";
@@ -69,22 +67,6 @@ function App() {
                 />
                 <Route path=":contestID" element={<ContestShow />} />
               </Route>
-              <Route
-                path="/contestaddcategory"
-                element={
-                  <ProtectedRoutes redirectPath="/login">
-                    <ContestCategoryAdd />
-                  </ProtectedRoutes>
-                }
-              />
-              <Route
-                path="/contestcontentadd"
-                element={
-                  <ProtectedRoutes redirectPath="/login">
-                    <ContestContentAdd />
-                  </ProtectedRoutes>
-                }
-              />
               <Route
                 path="/uploadcontentshow"
                 element={<UploadedContentsShow />}

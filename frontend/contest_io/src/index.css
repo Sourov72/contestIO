@@ -30,6 +30,7 @@ body {
   color: white !important;
   border-width: 0px !important;
 }
+
 .btn-theme:hover {
   background-color: #340768 !important;
   color: white !important;
@@ -37,13 +38,30 @@ body {
   border-width: 0px !important;
 }
 
+.bg-theme {
+  background-color: #5e0fb8 !important;
+  color: white !important;
+  border-width: 0px !important;
+}
+
+.page-link {
+  color: rgba(155, 39, 176, 0.478) !important;
+  border-color: rgba(155, 39, 176, 0.478) !important;
+  border-width: 2px !important;
+}
+
+.nav-link.active {
+  color: #8344CA !important;
+  /* background-color: #beb504 !important; */
+}
+
 .navbar-brand {
   color: #8344CA !important;
 }
 
-.active {
+/* .active {
   color: #8344CA !important;
-}
+} */
 
 a {
   text-decoration: none;
@@ -114,6 +132,10 @@ a:hover {
   width: 95%;
   border-radius: 10px;
 }
+.other-search-table {
+  background-color: rgb(239, 236, 249);
+  border-radius: 10px;
+}
 
 .check {
   background-color: red !important;
@@ -125,7 +147,7 @@ a:hover {
 }
 
 #backgroundimage1 {
-  background:url("images/background1.jpg");
+  background:url("./images/background1.jpg");
   width: 100vw;
   height: 100vh; 
   background-size: 100% 100%;
@@ -133,7 +155,7 @@ a:hover {
   position: relative;
 }
 #backgroundimage2 {
-  background:url("images/background2.jpg");
+  background:url("./images/background2.jpg");
   width: 100vw;
   height: 100vh; 
   background-size: 100% 100%;
@@ -159,3 +181,43 @@ a:hover {
   transform: translate(-50%, -50%);
 }
 
+.alert {
+  /* display: "inline-block", */
+  display: block;
+  position: fixed !important;
+  left: 0.5vw;
+  bottom: 0.5vh;
+  z-index: 20 !important;
+  width: 25%;
+  /* height: 20%; */
+  /* // transform: "translate(-80%, -20%)", */
+  /* overflow: hidden; */
+
+}
+
+.accordion-button {
+  background-color: #dec8f96e;
+  border-width: 0px !important;
+  box-shadow: none !important;
+}
+.accordion-button:not(.collapsed) {
+  background-color: #cfb1f0d7 !important;
+  color: black !important;
+}
+
+
+.content-card {
+  border-color: rgba(155, 39, 176, 0.478) !important;
+  border-width: 4px !important;
+}
+
+.text-bg-theme-light {
+  background: rgba(247, 204, 255, 0.2);
+  border-color: rgba(230, 149, 245, 0.478) !important;
+  border-width: 2px !important;
+}
+.text-bg-theme {
+  background: rgba(198, 102, 215, 0.2);
+  border-color: rgba(155, 39, 176, 0.478) !important;
+  border-width: 2px !important;
+}

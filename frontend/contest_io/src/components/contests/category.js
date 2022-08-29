@@ -1,33 +1,31 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useParams } from "react-router-dom";
+import { Alert } from "../alert.component";
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
 export const ContestCategoryAdd = (props) => {
-  var contestID = "";
   const token = cookies.get("TOKEN");
-  const location = useLocation();
 
   const [category, setcategory] = useState({
     contestID: "",
     title: "",
     description: "",
-    maxvoteperUser: "",
-    maxchoices: "",
+    maxvoteperUser: 99999,
+    maxchoices: 99999,
   });
+  const [success, setSuccess] = useState(false);
+  const [clicked, setClicked] = useState(false);
+
+  const [addcategory, setaddcategory] = useState(false);
 
   useEffect(() => {
-    contestID = location.state.contestID;
-    console.log("contestID in useeffect", contestID);
-
     setcategory({
       ...category,
-      contestID: contestID,
+      contestID: props.contestID,
     });
-
-    console.log("contestID in useeffect", category.contestID);
-  }, []);
+    // console.log('contestId set is: ', category.contestID)
+  }, [props]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,48 +34,59 @@ export const ContestCategoryAdd = (props) => {
       ...category,
       [name]: value,
     });
-
-    console.log("contestID ", category.contestID);
   };
 
   const createNewCategory = (e) => {
     e.preventDefault();
 
-    // alert("Category add form posted");
-    axios
-      .post("http://localhost:5000/api/contests/category", category, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        // alert(res.data);
-        console.log(res.data);
-        if (res.data.msg === "added successfully") {
-          console.log("category added successfully");
-          // window.location = "/contestshow";
+    if (category.title !== "") {
+      axios
+        .post("http://localhost:5000/api/contests/category", category, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          // alert(res.data);
+          // console.log(res.data);
+          if (res.data.msg === "added successfully") {
+            // console.log("category added successfully");
+            // window.location = "/contestshow";
+            setSuccess(true);
+            console.log("contest creation successfull");
+            setaddcategory(true);
+            timeout();
 
-          setcategory({
-            ...category,
-            title: "",
-            description: "",
-            maxvoteperUser: "",
-            maxchoices: "",
-          });
-        }
-      });
+            setcategory({
+              ...category,
+              title: "",
+              description: "",
+              
+            });
+          }
+        });
+    }
+    setClicked(true);
     //window.location = "/";
   };
 
+  function timeout() {
+    console.log("in time out");
+    setTimeout(function () {
+      setaddcategory(false);
+    }, 2000);
+    console.log("after timeout");
+  }
+
   return (
-    <div className="signup container">
+    <div className="signup container my-3">
       {/* {console.log("category here", category)} */}
-      <h1 className="container text-center">Category add</h1>
+      {/* <h1 className="container text-center">Category add</h1> */}
       <form className="needs-validation" noValidate>
         <div className="mb-3">
           <div className="mb-3">
-            <label htmlFor="Inputname" className="form-label">
-              Category Title
+            <label htmlFor="Inputname" className="form-label fw-bold">
+              Category Name
             </label>
             <input
               type="text"
@@ -91,21 +100,21 @@ export const ContestCategoryAdd = (props) => {
           </div>
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleInputPassword1" className="form-label">
-            Category Description
+          <label htmlFor="exampleInputPassword1" className="form-label fw-bold">
+            Short Description
           </label>
           <input
             type="text"
             name="description"
             onChange={handleChange}
             value={category.description}
-            className="form-control"
+            className="form-control "
             id="description"
             required
           />
         </div>
 
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <label htmlFor="exampleInputPassword1" className="form-label">
             Max Vote For Each User
           </label>
@@ -134,16 +143,29 @@ export const ContestCategoryAdd = (props) => {
             className="form-control"
             id="maxchoices"
           />
-        </div>
+        </div> */}
 
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-theme"
           data-bs-toggle="modal"
           data-bs-target="#exampleModal"
         >
           Create Category
         </button>
+
+        {clicked === true && (
+          <>
+            {setClicked(false)}
+            {console.log("clicked was true")}
+            <Alert
+              alertclass="alert alert-danger alert-dismissible fade show"
+              {...(success === false
+                ? { alerttext: "Category Could not be created" }
+                : {})}
+            />
+          </>
+        )}
 
         <div
           className="modal fade"
@@ -176,7 +198,7 @@ export const ContestCategoryAdd = (props) => {
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary mb-3"
+                  className="btn btn-theme"
                   data-bs-dismiss="modal"
                   onClick={createNewCategory}
                 >
@@ -187,6 +209,18 @@ export const ContestCategoryAdd = (props) => {
           </div>
         </div>
       </form>
+      {addcategory === true ? (
+        <>
+          <Alert
+            alertclass="alert alert-success alert-dismissible fade show"
+            alerttext="Category added successfully"
+
+            // alerthandle={alerthandle}
+          />
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

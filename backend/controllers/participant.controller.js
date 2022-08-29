@@ -68,7 +68,7 @@ const queryContests = async (req, res) => {
     } else {
       req.query[key] = [req.query[key]];
     }
-    console.log(req.query[key]);
+    // console.log(req.query[key]);
     query[key] = {};
     for (let i = 0; i < len; i++) {
       const arr = req.query[key][i].split(",");
@@ -121,30 +121,12 @@ const queryContests = async (req, res) => {
     }
   }
   // console.log(query)
-  const contests = await ParticipantModel.find(query).populate("contestID");
-  // const contests = await ParticipantModel.aggregate([
-  //   {
-  //     $addFields: {
-  //       contestObjID: { $toObjectId: "$contestID" },
-  //     },
-  //   },
-  //   {
-  //     $match: query,
-  //   },
-  //   {
-  //     $lookup: {
-  //       from: "contests",
-  //       localField: "contestObjID",
-  //       foreignField: "_id",
-  //       as: "contestData",
-  //     },
-  //   },
-
-  // ]);
-  console.log("contests: ", contests);
-  res.status(200).json({
+  const contests = await ParticipantModel.find(query).skip(skip).limit(limit).populate("contestID");
+  const cnt = await ParticipantModel.count(query);
+  // console.log("contests: ", contests);
+  res.status(200).json({ 
     contests: contests,
-    count: contests.length,
+    count: cnt,
   });
 };
 
@@ -414,6 +396,52 @@ const getParticipantfunc = async (userID, contestID) => {
 
   return participant;
 };
+
+const blockuser = async (req, res) => {
+  // get the values from the request's body
+  const { userID, contestID, type } = req.body;
+
+  // try to create a new document
+  const participant = await ParticipantModel.find({
+    userID: ObjectId(userID),
+    contestID: ObjectId(contestID),
+  });
+
+  console.log("in block particiipant found", participant);
+
+  if (participant.length > 0) {
+    const updatepart = await ParticipantModel.updateOne(
+      {
+        userID: ObjectId(userID),
+        contestID: ObjectId(contestID),
+      },
+      {
+        $set: {
+          type: type,
+        },
+      }
+    );
+    const participant = await ParticipantModel.find({
+      userID: ObjectId(userID),
+      contestID: ObjectId(contestID),
+    });
+    console.log(" new  updated", participant);
+  } else {
+    const newpart = await ParticipantModel.create({
+      userID,
+      contestID,
+      type: type,
+    });
+    const participant = await ParticipantModel.find({
+      userID: ObjectId(userID),
+      contestID: ObjectId(contestID),
+    });
+    console.log(" new created updated", participant);
+  }
+
+  res.status(200).json({msg: "success"});
+};
+
 // export
 module.exports = {
   getParticipant,
@@ -425,4 +453,5 @@ module.exports = {
   deleteParticipant,
   updateParticipant,
   getParticipantfunc,
+  blockuser,
 };

@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+
 import logo from "../images/logo.png";
 import { Link } from "react-router-dom";
 
 export const Navbar = (props) => {
+  const [selected, setSelected] = useState("home");
+  const isSelected = (name) => {
+    let x = name === selected ? true : false;
+    // console.log("name, ", name, x)
+    return x
+  };
+  const handleClick = async (e) => {
+    var { name } = e.target;
+    // console.log("now selected, ", name)
+    setSelected(name);
+  };
   return (
     <nav className="navbar navbar-expand-lg bg-light">
       <div className="container-fluid">
@@ -29,18 +41,18 @@ export const Navbar = (props) => {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="nav navbar-nav mx-auto mb-2">
-            <li className="nav-item">
-              <Link to="/" className="nav-link fw-bold">
+            <li className='nav-item'>
+              <Link to="/" className={isSelected('home') ? 'nav-link fw-bold active' : 'nav-link fw-bold'} name="home" onClick={handleClick}>
                 Home
               </Link>
             </li>
-            <li className="nav-item">
-              <Link to="/contests" className="nav-link fw-bold">
+            <li className='nav-item'>
+              <Link to="/contests" className={isSelected('contests') ? 'nav-link fw-bold active' : 'nav-link fw-bold'} name="contests" onClick={handleClick}>
                 Contests
               </Link>
             </li>
-            <li className="nav-item">
-              <Link to="/about" className="nav-link fw-bold">
+            <li className='nav-item'>
+              <Link to="/about" className={isSelected('about') ? 'nav-link fw-bold active' : 'nav-link fw-bold'} name="about" onClick={handleClick}>
                 About
               </Link>
             </li>
@@ -49,17 +61,24 @@ export const Navbar = (props) => {
               if (props.id !== "") {
                 return (
                   <>
-                    <li className="nav-item">
+                    <li className='nav-item'>
                       <Link
                         to={"/profile/" + localStorage.getItem("id")}
-                        className="nav-link fw-bold"
+                        className={isSelected('profile') ? 'nav-link fw-bold active' : 'nav-link fw-bold'}
+                        name="profile"
+                        onClick={handleClick}
                       >
                         Profile
                       </Link>
                     </li>
 
-                    <li className="nav-item">
-                      <Link to="/contests/create" className="nav-link fw-bold">
+                    <li className='nav-item'>
+                      <Link
+                        to="/contests/create"
+                        className={isSelected('create') ? 'nav-link fw-bold active' : 'nav-link fw-bold'}
+                        name="create"
+                        onClick={handleClick}
+                      >
                         Create
                       </Link>
                     </li>

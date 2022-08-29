@@ -46,6 +46,9 @@ const contestSchema = new mongoose.Schema(
         endTime : {
             type : Date,
             required : true
+        },
+        img : {
+            type : String,
         }
     },
     {

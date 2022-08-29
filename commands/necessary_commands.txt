@@ -37,3 +37,11 @@ to connect database ->
 1. first, add a new user to the security>database access tab in mogodb atlas
 2. in the .env file, change the username and password to your new user's username and password.
 3. if connection closed error -> add 0.0.0.0/0 to the security>network access tab of mongodb atlas (already done for our project)
+
+
+
+to connect firebase ->
+cd frontend/contestio/
+yarn add firebase uuid
+npm install compressorjs
+npm install react-photo-view

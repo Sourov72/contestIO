@@ -2,9 +2,13 @@ const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const participantModel = require("../models/participant.model");
+const fileDelete = require("./filedelete");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
-// router.route("/").get((req, res) => {
+const { ref } = require("firebase/storage");
+const { storage } = require("./firebase");
+const { v4 } = require("uuid");
+// // router.route("/").get((req, res) => {
 //   User.find()
 //     .then((users) => res.json(users))
 //     .catch((err) => res.status(400).json("Error :" + err));
@@ -14,6 +18,79 @@ const getAllUser = (req, res) => {
   User.find()
     .then((users) => res.json(users))
     .catch((err) => res.status(400).json("Error :" + err));
+};
+
+const getBL_UNBL_users = async (req, res) => {
+  console.log("in block unblock users", req.body);
+
+  const { username, contestID } = req.body;
+
+  const userss = await User.aggregate([
+    {
+      $lookup: {
+        from: "participants",
+        localField: "_id",
+        foreignField: "userID",
+
+        pipeline: [
+          {
+            $match: {
+              contestID: { $eq: ObjectId(contestID) },
+              // type: { $ne: 2 },
+            },
+          },
+          {
+            $project: {
+              type: 1,
+            },
+          },
+        ],
+
+        as: "userData",
+      },
+    },
+
+    {
+      $project: {
+        type: "$userData.type",
+        username: 1,
+        email: 1,
+        _id: 1,
+      },
+    },
+
+    {
+      $match: {
+        // userData: { $exists: true, $not: { $size: 0 } },
+        // type: { $ne: 2 },
+
+        $or: [
+          {
+            username: {
+              $regex: username,
+              $options: "i",
+            },
+          },
+          {
+            email: {
+              $regex: username,
+              $options: "i",
+            },
+          },
+        ],
+      },
+    },
+
+    {
+      $sort: {
+        type: -1,
+        username: 1,
+      },
+    },
+  ]).limit(20);
+
+  res.json(userss);
+  console.log("in block unblock", userss);
 };
 
 const getUser = (req, res) => {
@@ -75,28 +152,7 @@ const getUser = (req, res) => {
 
 const getSpecificUsers = async (req, res) => {
   // var word = req.body.username;
-  console.log("hello", req.body);
   const { username, contestID } = req.body;
-  
-  // User.find({
-  //   $or: [
-  //     {
-  //       username: {
-  //         $regex: word,
-  //         $options: "i",
-  //       },
-  //     },
-  //     {
-  //       email: {
-  //         $regex: word,
-  //         $options: "i",
-  //       },
-  //     },
-  //   ],
-  // });
-  // .then((users) => res.status(200).json(users))
-  // .catch((err) => res.status(400).json("Error :" + err));
-
   const userss = await User.aggregate([
     {
       $lookup: {
@@ -108,6 +164,7 @@ const getSpecificUsers = async (req, res) => {
           {
             $match: {
               contestID: { $eq: ObjectId(contestID) },
+              // type: { $ne: 2 },
             },
           },
         ],
@@ -136,10 +193,10 @@ const getSpecificUsers = async (req, res) => {
         ],
       },
     },
-  ]);
+  ]).limit(20);
 
   res.json(userss);
-  console.log("users", userss)
+  console.log("users", userss);
 };
 
 const profilecheck = (req, res) => {
@@ -155,8 +212,10 @@ const profilecheck = (req, res) => {
   });
 };
 
-const createUser = (req, res) => {
+const createUser = async (req, res) => {
+  console.log("reqbody", req.body);
   const username = req.body.username;
+  const nickname = req.body.nickname;
   const password = req.body.password;
   const email = req.body.email;
   const bio = req.body.bio;
@@ -176,6 +235,7 @@ const createUser = (req, res) => {
           console.log("hashed password: ", password);
           const newUser = new User({
             username,
+            nickname,
             password,
             email,
             bio,
@@ -215,6 +275,7 @@ const updateUser = async (req, res) => {
   const id = req.user.userID;
   // console.log("req body", req.body)
   // console.log("req user", req.user)
+  let pictureRef = "";
 
   const pass = req.body.reoldpassword;
   // console.log("req id", id);
@@ -240,8 +301,19 @@ const updateUser = async (req, res) => {
       });
     });
 
+  const newUser = await User.findOne({ _id: id });
+  console.log("hereeee", newUser.img);
+  console.log("req body", req.body.img);
+  console.log("outside if");
+  if (newUser.img !== "" && newUser.img !== req.body.img) {
+    console.log("hereeee", newUser.img);
+    console.log("req body", req.body.img);
+    pictureRef = await ref(storage, decodeURIComponent(newUser.img));
+  } 
+
   const user = await User.findByIdAndUpdate(id, {
     username: req.body.username,
+    nickname: req.body.nickname,
     bio: req.body.bio,
     socialhandles: {
       facebookhandle: req.body.facebookhandle,
@@ -254,6 +326,13 @@ const updateUser = async (req, res) => {
     return res.status(400).json({ message: "Could not update" });
   }
   console.log("user update success");
+  if (pictureRef !== "") {
+    // await pictureRef.delete();
+
+    console.log("in delete but why");
+
+    console.log(fileDelete.deleteFile(pictureRef));
+  }
   return res.status(200).json({ message: "User Updated!" });
 };
 
@@ -264,4 +343,5 @@ module.exports = {
   profilecheck,
   getSpecificUsers,
   updateUser,
+  getBL_UNBL_users,
 };
