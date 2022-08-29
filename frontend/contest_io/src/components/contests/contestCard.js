@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
 export const ContestCard = ({ contest, col }) => {
-  console.log("blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
   const redStyle = {
     color: "red",
     fontWeight: "bold",
@@ -78,8 +78,7 @@ export const ContestCard = ({ contest, col }) => {
       <Link to={"/contests/" + contest._id} state={{contestID : contest._id}}>
         <div className="card h-100 contest-card">
           <div className="card-body">
-            <h5 className="card-title fw-bold">{contest.title}</h5>
-            
+            <h5 className="fw-bold text-capitalize">{contest.title}</h5>
             <p className="card-text">
               {contest.objective} <br />
               {formatDate(contest.registrationEndTime)} -{" "}
@@ -87,8 +86,6 @@ export const ContestCard = ({ contest, col }) => {
               Registration: {formatReg()}
             </p>
             <div className="badges">{getBadges()}</div>
-            
-            
           </div>
         </div>
       </Link>

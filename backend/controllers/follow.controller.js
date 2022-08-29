@@ -5,19 +5,20 @@ const mongoose = require("mongoose");
 
 // get all participants
 const getFollowList = async (req, res) => {
+    //console.log("Asche");
     const { id } = req.params;
     const userList = await FollowModel.find({"contestID":id});
     res.status(200).json(userList);
 };
 
 const isFollowed=async(req,res) => {
-    const { contestID } = req.body.contestID;
-    const userID =req.body.userID;
+    const  {contestID,userID}  = req.body;
     const contestList = await FollowModel.find({"userID":userID,"contestID":contestID});
     if(contestList.length>0){
         res.status(200).json("True");
     }
     else {
+        //console.log("Asche2");
         res.status(200).json("False");
     }
 };
