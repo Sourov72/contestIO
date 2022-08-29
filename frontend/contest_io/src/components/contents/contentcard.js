@@ -394,7 +394,7 @@ export const Contentcard = (props) => {
         {voters.map((currentPerson) => {
           return (
             <tr key={currentPerson.id[0][0]}>
-              <td className="text-start" data-bs-dismiss="modal">
+              <td className="text-start fw-bold" data-bs-dismiss="modal">
                 <Link
                   to={"/profile/" + currentPerson.id[0][0]}
                   state={{ id: currentPerson.id[0][0] }}
