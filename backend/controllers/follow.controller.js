@@ -38,10 +38,14 @@ const createFollow = async (req, res) => {
   };
 
 const unfollow =async(req,res) => {
-    const contestID = req.body.contestID;
-    const userID =req.body.userID;
-    await FollowModel.findOneAndDelete({"userID":userID,"contestID":contestID});
-    res.status(200).json("Unfollowed");
+    const  {contestID,userID}  = req.query;
+    console.log("userid unfollow", userID, "contestid", contestID);
+    await FollowModel.deleteMany({"userID":userID,"contestID":contestID});
+    const contestList = await FollowModel.find({"userID":userID,"contestID":contestID});
+    if(contestList.length===0){
+        res.status(200).json("Unfollowed");
+    }
+    res.status(200).json("error");
 }
 
 const getUserFollowList = async (req, res) => {

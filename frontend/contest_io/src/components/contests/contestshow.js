@@ -118,6 +118,7 @@ export const ContestShow = () => {
       userID:localStorage.getItem("id"),
     };
     //console.log(folQ.contestID);
+    if(isFol.fol==false){
     axios
       .get("http://localhost:5000/api/follow/createFollow", {
         params:folQ,
@@ -125,6 +126,17 @@ export const ContestShow = () => {
       .then((res) => {
         console.log(res.data);
       });
+    }
+    else {
+      //
+      axios
+      .get("http://localhost:5000/api/follow/unfollow", {
+        params:folQ,
+      })
+      .then((res) => {
+        console.log(res.data);
+      });
+    }
 
     setFol({fol:!isFol.fol});
     

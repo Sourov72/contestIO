@@ -16,7 +16,7 @@ router.get('/getNotification',getNotification);
 
 router.get('/createFollow',createFollow);
 
-router.delete('/unfollow',unfollow);
+router.get('/unfollow',unfollow);
 
 module.exports = router
 
