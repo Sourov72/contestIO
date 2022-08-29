@@ -20,6 +20,7 @@ const cookies = new Cookies();
 
 export const ContestShow = () => {
   const { contestID } = useParams();
+  const usrid=localStorage.getItem("id");
   const token = cookies.get("TOKEN");
   const [userType, setUserType] = useState("");
 
@@ -53,6 +54,11 @@ export const ContestShow = () => {
     registrationEndTime: "",
     endTime: "",
     img: "",
+  });
+
+  const [isFol, setFol] = useState({
+    fol: false,
+    
   });
 
   function general() {
@@ -176,6 +182,25 @@ export const ContestShow = () => {
         }
         // console.log("participant types:", types);
       });
+
+      const folQ = {
+        contestID: contestID,
+        userID:usrid,
+      };
+      axios
+        .get("http://localhost:5000/api/follow/", {
+          params: folQ,
+        })
+        .then((res) => {
+          if(res.data==="False"){
+            setFol({fol:false});
+          }
+          else {
+            //console.log("asche else");
+            setFol({fol:false});
+            //foll.push(0);
+          }
+        });
   }, [contestID]);
 
   function dateconver(date, op, inc = 0) {
@@ -628,6 +653,13 @@ export const ContestShow = () => {
                   <h4 className="text-left">{contest.objective}</h4>
                 </div>
                 <h4 className="badges float-left">{getBadges()}</h4>
+                {isFol.fol ? 
+                <>
+                  <button  type="button" class="btn btn-danger btn-sm">Unfollow</button>
+               
+                </>
+
+                  :<button  type="button" class="btn btn-success btn-sm">Follow</button> }
               </div>
               <div className="col-7">
                 <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
