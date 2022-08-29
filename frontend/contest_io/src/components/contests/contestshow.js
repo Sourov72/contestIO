@@ -112,6 +112,10 @@ export const ContestShow = () => {
     setcomp({ blockuser: true });
   }
 
+  function followContestChange(){
+    setFol({fol:!isFol.fol});
+    
+  }
   const leavecontest = async (e) => {
     e.preventDefault();
     setcomp({ leavecontest: true });
@@ -655,11 +659,11 @@ export const ContestShow = () => {
                 <h4 className="badges float-left">{getBadges()}</h4>
                 {isFol.fol ? 
                 <>
-                  <button  type="button" class="btn btn-danger btn-sm">Unfollow</button>
+                  <button onClick={followContestChange} type="button" class="btn btn-danger btn-sm">Unfollow</button>
                
                 </>
 
-                  :<button  type="button" class="btn btn-success btn-sm">Follow</button> }
+                  :<button onClick={followContestChange}  type="button" class="btn btn-success btn-sm">Follow</button> }
               </div>
               <div className="col-7">
                 <PhotoProvider maskOpacity={0.8} bannerVisible={false}>
