@@ -9,7 +9,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/mrmajumder/contestIO">
+  <a href="https://github.com/Sourov72/contestIO">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -103,7 +103,7 @@ This is an example of list of things you need to use the software and how to ins
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/mrmajumder/contestIO.git
+   git clone https://github.com/Sourov72/contestIO
    ```
 2. Install NPM packages for the `frontend`
    ```sh
