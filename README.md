@@ -10,7 +10,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Sourov72/contestIO">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="Images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Contest.io: Online Contests Hosting Platform</h3>
@@ -74,12 +74,12 @@ Developed for the "CSE408: Software Development" course.
 
 ### Project Images
 <p float="left" align="middle">
-  <img src="images/home.png" width="300" alt="Home page" />
-  <img src="images/userprofile.png" width="300" alt="User profile" />
-  <img src="images/contesthome.png" width="300" alt="All Contests" /> 
-  <img src="images/contestCreation.png" width="300" alt="Creating Contests" />
-  <img src="images/contest.png" width="300" alt="Contest Profile" /> 
-  <img src="images/result.png" width="300" alt="Result" /> 
+  <img src="Images/home.png" width="300" alt="Home page" />
+  <img src="Images/userprofile.png" width="300" alt="User profile" />
+  <img src="Images/contesthome.png" width="300" alt="All Contests" /> 
+  <img src="Images/contestCreation.png" width="300" alt="Creating Contests" />
+  <img src="Images/contest.png" width="300" alt="Contest Profile" /> 
+  <img src="Images/result.png" width="300" alt="Result" /> 
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -190,7 +190,7 @@ For connecting your own `Firebase` database, do the following:
 [email]: mailto:monsieurmajumder@gmail.com
 [website-url]: https://mrmajumder.github.io/
 
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: Images/screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
